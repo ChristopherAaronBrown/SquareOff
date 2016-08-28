@@ -6,4 +6,8 @@
 //  Copyright © 2016 Chris Brown. All rights reserved.
 //
 
-import Foundation
+import UIKit
+
+class LoginView: UIView {
+    
+}

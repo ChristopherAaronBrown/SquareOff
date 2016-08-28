@@ -24,7 +24,6 @@ class GameSpaceViewController: UIViewController, HandViewDataSource, HandViewDel
         player = Player(playerNum: 0, playerName: "Chris")
         player?.playerHand.newHand(player!)
         
-        
 //        // Add board to view
 //        let boardDimension: CGFloat = UIScreen.mainScreen().bounds.width - 10
 //        let boardXPos: CGFloat = 5 + (boardDimension % 8) / 2
