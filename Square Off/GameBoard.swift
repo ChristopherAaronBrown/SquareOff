@@ -27,11 +27,11 @@ class GameBoard {
                 let gameBoardSpace = GameBoardSpace(coordinate: coordinate)
                 
                 if rowNum == 0 {
-                    gameBoardSpace.setPawn(player2Pawns[columnNum])
+                    gameBoardSpace.playerPawn = player2Pawns[columnNum]
                 }
                 
                 if rowNum == 7 {
-                    gameBoardSpace.setPawn(player1Pawns[columnNum])
+                    gameBoardSpace.playerPawn = player1Pawns[columnNum]
                 }
                 
                 column.append(gameBoardSpace)

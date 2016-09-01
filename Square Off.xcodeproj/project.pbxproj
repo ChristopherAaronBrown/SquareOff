@@ -7,9 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8332B1901D726F0E0047C67D /* BoardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8332B18F1D726F0E0047C67D /* BoardViewController.swift */; };
-		8332B1921D7270A60047C67D /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8332B1911D7270A60047C67D /* LoginViewController.swift */; };
-		8332B1941D7270AD0047C67D /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8332B1931D7270AD0047C67D /* LoginView.swift */; };
 		834CCAF21D6BE26B001B71D4 /* HandView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 834CCAF11D6BE26B001B71D4 /* HandView.swift */; };
 		83D3CEDB1D557506008D9313 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D3CEDA1D557506008D9313 /* AppDelegate.swift */; };
 		83D3CEDD1D557506008D9313 /* GameSpaceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D3CEDC1D557506008D9313 /* GameSpaceViewController.swift */; };
@@ -45,9 +42,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		8332B18F1D726F0E0047C67D /* BoardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardViewController.swift; sourceTree = "<group>"; };
-		8332B1911D7270A60047C67D /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
-		8332B1931D7270AD0047C67D /* LoginView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		834CCAF11D6BE26B001B71D4 /* HandView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandView.swift; sourceTree = "<group>"; };
 		83D3CED71D557506008D9313 /* Square Off.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Square Off.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		83D3CEDA1D557506008D9313 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -120,7 +114,6 @@
 			children = (
 				83EA1D401D6A87F80073E792 /* BoardView.swift */,
 				834CCAF11D6BE26B001B71D4 /* HandView.swift */,
-				8332B1931D7270AD0047C67D /* LoginView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -129,8 +122,6 @@
 			isa = PBXGroup;
 			children = (
 				83D3CEDC1D557506008D9313 /* GameSpaceViewController.swift */,
-				8332B18F1D726F0E0047C67D /* BoardViewController.swift */,
-				8332B1911D7270A60047C67D /* LoginViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -138,10 +129,9 @@
 		83D3CECE1D557506008D9313 = {
 			isa = PBXGroup;
 			children = (
-				834CCAF31D6D3198001B71D4 /* Resources */,
-				83DC6AC71D6947FE000D5237 /* Frameworks */,
-				83D3CED91D557506008D9313 /* Square Off */,
 				83D3CED81D557506008D9313 /* Products */,
+				834CCAF31D6D3198001B71D4 /* Resources */,
+				83D3CED91D557506008D9313 /* Square Off */,
 			);
 			sourceTree = "<group>";
 		};
@@ -217,13 +207,6 @@
 				83D3CF1C1D5598FD008D9313 /* PlayerPawn.swift */,
 			);
 			name = Player;
-			sourceTree = "<group>";
-		};
-		83DC6AC71D6947FE000D5237 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -309,7 +292,6 @@
 				83D3CF161D5579E0008D9313 /* PlayerBag.swift in Sources */,
 				83D3CF091D5578FA008D9313 /* AttackTile.swift in Sources */,
 				834CCAF21D6BE26B001B71D4 /* HandView.swift in Sources */,
-				8332B1901D726F0E0047C67D /* BoardViewController.swift in Sources */,
 				83D3CEF51D55776E008D9313 /* Straight2Tile.swift in Sources */,
 				83D3CEFB1D557784008D9313 /* KnightLeftTile.swift in Sources */,
 				83D3CF1F1D559DEE008D9313 /* GameBoardSpace.swift in Sources */,
@@ -317,7 +299,6 @@
 				83D3CF0F1D557946008D9313 /* GemTile.swift in Sources */,
 				83D3CEEF1D557758008D9313 /* GameBoard.swift in Sources */,
 				83D3CEDD1D557506008D9313 /* GameSpaceViewController.swift in Sources */,
-				8332B1921D7270A60047C67D /* LoginViewController.swift in Sources */,
 				83D3CF1A1D5579EF008D9313 /* PlayerDiscard.swift in Sources */,
 				83D3CF071D5578C2008D9313 /* BurnTile.swift in Sources */,
 				83D3CF111D55794B008D9313 /* JumpTile.swift in Sources */,
@@ -335,7 +316,6 @@
 				83D3CEDB1D557506008D9313 /* AppDelegate.swift in Sources */,
 				83D3CEF31D557766008D9313 /* Straight1Tile.swift in Sources */,
 				83D3CF231D55B7CC008D9313 /* Path.swift in Sources */,
-				8332B1941D7270AD0047C67D /* LoginView.swift in Sources */,
 				83D3CF0B1D55790A008D9313 /* DefendTile.swift in Sources */,
 				83DFAFE41D5A24AD00373801 /* GameBox.swift in Sources */,
 			);

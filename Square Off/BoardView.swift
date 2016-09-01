@@ -9,62 +9,72 @@
 import UIKit
 
 protocol BoardViewDataSource {
-    func pawnPositions() -> GameBoard
-    func currentPlayer() -> Int
+    func imageForSpace(coordinate: BoardCoordinate) -> UIImage?
+    func backgroundColorForSpace(coordinate: BoardCoordinate) -> UIColor
 }
 
 protocol BoardViewDelegate {
-    
+    func boardSpaceWasTapped(coordinate: BoardCoordinate)
 }
 
 class BoardView: UIView {
     
     var dataSource: BoardViewDataSource?
     var delegate: BoardViewDelegate?
+    private var imageDict: [BoardCoordinate : UIImageView]
     
-    init(frame: CGRect, currentPlayer: Int) {
+    override init(frame: CGRect) {
+        imageDict = [:]
+        
         super.init(frame: frame)
+    
+        let numberOfBoardSpaces = 8
+        let boardSize: CGFloat = self.bounds.width
+        let boardSpaceSize: CGFloat = floor(boardSize / CGFloat(numberOfBoardSpaces))
+        let boardBorder: UIView = UIView(frame: CGRectMake(0, 0, boardSpaceSize * 8, boardSpaceSize * 8))
         
-        let board = dataSource!.pawnPositions()
+        // Add outside frame
+        boardBorder.layer.borderWidth = 1
+        boardBorder.layer.borderColor = UIColor.blackColor().CGColor
+        self.addSubview(boardBorder)
         
-        let boardSpaceDimension: CGFloat = floor(self.bounds.width / 8)
-
-        // TODO: Flip board based on current player
         for column in 0...7 {
             for row in 0...7 {
                 let coordinate = try! BoardCoordinate(column: column, row: row)
-
-                let xPos = boardSpaceDimension * CGFloat(column)
-                let yPos = boardSpaceDimension * CGFloat(row)
-                let boardSpaceImageView = UIImageView(frame: CGRectMake(xPos, yPos, boardSpaceDimension, boardSpaceDimension))
+                let tag: Int = column + (row * 8)
+                let xPos = boardSpaceSize * CGFloat(column)
+                let yPos = boardSpaceSize * CGFloat(row)
+                let boardSpaceImageView = UIImageView(frame: CGRectMake(xPos, yPos, boardSpaceSize, boardSpaceSize))
+                let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(BoardView.boardSpaceTapped))
                 
-                // Add home space colors
-                switch row {
-                case 0:
-                    boardSpaceImageView.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(1)
-                case 7:
-                    boardSpaceImageView.backgroundColor = UIColor.darkGrayColor().colorWithAlphaComponent(1)
-                default:
-                    boardSpaceImageView.backgroundColor = UIColor.clearColor()
-                }
-                
-                if board.getBoardSpace(coordinate).isOccupied() {
-                    boardSpaceImageView.image = board.getBoardSpace(coordinate).occupyingPawn().pawnImage
-                }
-                
-                boardSpaceImageView.layer.borderWidth = 1
+                boardSpaceImageView.tag = tag
+                boardSpaceImageView.layer.borderWidth = 0.5
                 boardSpaceImageView.layer.borderColor = UIColor.blackColor().CGColor
+                boardSpaceImageView.userInteractionEnabled = true
+                boardSpaceImageView.addGestureRecognizer(tapRecognizer)
+                imageDict[coordinate] = boardSpaceImageView
                 
-                self.addSubview(boardSpaceImageView)
+                self.addSubview(boardSpaceImageView)                
             }
         }
     }
     
     func updateBoard() {
-        
+        for (coordinate, imageView) in imageDict {
+            imageView.image = dataSource?.imageForSpace(coordinate)
+            imageView.backgroundColor = dataSource?.backgroundColorForSpace(coordinate)
+        }
+    }
+    
+    func boardSpaceTapped(sender: UITapGestureRecognizer) {
+        if let boardSpaceImageView = sender.view {
+            let tag = boardSpaceImageView.tag
+            let coordinate = try! BoardCoordinate(column: tag % 8, row: tag / 8)
+            self.delegate?.boardSpaceWasTapped(coordinate)
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
+        fatalError()
     }
 }

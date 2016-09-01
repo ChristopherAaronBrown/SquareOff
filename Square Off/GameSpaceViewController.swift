@@ -8,70 +8,101 @@
 
 import UIKit
 
-class GameSpaceViewController: UIViewController, HandViewDataSource, HandViewDelegate {
+class GameSpaceViewController: UIViewController, BoardViewDataSource, BoardViewDelegate, HandViewDataSource, HandViewDelegate {
     
-    private var handView: HandView?
-    private var boardView: BoardView?
-    var gameBoard: GameBoard?
-    var player: Player?
+    private let gameSession: GameSession
+    var boardView: BoardView?
+    var handView: HandView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.view.backgroundColor = UIColor.whiteColor()
         
-        gameBoard = GameBoard()
-        player = Player(playerNum: 0, playerName: "Chris")
-        player?.playerHand.newHand(player!)
+        // Add board to view
+        let boardSize: CGFloat = UIScreen.mainScreen().bounds.width - 10
+        let boardXPos: CGFloat = 5 + (boardSize % 8) / 2
+        let boardYPos: CGFloat = UIApplication.sharedApplication().statusBarFrame.height + boardXPos
         
-//        // Add board to view
-//        let boardDimension: CGFloat = UIScreen.mainScreen().bounds.width - 10
-//        let boardXPos: CGFloat = 5 + (boardDimension % 8) / 2
-//        let boardYPos: CGFloat = UIApplication.sharedApplication().statusBarFrame.height + boardXPos
-//        boardView = BoardView(frame: CGRectMake(boardXPos, boardYPos, boardDimension, boardDimension))
+        boardView = BoardView(frame: CGRectMake(boardXPos, boardYPos, boardSize, boardSize))
         
+        boardView!.dataSource = self
+        boardView!.delegate = self
         
+        self.view.addSubview(boardView!)
         
-//        self.view.addSubview(boardView!)
+        boardView?.updateBoard()
         
-        // Add player hand to view
+        // Add hand to view
         let handWidth: CGFloat = UIScreen.mainScreen().bounds.width
         let handHeight: CGFloat = (handWidth - 60) / 5
         let handXPos: CGFloat = 0
-//        let handYPos: CGFloat = boardYPos + boardDimension + 50
-        let handYPos: CGFloat = 500
+        let handYPos: CGFloat = boardYPos + boardSize + 50
         handView = HandView(frame: CGRectMake(handXPos, handYPos, handWidth, handHeight))
         
         handView!.dataSource = self
         handView!.delegate = self
         
         self.view.addSubview(handView!)
-        
     }
     
-    // MARK: HandViewDataSource
+    // MARK: - Initializers
+    init(gameSession: GameSession) {
+        self.gameSession = gameSession
+        gameSession.player1.playerHand.newHand(gameSession.player1)
+        gameSession.player2.playerHand.newHand(gameSession.player2)
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - BoardViewDataSource
+    func imageForSpace(coordinate: BoardCoordinate) -> UIImage? {
+        let modelCoordinate = gameSession.currentPlayer == 0 ? coordinate : coordinate.inverse()
+        
+        return gameSession.board.getBoardSpace(modelCoordinate).playerPawn?.pawnImage
+    }
+    
+    func backgroundColorForSpace(coordinate: BoardCoordinate) -> UIColor {
+        let modelCoordinate = gameSession.currentPlayer == 0 ? coordinate : coordinate.inverse()
+        
+        if gameSession.board.getBoardSpace(modelCoordinate).isHome(gameSession.player1) {
+            return UIColor.darkGrayColor()
+        } else if gameSession.board.getBoardSpace(modelCoordinate).isHome(gameSession.player2) {
+            return UIColor.lightGrayColor()
+        } else {
+            return UIColor.clearColor()
+        }
+    }
+    
+    // MARK: BoardViewDelegate
+    func boardSpaceWasTapped(coordinate: BoardCoordinate) {
+        if gameSession.board.getBoardSpace(coordinate).isOccupied() {
+            gameSession.nextTurn()
+            boardView?.updateBoard()
+            handView!.setNeedsLayout()
+        }
+    }
+    
+    // MARK: - HandViewDataSource
     func numberOfTiles() -> UInt {
-        return UInt(player?.playerHand.count() ?? 0)
+        let player = gameSession.currentPlayer == 0 ? gameSession.player1 : gameSession.player2
+        return UInt(player.playerHand.count() ?? 0)
     }
     
     func imageForTile(index: UInt) -> UIImage? {
-        guard let imageName = self.player?.playerHand.tiles[Int(index)].imageName else {
-            return nil
-        }
+        let player = gameSession.currentPlayer == 0 ? gameSession.player1 : gameSession.player2
+        let imageName = player.playerHand.tiles[Int(index)].imageName
         return UIImage(named: imageName)
     }
     
     // MARK: HandViewDelegate
     func handViewSlotWasTapped(index: UInt) {
-        print("Tapped at index: \(index)")
-        if let player = self.player {
-            player.playerHand.newHand(player)
-            handView!.setNeedsLayout()
-        }
-    }
-    
-    func currentBoard() -> GameBoard {
-        return self.gameBoard!
+        let player = gameSession.currentPlayer == 0 ? gameSession.player1 : gameSession.player2
+        player.playerHand.newHand(player)
+        handView!.setNeedsLayout()
     }
 }
 

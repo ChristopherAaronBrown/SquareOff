@@ -10,9 +10,13 @@ enum BoardCoordinateError: ErrorType {
     case OutOfBounds
 }
 
-struct BoardCoordinate {
+struct BoardCoordinate: Hashable {
     let column: Int
     let row: Int
+    
+    var hashValue: Int {
+        return column + row
+    }
     
     init(column: Int, row: Int) throws {
         guard (column >= 0 && column < 8) else { throw BoardCoordinateError.OutOfBounds }
@@ -20,19 +24,23 @@ struct BoardCoordinate {
         self.column = column
         self.row = row
     }
+    
+    func inverse() -> BoardCoordinate {
+        return try! BoardCoordinate(column: 7 - column, row: 7 - row)
+    }
+}
+
+func ==(lhs: BoardCoordinate, rhs: BoardCoordinate) -> Bool {
+    return (lhs.column == rhs.column) && (lhs.row == rhs.row)
 }
 
 class GameBoardSpace {
     let coordinate: BoardCoordinate
     
-    private var playerPawn: PlayerPawn?
+    var playerPawn: PlayerPawn?
     
     init(coordinate: BoardCoordinate) {
         self.coordinate = coordinate
-    }
-    
-    func setPawn(playerPawn: PlayerPawn) {
-        self.playerPawn = playerPawn
     }
     
     func occupyingPawn() -> PlayerPawn {

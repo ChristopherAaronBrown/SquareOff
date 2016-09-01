@@ -20,4 +20,7 @@ class GameSession {
         currentPlayer = 0
     }
     
+    func nextTurn() {
+        currentPlayer = currentPlayer == 0 ? 1 : 0
+    }
 }
