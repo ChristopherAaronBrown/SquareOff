@@ -8,7 +8,7 @@
 
 class GameBox {
     
-    func purchase(gems: [GemTile], tile: Tile) -> Tile? {
+    func purchase(_ gems: [GemTile], tile: Tile) -> Tile? {
         var totalGems: Int = 0
         
         for gem in 0 ..< gems.count {

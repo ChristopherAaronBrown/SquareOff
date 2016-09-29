@@ -80,7 +80,7 @@ class BoxViewController: UIViewController, BoxViewDataSource, BoxViewDelegate {
             }
         }
         
-        currentPlayer.playerDiscard.add(tile: tile!)
+        currentPlayer.playerDiscard.add(tile!)
     }
     
     func removeGems() {

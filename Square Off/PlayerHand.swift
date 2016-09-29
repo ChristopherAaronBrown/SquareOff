@@ -20,7 +20,7 @@ class PlayerHand {
         
         // Add old hand tiles to PlayerDiscard
         for tile in tiles {
-            player.playerDiscard.add(tile: tile)
+            player.playerDiscard.add(tile)
         }
         
         // Remove old hand tiles
@@ -43,7 +43,7 @@ class PlayerHand {
     
     func removeTile(at index: Int,for player: Player) {
         if index < tiles.count {
-            player.playerDiscard.add(tile: tiles[index])
+            player.playerDiscard.add(tiles[index])
             tiles.remove(at: index)
         }
     }

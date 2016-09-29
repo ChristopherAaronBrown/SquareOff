@@ -87,7 +87,7 @@ class MovementState: GKState, SquareOffState {
                     session.playOptions = [:]
                     session.board.clearHighlights()
                     
-                    let paths = tile.getPaths(baseCoordinate: coordinate, player: session.currentPlayer)
+                    let paths = tile.getPaths(coordinate, player: session.currentPlayer)
                     
                     // Highlight paths
                     // Yellow:  Movement

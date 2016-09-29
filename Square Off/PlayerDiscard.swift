@@ -17,7 +17,7 @@ class PlayerDiscard {
         self.tiles = [Tile]()
     }
     
-    func add(tile: Tile) {
+    func add(_ tile: Tile) {
         self.tiles.append(tile)
     }
     

@@ -8,7 +8,7 @@
 
 class Diagonal1Tile: Tile, MovementTile {
     
-    func getPaths(baseCoordinate: BoardCoordinate, player: Player) -> [Path] {
+    func getPaths(_ baseCoordinate: BoardCoordinate, player: Player) -> [Path] {
         var paths: [Path] = [Path]()
         
         // Try to append Path vertical-left
