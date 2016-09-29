@@ -21,6 +21,34 @@ class BoxView: UIView {
     
     var dataSource: BoxViewDataSource?
     var delegate: BoxViewDelegate?
+    private var tagTileMap: [Int:Tile]
+    
+    override init(frame: CGRect) {
+        self.tagTileMap = [
+             0: GemTile(value: 1),
+             1: GemTile(value: 2),
+             2: GemTile(value: 3),
+             3: JumpTile(),
+             4: AttackTile(),
+             5: DefendTile(),
+             6: BurnTile(),
+             7: ResurrectTile(),
+             8: Straight1Tile(),
+             9: Diagonal1Tile(),
+            10: KnightLeftTile(),
+            11: ZigZagLeftTile(),
+            12: Straight2Tile(),
+            13: Diagonal2Tile(),
+            14: KnightRightTile(),
+            15: ZigZagRightTile(),
+        ]
+        
+        super.init(frame: frame)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func layoutSubviews() {
         
@@ -50,75 +78,10 @@ class BoxView: UIView {
                 purchaseTile.tag = column + (row * 4)
                 costLabel.tag = purchaseTile.tag + 16
                 
-                // TODO: Make this more concise
-                switch purchaseTile.tag {
-                case 0:
-                    purchaseTile.image = UIImage(named: "Gem1Tile")?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
-                    costLabel.text = "COST: \(GemTile.init(value: 1).cost)"
-                    purchasable = totalGems >= GemTile.init(value: 1).cost
-                case 1:
-                    purchaseTile.image = UIImage(named: "Gem2Tile")?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
-                    costLabel.text = "COST: \(GemTile.init(value: 2).cost)"
-                    purchasable = totalGems >= GemTile.init(value: 2).cost
-                case 2:
-                    purchaseTile.image = UIImage(named: "Gem3Tile")?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
-                    costLabel.text = "COST: \(GemTile.init(value: 3).cost)"
-                    purchasable = totalGems >= GemTile.init(value: 3).cost
-                case 3:
-                    purchaseTile.image = UIImage(named: "JumpTile")?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
-                    costLabel.text = "COST: \(JumpTile.init().cost)"
-                    purchasable = totalGems >= JumpTile.init().cost
-                case 4:
-                    purchaseTile.image = UIImage(named: "AttackTile")?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
-                    costLabel.text = "COST: \(AttackTile.init().cost)"
-                    purchasable = totalGems >= AttackTile.init().cost
-                case 5:
-                    purchaseTile.image = UIImage(named: "DefendTile")?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
-                    costLabel.text = "COST: \(DefendTile.init().cost)"
-                    purchasable = totalGems >= DefendTile.init().cost
-                case 6:
-                    purchaseTile.image = UIImage(named: "BurnTile")?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
-                    costLabel.text = "COST: \(BurnTile.init().cost)"
-                    purchasable = totalGems >= BurnTile.init().cost
-                case 7:
-                    purchaseTile.image = UIImage(named: "ResurrectTile")?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
-                    costLabel.text = "COST: \(ResurrectTile.init().cost)"
-                    purchasable = totalGems >= ResurrectTile.init().cost
-                case 8:
-                    purchaseTile.image = UIImage(named: "Straight1Tile")?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
-                    costLabel.text = "COST: \(Straight1Tile.init().cost)"
-                    purchasable = totalGems >= Straight1Tile.init().cost
-                case 9:
-                    purchaseTile.image = UIImage(named: "Diagonal1Tile")?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
-                    costLabel.text = "COST: \(Diagonal1Tile.init().cost)"
-                    purchasable = totalGems >= Diagonal1Tile.init().cost
-                case 10:
-                    purchaseTile.image = UIImage(named: "KnightLeftTile")?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
-                    costLabel.text = "COST: \(KnightLeftTile.init().cost)"
-                    purchasable = totalGems >= KnightLeftTile.init().cost
-                case 11:
-                    purchaseTile.image = UIImage(named: "ZigZagLeftTile")?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
-                    costLabel.text = "COST: \(ZigZagLeftTile.init().cost)"
-                    purchasable = totalGems >= ZigZagLeftTile.init().cost
-                case 12:
-                    purchaseTile.image = UIImage(named: "Straight2Tile")?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
-                    costLabel.text = "COST: \(Straight2Tile.init().cost)"
-                    purchasable = totalGems >= Straight2Tile.init().cost
-                case 13:
-                    purchaseTile.image = UIImage(named: "Diagonal2Tile")?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
-                    costLabel.text = "COST: \(Diagonal2Tile.init().cost)"
-                    purchasable = totalGems >= Diagonal2Tile.init().cost
-                case 14:
-                    purchaseTile.image = UIImage(named: "KnightRightTile")?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
-                    costLabel.text = "COST: \(KnightRightTile.init().cost)"
-                    purchasable = totalGems >= KnightRightTile.init().cost
-                case 15:
-                    purchaseTile.image = UIImage(named: "ZigZagRightTile")?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
-                    costLabel.text = "COST: \(ZigZagRightTile.init().cost)"
-                    purchasable = totalGems >= ZigZagRightTile.init().cost
-                default:
-                    break
-                }
+                let taggedTile = tagTileMap[purchaseTile.tag]
+                purchaseTile.image = UIImage(named: (taggedTile?.imageName)!)?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+                costLabel.text = "COST: \((taggedTile?.cost)!)"
+                purchasable = totalGems >= (taggedTile?.cost)!
                 
                 if purchasable {
                     purchaseTile.tintColor = dataSource?.playerColor()

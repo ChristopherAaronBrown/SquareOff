@@ -131,18 +131,61 @@ class BoxViewController: UIViewController, BoxViewDataSource, BoxViewDelegate {
     
     // MARK: BoxViewDelegate
     func tileTapped(at index: Int) {
-        
-        // TODO: Change cost label color with tap
+//        let filteredTags = boxView?.subviews.filter({ (view) -> Bool in
+//            view.isKind(of: UILabel.self)
+//        }).map({ (view) -> Int in
+//            view.tag
+//        })
+//        let viewFilter: (UIView) -> Bool = {
+//            $0.isKind(of: UILabel.self)
+//        }
+//        let viewTagMapper = { (view: UIView) -> Int in
+//            view.tag
+//        }
+//        let filteredTags2 = boxView?.subviews.filter(viewFilter).map(viewTagMapper)
+//        for view in (boxView?.subviews)! {
+//            if let label = view as? UILabel {
+//                if label.textColor != UIColor.lightGray {
+//                    if label.tag == index + 16 {
+//                        label.textColor = colors.neutralColor
+//                    } else {
+//                        label.textColor = playerColor()
+//                    }
+//                }
+//            } else if view.tintColor != UIColor.lightGray {
+//                if view.tag == index {
+//                    view.tintColor = colors.neutralColor
+//                } else {
+//                    view.tintColor = playerColor()
+//                }
+//            }
+//        }
+        var colorGetter: () -> UIColor;
+        var colorSetter: (UIColor) -> ();
         for view in (boxView?.subviews)! {
-            if view.tintColor != UIColor.lightGray {
+            if let label = view as? UILabel {
+                colorGetter = { label.textColor }
+                colorSetter = { label.textColor = $0 }
+//                colorSetter = func ????(color: UIColor) {
+//                    label.textColor = color
+//                }
+//                colorSetter = { print($0) }
+            } else {
+                colorGetter = { view.tintColor }
+                colorSetter = { view.tintColor = $0 }
+            }
+            if colorGetter() != UIColor.lightGray {
                 if view.tag == index {
-                    view.tintColor = colors.neutralColor
+                    colorSetter(colors.neutralColor)
                 } else {
-                    view.tintColor = playerColor()
+                    colorSetter(playerColor())
                 }
             }
         }
         boxView?.viewWithTag(index)?.tintColor = colors.neutralColor
+        if let label = boxView?.viewWithTag(index + 16) as? UILabel {
+            label.textColor = colors.neutralColor
+        }
         dismissButton!.setTitle("PURCHASE", for: UIControlState())
     }
 }
