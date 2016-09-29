@@ -11,6 +11,6 @@ class GemTile: Tile {
     
     init(value: Int) {
         self.value = value
-        super.init(cost: ((value - 1) * 3), imageName: "Gem\(value)Tile")
+        super.init(cost: ( value * (value + 1) / 2 ), imageName: "Gem\(value)Tile")
     }
 }

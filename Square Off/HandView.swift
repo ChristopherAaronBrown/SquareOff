@@ -9,12 +9,13 @@
 import UIKit
 
 protocol HandViewDataSource {
-    func numberOfTiles() -> UInt
-    func imageForTile(index: UInt) -> UIImage?
+    func numberOfTiles() -> Int
+    func imageForTile(at index: Int) -> UIImage?
+    func tintForTile(at index: Int) -> UIColor
 }
 
 protocol HandViewDelegate {
-    func handViewSlotWasTapped(index: UInt)
+    func handViewSlotWasTapped(at index: Int)
 }
 
 class HandView: UIView {
@@ -25,37 +26,42 @@ class HandView: UIView {
         super.init(frame: frame)
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        for subview in self.subviews {
-            subview.removeFromSuperview()
-        }
-        
-        let numTiles: UInt = dataSource?.numberOfTiles() ?? 0
-        let handSlotDimension: CGFloat = (self.bounds.size.width - ((10 * CGFloat(numTiles)) + 10)) / CGFloat(numTiles)
-        
-        for i: UInt in 0..<numTiles {
-            let xPos: CGFloat = (handSlotDimension + 10) * CGFloat(i) + 10
-            let yPos: CGFloat = 0
-            let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(HandView.slotImageTapped))
-            let handSlotView = UIImageView(frame: CGRectMake(xPos, yPos, handSlotDimension, handSlotDimension))
-            
-            handSlotView.userInteractionEnabled = true
-            handSlotView.tag = Int(i)
-            handSlotView.image = dataSource?.imageForTile(i)
-            handSlotView.addGestureRecognizer(tapRecognizer)
-            
-            self.addSubview(handSlotView)
-        }
-    }
-    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func slotImageTapped(sender: UITapGestureRecognizer) {
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        // Remove previous hand
+        for subview in self.subviews {
+            subview.removeFromSuperview()
+        }
+        
+        let numTiles: Int = dataSource?.numberOfTiles() ?? 0
+        let handSlotSize: CGFloat = (self.bounds.size.width - 60) / 5
+        
+        for i in 0..<numTiles {
+            let padding: CGFloat = ((self.bounds.size.width - (CGFloat(numTiles) * handSlotSize)) / (CGFloat(numTiles) + 1))
+            let xPos: CGFloat = (handSlotSize + padding) * CGFloat(i) + padding
+            let yPos: CGFloat = 0
+            let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(HandView.slotImageTapped))
+            let handSlotImageView = UIImageView(frame: CGRect(x: xPos, y: yPos, width: handSlotSize, height: handSlotSize))
+            
+            handSlotImageView.isUserInteractionEnabled = true
+            handSlotImageView.tag = Int(i)
+            handSlotImageView.image = dataSource?.imageForTile(at: i)
+            handSlotImageView.addGestureRecognizer(tapRecognizer)
+            handSlotImageView.image = handSlotImageView.image!.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+            handSlotImageView.tintColor = dataSource?.tintForTile(at: i)
+            
+            self.addSubview(handSlotImageView)
+        }
+    }
+    
+    func slotImageTapped(_ sender: UITapGestureRecognizer) {
         if let handSlotView = sender.view {
-            self.delegate?.handViewSlotWasTapped(UInt(handSlotView.tag))
+            self.delegate?.handViewSlotWasTapped(at: handSlotView.tag)
         }
     }
 }

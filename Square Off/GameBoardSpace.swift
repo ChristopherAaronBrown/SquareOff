@@ -6,8 +6,10 @@
 //  Copyright © 2016 Chris Brown. All rights reserved.
 //
 
-enum BoardCoordinateError: ErrorType {
-    case OutOfBounds
+import UIKit
+
+enum BoardCoordinateError: Error {
+    case outOfBounds
 }
 
 struct BoardCoordinate: Hashable {
@@ -19,8 +21,8 @@ struct BoardCoordinate: Hashable {
     }
     
     init(column: Int, row: Int) throws {
-        guard (column >= 0 && column < 8) else { throw BoardCoordinateError.OutOfBounds }
-        guard (row >= 0 && row < 8) else { throw BoardCoordinateError.OutOfBounds }
+        guard (column >= 0 && column < 8) else { throw BoardCoordinateError.outOfBounds }
+        guard (row >= 0 && row < 8) else { throw BoardCoordinateError.outOfBounds }
         self.column = column
         self.row = row
     }
@@ -37,26 +39,24 @@ func ==(lhs: BoardCoordinate, rhs: BoardCoordinate) -> Bool {
 class GameBoardSpace {
     let coordinate: BoardCoordinate
     
-    var playerPawn: PlayerPawn?
+    var backgroundColor: UIColor?
+    var image: UIImage?
+    var pawn: PlayerPawn?
     
     init(coordinate: BoardCoordinate) {
         self.coordinate = coordinate
     }
     
-    func occupyingPawn() -> PlayerPawn {
-        return playerPawn!
-    }
-    
     func isOccupied() -> Bool {
-        return (playerPawn != nil)
+        return (pawn != nil)
     }
     
-    func isHome(player: Player) -> Bool {
-        return (player.playerNum == 0) ? (coordinate.row == 0) : (coordinate.row == 7)
+    func isHome(for player: Player) -> Bool {
+        return (player.number == 0) ? (coordinate.row == 7) : (coordinate.row == 0)
     }
     
-    func isGoal(player: Player) -> Bool {
-        return (player.playerNum == 0) ? (coordinate.row == 7) : (coordinate.row == 0)
+    func isGoal(for player: Player) -> Bool {
+        return (player.number == 0) ? (coordinate.row == 0) : (coordinate.row == 7)
     }
     
     func isHorizontalEdge() -> Bool {

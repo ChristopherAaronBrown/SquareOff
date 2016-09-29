@@ -13,7 +13,7 @@ class Straight1Tile: Tile, MovementTile {
         
         // Try to append Path vertically
         if let targetCoordinate = try? BoardCoordinate(column: baseCoordinate.column,
-                                                       row: baseCoordinate.row + (1 * player.playerDirection)) {
+                                                       row: baseCoordinate.row - (1 * player.direction)) {
             paths.append(Path(coordinates: [baseCoordinate, targetCoordinate]))
         }
         

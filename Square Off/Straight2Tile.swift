@@ -13,9 +13,9 @@ class Straight2Tile: Tile, MovementTile {
         
         // Try to append Path vertically
         if  let midCoordinate = try? BoardCoordinate(column: baseCoordinate.column,
-                                                     row: baseCoordinate.row + (1 * player.playerDirection)) {
+                                                     row: baseCoordinate.row - (1 * player.direction)) {
             if let targetCoordinate = try? BoardCoordinate(column: baseCoordinate.column,
-                                                           row: baseCoordinate.row + (2 * player.playerDirection)) {
+                                                           row: baseCoordinate.row - (2 * player.direction)) {
                 paths.append(Path(coordinates: [baseCoordinate, midCoordinate, targetCoordinate]))
             }
         }

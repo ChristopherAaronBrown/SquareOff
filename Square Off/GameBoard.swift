@@ -6,16 +6,20 @@
 //  Copyright © 2016 Chris Brown. All rights reserved.
 //
 
+import UIKit
+
 class GameBoard {
     
     // 2D Array of GameBoardSpaces top left origin [column,row]
     let board: [[GameBoardSpace]]
-    let player1Pawns: [PlayerPawn]
-    let player2Pawns: [PlayerPawn]
+    let player1: Player
+    let player2: Player
+    let colors: ColorPairings
     
-    init() {
-        player1Pawns = [PlayerPawn](count: 8, repeatedValue: PlayerPawn(playerNum: 0))
-        player2Pawns = [PlayerPawn](count: 8, repeatedValue: PlayerPawn(playerNum: 1))
+    init(player1: Player, player2: Player, colors: ColorPairings) {
+        self.player1 = player1
+        self.player2 = player2
+        self.colors = colors
         
         var board = [[GameBoardSpace]]()
         
@@ -24,25 +28,52 @@ class GameBoard {
             var column = [GameBoardSpace]()
             for rowNum in 0...7 {
                 let coordinate = try! BoardCoordinate(column: columnNum, row: rowNum)
-                let gameBoardSpace = GameBoardSpace(coordinate: coordinate)
+                let space = GameBoardSpace(coordinate: coordinate)
                 
-                if rowNum == 0 {
-                    gameBoardSpace.playerPawn = player2Pawns[columnNum]
+                switch rowNum {
+                    case 0:
+                        space.pawn = PlayerPawn(player: player2)
+                        space.backgroundColor = colors.neutralColor
+                    case 7:
+                        space.pawn = PlayerPawn(player: player1)
+                        space.backgroundColor = colors.neutralColor
+                    default:
+                        space.backgroundColor = UIColor.clear
                 }
                 
-                if rowNum == 7 {
-                    gameBoardSpace.playerPawn = player1Pawns[columnNum]
-                }
-                
-                column.append(gameBoardSpace)
+                column.append(space)
             }
             board.append(column)
         }
         
+//        // TODO: Remove when done testing
+//        board[3][5].playerPawn = PlayerPawn(player: player1)
+//        board[2][6].playerPawn = PlayerPawn(player: player1)
+//        board[1][5].playerPawn = PlayerPawn(player: player2)
+//        board[4][5].playerPawn = PlayerPawn(player: player2)
+//        board[5][6].playerPawn = PlayerPawn(player: player2)
+//        board[0][0].playerPawn = nil
+        
         self.board = board
     }
     
-    func getBoardSpace(coordinate: BoardCoordinate) -> GameBoardSpace {
+    func clearHighlights() {
+        for column in 0...7 {
+            for row in 0...7 {
+                let coordinate = try! BoardCoordinate(column: column, row: row)
+                let space = getBoardSpace(coordinate)
+                
+                switch row {
+                case 0, 7:
+                    space.backgroundColor = colors.neutralColor
+                default:
+                    space.backgroundColor = UIColor.clear
+                }
+            }
+        }
+    }
+    
+    func getBoardSpace(_ coordinate: BoardCoordinate) -> GameBoardSpace {
         return board[coordinate.column][coordinate.row]
     }
 }

@@ -8,14 +8,14 @@
 
 import UIKit
 
-enum PlayerBagError: ErrorType {
-    case BagNotEmpty
+enum PlayerBagError: Error {
+    case bagNotEmpty
 }
 
 class PlayerBag {
     var tiles: [Tile] = [Tile]()
     
-    init() {        
+    init() {
         /**
          Starting bags have:
          - 5x GemTile (1)
@@ -25,7 +25,7 @@ class PlayerBag {
          - 1x DefendTile
          - 1x JumpTile
         */
-        for _ in 0 ..< 5 {
+        for _ in 0..<5 {
             tiles.append(GemTile(value: 1))
         }
         tiles.append(Straight1Tile())
@@ -35,11 +35,11 @@ class PlayerBag {
         tiles.append(JumpTile())
     }
     
-    func refill(playerDiscard: PlayerDiscard) throws {
-        guard tiles.count == 0 else { throw PlayerBagError.BagNotEmpty }
-        guard playerDiscard.tiles.count > 0 else { throw PlayerDiscardError.NothingDiscarded }
+    func refill(_ playerDiscard: PlayerDiscard) throws {
+        guard tiles.count == 0 else { throw PlayerBagError.bagNotEmpty }
+        guard playerDiscard.tiles.count > 0 else { throw PlayerDiscardError.nothingDiscarded }
         
-        tiles.appendContentsOf(playerDiscard.tiles)
+        tiles.append(contentsOf: playerDiscard.tiles)
         playerDiscard.tiles.removeAll()
     }
     
@@ -48,7 +48,7 @@ class PlayerBag {
         
         let randomIndex = Int(arc4random_uniform(UInt32(tiles.count)))
         
-        return tiles.removeAtIndex(randomIndex)
+        return tiles.remove(at: randomIndex)
     }
     
     func count() -> Int {

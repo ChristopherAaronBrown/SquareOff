@@ -16,11 +16,11 @@ class PlayerHand {
         self.tiles = [Tile]()
     }
     
-    func newHand(player: Player) {
+    func newHand(for player: Player) {
         
         // Add old hand tiles to PlayerDiscard
         for tile in tiles {
-            player.playerDiscard.add(tile)
+            player.playerDiscard.add(tile: tile)
         }
         
         // Remove old hand tiles
@@ -30,17 +30,37 @@ class PlayerHand {
         do {
             while count() < limit {
                 if let tile = player.playerBag.draw() {
+                    tile.color = player.color
                     tiles.append(tile)
                 } else {
                     try player.playerBag.refill(player.playerDiscard)
                 }
             }
-        } catch PlayerDiscardError.NothingDiscarded {
-            print("\(player.playerName) has only \(count()) total tile(s).")
+        } catch PlayerDiscardError.nothingDiscarded {
+            print("\(player.name) has only \(count()) total tile(s).")
         } catch { /* Do Nothing */ }
+    }
+    
+    func removeTile(at index: Int,for player: Player) {
+        if index < tiles.count {
+            player.playerDiscard.add(tile: tiles[index])
+            tiles.remove(at: index)
+        }
+    }
+    
+    func burnTile(at index: Int) {
+        if index < tiles.count {
+            tiles.remove(at: index)
+        }
     }
     
     func count() -> Int {
         return tiles.count
+    }
+}
+
+extension PlayerHand: Sequence {
+    func makeIterator() -> AnyIterator<Tile> {
+        return AnyIterator(self.tiles.makeIterator())
     }
 }

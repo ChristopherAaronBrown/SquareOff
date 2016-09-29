@@ -9,18 +9,18 @@
 import UIKit
 
 class PlayerPawn {
-    let playerNum: Int
-    let pawnImage: UIImage
+    let player: Player
+    let image: UIImage
     
     var hasReachedGoal: Bool
     
-    init(playerNum: Int) {
-        self.playerNum = playerNum
+    init(player: Player) {
+        self.player = player
         self.hasReachedGoal = false
-        self.pawnImage = UIImage(named: "Player\(playerNum + 1)")!
+        self.image = UIImage(named: "Player\(player.number + 1)Reverse")!
     }
     
-    func owner() -> Int {
-        return self.playerNum
+    func owner() -> Player {
+        return player
     }
 }
