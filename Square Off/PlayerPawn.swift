@@ -2,7 +2,7 @@
 //  PlayerPawn.swift
 //  Square Off
 //
-//  Created by Chris Brown on 8/5/16.
+//  Created by Chris Brown on 2/9/17.
 //  Copyright © 2016 Chris Brown. All rights reserved.
 //
 
@@ -16,8 +16,8 @@ class PlayerPawn {
     
     init(player: Player) {
         self.player = player
-        self.hasReachedGoal = false
-        self.image = UIImage(named: "Player\(player.number + 1)Reverse")!
+        hasReachedGoal = false
+        image = player.number == 0 ? #imageLiteral(resourceName: "PawnPink") : #imageLiteral(resourceName: "PawnGreen")
     }
     
     func owner() -> Player {

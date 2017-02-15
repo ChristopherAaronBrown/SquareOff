@@ -2,9 +2,11 @@
 //  KnightRightTile.swift
 //  Square Off
 //
-//  Created by Chris Brown on 8/5/16.
+//  Created by Chris Brown on 2/9/17.
 //  Copyright © 2016 Chris Brown. All rights reserved.
 //
+
+import UIKit
 
 class KnightRightTile: Tile, MovementTile {
     
@@ -62,7 +64,8 @@ class KnightRightTile: Tile, MovementTile {
         return paths
     }
     
-    init() {
-        super.init(cost: 5, imageName: "KnightRightTile")
+    init(player: Player) {
+        let image = player.number == 0 ? #imageLiteral(resourceName: "KnightRightPink") : #imageLiteral(resourceName: "KnightRightGreen")
+        super.init(player: player, cost: 5, image: image)
     }
 }

@@ -2,8 +2,8 @@
 //  HandView.swift
 //  Square Off
 //
-//  Created by Chris Brown on 8/22/16.
-//  Copyright © 2016 Chris Brown. All rights reserved.
+//  Created by Chris Brown on 2/13/17.
+//  Copyright © 2017 Chris Brown. All rights reserved.
 //
 
 import UIKit
@@ -11,7 +11,6 @@ import UIKit
 protocol HandViewDataSource {
     func numberOfTiles() -> Int
     func imageForTile(at index: Int) -> UIImage?
-    func tintForTile(at index: Int) -> UIColor
 }
 
 protocol HandViewDelegate {
@@ -19,17 +18,10 @@ protocol HandViewDelegate {
 }
 
 class HandView: UIView {
+    
     var dataSource: HandViewDataSource?
     var delegate: HandViewDelegate?
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
         
@@ -39,21 +31,30 @@ class HandView: UIView {
         }
         
         let numTiles: Int = dataSource?.numberOfTiles() ?? 0
-        let handSlotSize: CGFloat = (self.bounds.size.width - 60) / 5
         
-        for i in 0..<numTiles {
-            let padding: CGFloat = ((self.bounds.size.width - (CGFloat(numTiles) * handSlotSize)) / (CGFloat(numTiles) + 1))
-            let xPos: CGFloat = (handSlotSize + padding) * CGFloat(i) + padding
-            let yPos: CGFloat = 0
-            let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(HandView.slotImageTapped))
-            let handSlotImageView = UIImageView(frame: CGRect(x: xPos, y: yPos, width: handSlotSize, height: handSlotSize))
+        // Background image
+        let backgroundFrame = CGRect(x: 0, y: 0, width: bounds.width, height: bounds.height)
+        let background = UIImageView(frame: backgroundFrame)
+        background.image = #imageLiteral(resourceName: "HandSlot")
+        background.contentMode = .scaleToFill
+        addSubview(background)
+        
+        let topMargin: CGFloat = bounds.height * (5/58)
+        let sideMargin: CGFloat = bounds.width * (5/254)
+        let sidePadding: CGFloat = bounds.width * (6/254)
+        let handSlotHeight: CGFloat = bounds.height * (48/58)
+        let handSlotWidth: CGFloat = bounds.width * (44/254)
+        
+        for index in 0..<numTiles {
+            let xPos: CGFloat = (handSlotWidth + sidePadding) * CGFloat(index) + sideMargin
+            let yPos: CGFloat = topMargin
+            let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.slotImageTapped))
+            let handSlotImageView = UIImageView(frame: CGRect(x: xPos, y: yPos, width: handSlotWidth, height: handSlotHeight))
             
             handSlotImageView.isUserInteractionEnabled = true
-            handSlotImageView.tag = Int(i)
-            handSlotImageView.image = dataSource?.imageForTile(at: i)
+            handSlotImageView.tag = Int(index)
+            handSlotImageView.image = dataSource?.imageForTile(at: index)
             handSlotImageView.addGestureRecognizer(tapRecognizer)
-            handSlotImageView.image = handSlotImageView.image!.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
-            handSlotImageView.tintColor = dataSource?.tintForTile(at: i)
             
             self.addSubview(handSlotImageView)
         }
@@ -64,4 +65,5 @@ class HandView: UIView {
             self.delegate?.handViewSlotWasTapped(at: handSlotView.tag)
         }
     }
+
 }

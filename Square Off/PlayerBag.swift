@@ -2,7 +2,7 @@
 //  PlayerBag.swift
 //  Square Off
 //
-//  Created by Chris Brown on 8/5/16.
+//  Created by Chris Brown on 2/9/17.
 //  Copyright © 2016 Chris Brown. All rights reserved.
 //
 
@@ -13,26 +13,27 @@ enum PlayerBagError: Error {
 }
 
 class PlayerBag {
+    var player: Player!
     var tiles: [Tile] = [Tile]()
     
-    init() {
-        /**
+    func populateInitialBag() {
+        /*
          Starting bags have:
-         - 5x GemTile (1)
-         - 1x Straight1Tile
-         - 1x Diagonal1Tile
+         - 5x SingleGemTile
+         - 1x SingleStraightTile
+         - 1x SingleDiagonalTile
          - 1x AttackTile
          - 1x DefendTile
          - 1x JumpTile
-        */
+         */
         for _ in 0..<5 {
-            tiles.append(GemTile(value: 1))
+            tiles.append(GemTile(player: player, gem: Constants.Gem.Single))
         }
-        tiles.append(Straight1Tile())
-        tiles.append(Diagonal1Tile())
-        tiles.append(AttackTile())
-        tiles.append(DefendTile())
-        tiles.append(JumpTile())
+        tiles.append(SingleStraightTile(player: player))
+        tiles.append(SingleDiagonalTile(player: player))
+        tiles.append(AttackTile(player: player))
+        tiles.append(DefendTile(player: player))
+        tiles.append(JumpTile(player: player))
     }
     
     func refill(_ playerDiscard: PlayerDiscard) throws {

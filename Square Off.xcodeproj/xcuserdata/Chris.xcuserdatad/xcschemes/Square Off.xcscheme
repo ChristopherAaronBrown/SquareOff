@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0800"
+   LastUpgradeVersion = "0820"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "83D3CED61D557506008D9313"
+               BlueprintIdentifier = "833AFD851E4D1ED700C628F0"
                BuildableName = "Square Off.app"
                BlueprintName = "Square Off"
                ReferencedContainer = "container:Square Off.xcodeproj">
@@ -32,7 +32,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "83D3CED61D557506008D9313"
+            BlueprintIdentifier = "833AFD851E4D1ED700C628F0"
             BuildableName = "Square Off.app"
             BlueprintName = "Square Off"
             ReferencedContainer = "container:Square Off.xcodeproj">
@@ -55,19 +55,12 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "83D3CED61D557506008D9313"
+            BlueprintIdentifier = "833AFD851E4D1ED700C628F0"
             BuildableName = "Square Off.app"
             BlueprintName = "Square Off"
             ReferencedContainer = "container:Square Off.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
-      <EnvironmentVariables>
-         <EnvironmentVariable
-            key = "OS_ACTIVITY_MODE"
-            value = "disable"
-            isEnabled = "YES">
-         </EnvironmentVariable>
-      </EnvironmentVariables>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -81,7 +74,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "83D3CED61D557506008D9313"
+            BlueprintIdentifier = "833AFD851E4D1ED700C628F0"
             BuildableName = "Square Off.app"
             BlueprintName = "Square Off"
             ReferencedContainer = "container:Square Off.xcodeproj">

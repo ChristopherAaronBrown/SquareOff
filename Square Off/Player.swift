@@ -2,7 +2,7 @@
 //  Player.swift
 //  Square Off
 //
-//  Created by Chris Brown on 8/5/16.
+//  Created by Chris Brown on 2/9/17.
 //  Copyright © 2016 Chris Brown. All rights reserved.
 //
 
@@ -12,23 +12,24 @@ class Player {
     let number: Int
     let name: String
     let direction: Int
-    let color: UIColor
     
     var deadPawns: Int = 0
     var playerBag: PlayerBag
     var playerHand: PlayerHand
     var playerDiscard: PlayerDiscard
     
-    init(playerNum: Int, playerName: String, color: UIColor) {
-        self.number = playerNum
-        self.name = playerName
-        self.color = color
-        direction = (playerNum == 0) ? 1 : -1
+    init(number: Int, name: String) {
+        self.number = number
+        self.name = name
+        direction = number == 0 ? 1 : -1
         playerBag = PlayerBag()
         playerHand = PlayerHand()
         playerDiscard = PlayerDiscard()
         
+        
         // Draw first hand
+        playerBag.player = self
+        playerBag.populateInitialBag()
         playerHand.newHand(for: self)
     }
     

@@ -2,7 +2,7 @@
 //  Path.swift
 //  Square Off
 //
-//  Created by Chris Brown on 8/5/16.
+//  Created by Chris Brown on 2/9/17.
 //  Copyright © 2016 Chris Brown. All rights reserved.
 //
 
@@ -42,12 +42,29 @@ extension Path: Sequence {
 }
 
 enum PathAction {
-    case none
-    case move
-    case jump
-    case attack
-    case jumpAndAttack
-    case jumpOrAttack
+    case None
+    case Move
+    case Jump
+    case Attack
+    case JumpAndAttack
+    case JumpOrAttack
 //    case moveOrAttack
 //    case moveOrJump
+
+//    func requiredTiles() -> [Tile.Type] {
+//        switch self {
+//        case .None:
+//            return []
+//        case .Move:
+//            return []
+//        case .Jump:
+//            return [JumpTile.self]
+//        case .Attack:
+//            return [AttackTile.self]
+//        case .JumpAndAttack:
+//            return [JumpTile.self,AttackTile.self]
+//        case .JumpOrAttack:
+//            return [JumpTile.self,AttackTile.self]
+//        }
+//    }
 }

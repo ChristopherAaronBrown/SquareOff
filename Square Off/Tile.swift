@@ -2,7 +2,7 @@
 //  Tile.swift
 //  Square Off
 //
-//  Created by Chris Brown on 8/5/16.
+//  Created by Chris Brown on 2/9/17.
 //  Copyright © 2016 Chris Brown. All rights reserved.
 //
 
@@ -10,12 +10,13 @@ import UIKit
 
 class Tile: Equatable {
     let cost: Int
-    let imageName: String
-    var color: UIColor?
+    let image: UIImage
+    let player: Player
     
-    init(cost: Int, imageName: String) {
+    init(player: Player, cost: Int, image: UIImage) {
+        self.player = player
         self.cost = cost
-        self.imageName = imageName
+        self.image = image
     }
 }
 

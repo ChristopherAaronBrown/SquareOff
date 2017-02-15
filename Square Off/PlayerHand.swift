@@ -2,7 +2,7 @@
 //  PlayerHand.swift
 //  Square Off
 //
-//  Created by Chris Brown on 8/5/16.
+//  Created by Chris Brown on 2/9/17.
 //  Copyright © 2016 Chris Brown. All rights reserved.
 //
 
@@ -12,7 +12,7 @@ class PlayerHand {
     var tiles: [Tile]
     
     init() {
-        self.limit = 5
+        self.limit = Constants.handLimit
         self.tiles = [Tile]()
     }
     
@@ -30,7 +30,6 @@ class PlayerHand {
         do {
             while count() < limit {
                 if let tile = player.playerBag.draw() {
-                    tile.color = player.color
                     tiles.append(tile)
                 } else {
                     try player.playerBag.refill(player.playerDiscard)
@@ -41,19 +40,31 @@ class PlayerHand {
         } catch { /* Do Nothing */ }
     }
     
-    func removeTile(at index: Int,for player: Player) {
-        if index < tiles.count {
-            player.playerDiscard.add(tiles[index])
-            tiles.remove(at: index)
+    func discardTile(of type: Tile.Type, for player: Player) {
+        for index in 0..<tiles.count {
+            let tile = tiles[index]
+            if type(of: tile) == type {
+                player.playerDiscard.add(tiles[index])
+                tiles.remove(at: index)
+                break
+            }
         }
+    }
+    
+    func discardTile(at index: Int, for player: Player) {
+        guard index < tiles.count else { return }
+        
+        player.playerDiscard.add(tiles[index])
+        tiles.remove(at: index)
     }
     
     func burnTile(at index: Int) {
-        if index < tiles.count {
-            tiles.remove(at: index)
-        }
+        guard index < tiles.count else { return }
+        
+        tiles.remove(at: index)
     }
     
+    // Convenience function
     func count() -> Int {
         return tiles.count
     }
