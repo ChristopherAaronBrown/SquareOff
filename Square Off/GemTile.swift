@@ -9,8 +9,11 @@
 import UIKit
 
 class GemTile: Tile {
-    init(player: Player, gem: Constants.Gem) {
+    let gem: Gem!
+    
+    init(player: Player, gem: Gem) {
         let image: UIImage
+        self.gem = gem
         
         switch gem {
         case .Single:

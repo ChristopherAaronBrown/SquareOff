@@ -22,7 +22,7 @@
 	<true/>
 	<key>UIAppFonts</key>
 	<array>
-		<string>Anita semi square.ttf</string>
+		<string>Anita semi-square.ttf</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>

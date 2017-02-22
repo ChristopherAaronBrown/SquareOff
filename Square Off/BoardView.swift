@@ -14,7 +14,6 @@ protocol BoardViewDataSource {
 }
 
 protocol BoardViewDelegate {
-    func boardSpaceTapped(at coordinate: BoardCoordinate)
     func pawnLongPressBegan(at coordinate: BoardCoordinate, with touchLocation: CGPoint)
     func pawnLongPressChanged(at location: CGPoint)
     func pawnLongPressEnded(at targetBoardCoordinage: BoardCoordinate, from sourceBoardCoordinate: BoardCoordinate)
@@ -78,13 +77,13 @@ class BoardView: UIView {
                 let pawnYPos = (pawnHeight + pawnTopPadding) * CGFloat(row) + pawnTopMargin
                 let pawnImageView = UIImageView(frame: CGRect(x: pawnXPos, y: pawnYPos, width: pawnWidth, height: pawnHeight))
                 
-                let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(BoardView.boardSpaceTapped(_:)))
+//                let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(BoardView.boardSpaceTapped(_:)))
                 let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(BoardView.pawnLongPressed(_:)))
                 longPressRecognizer.minimumPressDuration = 0.25
                 
                 pawnImageView.tag = tag
                 pawnImageView.isUserInteractionEnabled = true
-                pawnImageView.addGestureRecognizer(tapRecognizer)
+//                pawnImageView.addGestureRecognizer(tapRecognizer)
                 pawnImageView.addGestureRecognizer(longPressRecognizer)
                 pawnImageView.backgroundColor = UIColor.clear
                 
@@ -109,14 +108,14 @@ class BoardView: UIView {
         }
     }
     
-    func boardSpaceTapped(_ sender: UITapGestureRecognizer) {
-        if let boardSpaceImageView = sender.view {
-            let tag = boardSpaceImageView.tag
-            let coordinate = try! BoardCoordinate(column: tag % Constants.numberOfBoardSpaces,
-                                                  row: tag / Constants.numberOfBoardSpaces)
-            self.delegate?.boardSpaceTapped(at: coordinate)
-        }
-    }
+//    func boardSpaceTapped(_ sender: UITapGestureRecognizer) {
+//        if let boardSpaceImageView = sender.view {
+//            let tag = boardSpaceImageView.tag
+//            let coordinate = try! BoardCoordinate(column: tag % Constants.numberOfBoardSpaces,
+//                                                  row: tag / Constants.numberOfBoardSpaces)
+//            self.delegate?.boardSpaceTapped(at: coordinate)
+//        }
+//    }
     
     func pawnLongPressed(_ sender: UILongPressGestureRecognizer) {
         if let pawn = sender.view as? UIImageView {
@@ -139,7 +138,7 @@ class BoardView: UIView {
     
     func nearestBoardCoordinate(_ touchLocation: CGPoint, from originalBoardCoordinate: BoardCoordinate) -> BoardCoordinate {
         var boardCoordinate: BoardCoordinate!
-        var closestDistance: CGFloat = 1000
+        var closestDistance: CGFloat = CGFloat.greatestFiniteMagnitude
         
         // Touch is in BoardView
         if self.bounds.contains(touchLocation) {
@@ -148,7 +147,7 @@ class BoardView: UIView {
                 if image.frame.contains(touchLocation) {
                     return coordinate
                 }
-                let distance = distanceBetween(image.frame.origin, and: touchLocation)
+                let distance = image.frame.center.distanceTo(touchLocation)
                 if distance < closestDistance {
                     closestDistance = distance
                     boardCoordinate = coordinate
@@ -160,11 +159,27 @@ class BoardView: UIView {
         
         return boardCoordinate
     }
-    
-    func distanceBetween(_ pointA: CGPoint, and pointB: CGPoint) -> CGFloat {
-        let xDist = pointA.x - pointB.x
-        let yDist = pointA.y - pointB.y
+
+}
+
+extension CGRect {
+    var center: CGPoint {
+        get {
+            let centerX = origin.x + (size.width / 2)
+            let centerY = origin.y + (size.height / 2)
+            return CGPoint(x: centerX, y: centerY)
+        }
+        set(newCenter) {
+            origin.x = newCenter.x - (size.width / 2)
+            origin.y = newCenter.y - (size.height / 2)
+        }
+    }
+}
+
+extension CGPoint {
+    func distanceTo(_ point: CGPoint) -> CGFloat {
+        let xDist = self.x - point.x
+        let yDist = self.y - point.y
         return CGFloat(sqrt(pow(xDist,2) + pow(yDist,2)))
     }
-
 }

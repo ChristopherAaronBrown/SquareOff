@@ -67,4 +67,31 @@ enum PathAction {
 //            return [JumpTile.self,AttackTile.self]
 //        }
 //    }
+    func canPerform(with hand: PlayerHand) -> (Bool, [Tile.Type]) {
+        var tileTypes: [Tile.Type] = []
+        switch self {
+        case .None:
+            return (false, tileTypes)
+        case .Move:
+            return (true, tileTypes)
+        case .Jump:
+            return (PathAction.contains(type: JumpTile.self, in: hand, with: &tileTypes), tileTypes)
+        case .Attack:
+            return (PathAction.contains(type: AttackTile.self, in: hand, with: &tileTypes), tileTypes)
+        case .JumpAndAttack, .JumpOrAttack:
+            let canPerform = PathAction.contains(type: JumpTile.self, in: hand, with: &tileTypes) &&
+                PathAction.contains(type: AttackTile.self, in: hand, with: &tileTypes)
+            return (canPerform, tileTypes)
+        }
+    }
+    
+    private static func contains(type: Tile.Type, in hand: PlayerHand, with tileTypes: inout [Tile.Type]) -> Bool {
+        if hand.tiles.contains(where: { (tile) -> Bool in type(of: tile) == type }) {
+            tileTypes.append(type)
+            return true
+        } else {
+            tileTypes.removeAll()
+            return false
+        }
+    }
 }

@@ -18,13 +18,8 @@ class PlayerHand {
     
     func newHand(for player: Player) {
         
-        // Add old hand tiles to PlayerDiscard
-        for tile in tiles {
-            player.playerDiscard.add(tile)
-        }
-        
-        // Remove old hand tiles
-        tiles.removeAll()
+        // Remove old hand
+        discardAllTiles(for: player)
         
         // Try to get a new hand
         do {
@@ -38,6 +33,15 @@ class PlayerHand {
         } catch PlayerDiscardError.nothingDiscarded {
             print("\(player.name) has only \(count()) total tile(s).")
         } catch { /* Do Nothing */ }
+    }
+    
+    func containsType(_ type: Tile.Type) -> Bool {
+        for tile in tiles {
+            if type(of: tile) == type {
+                return true
+            }
+        }
+        return false
     }
     
     func discardTile(of type: Tile.Type, for player: Player) {
@@ -58,10 +62,37 @@ class PlayerHand {
         tiles.remove(at: index)
     }
     
+    func discardAllTiles(type: Tile.Type, for player: Player) {
+        for index in stride(from: tiles.count - 1, through: 0, by: -1) {
+            let tile = tiles[index]
+            if type(of: tile) == type {
+                player.playerDiscard.add(tiles[index])
+                tiles.remove(at: index)
+            }
+        }
+    }
+    
+    func discardAllTiles(for player: Player) {
+        for tile in tiles {
+            player.playerDiscard.add(tile)
+        }
+        tiles.removeAll()
+    }
+    
     func burnTile(at index: Int) {
         guard index < tiles.count else { return }
         
         tiles.remove(at: index)
+    }
+    
+    func totalGems() -> Int {
+        var total = 0
+        for tile in tiles {
+            if let gemTile = tile as? GemTile {
+                total += gemTile.gem.rawValue
+            }
+        }
+        return total
     }
     
     // Convenience function

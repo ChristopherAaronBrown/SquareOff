@@ -40,7 +40,7 @@ class DoubleStraightTile: Tile, MovementTile {
     }
     
     init(player: Player) {
-        let image = player.number == 0 ? #imageLiteral(resourceName: "DoubleStraightPink") : #imageLiteral(resourceName: "DoubleDiagonalGreen")
+        let image = player.number == 0 ? #imageLiteral(resourceName: "DoubleStraightPink") : #imageLiteral(resourceName: "DoubleStraightGreen")
         super.init(player: player, cost: 4, image: image)
     }
 }

@@ -27,13 +27,20 @@ class PlayerBag {
          - 1x JumpTile
          */
         for _ in 0..<5 {
-            tiles.append(GemTile(player: player, gem: Constants.Gem.Single))
+            tiles.append(GemTile(player: player, gem: Gem.Single))
         }
         tiles.append(SingleStraightTile(player: player))
         tiles.append(SingleDiagonalTile(player: player))
         tiles.append(AttackTile(player: player))
         tiles.append(DefendTile(player: player))
         tiles.append(JumpTile(player: player))
+        
+        tiles.append(KnightLeftTile(player: player))
+        tiles.append(KnightRightTile(player: player))
+        tiles.append(DoubleStraightTile(player: player))
+        tiles.append(DoubleDiagonalTile(player: player))
+        tiles.append(ZigZagLeftTile(player: player))
+        tiles.append(ZigZagRightTile(player: player))
     }
     
     func refill(_ playerDiscard: PlayerDiscard) throws {
