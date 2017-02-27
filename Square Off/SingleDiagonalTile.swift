@@ -16,13 +16,13 @@ class SingleDiagonalTile: Tile, MovementTile {
         // Try to append Path vertical-left
         if let targetCoordinate = try? BoardCoordinate(column: baseCoordinate.column - 1,
                                                        row: baseCoordinate.row - (1 * player.direction)) {
-            paths.append(Path(coordinates: [baseCoordinate, targetCoordinate]))
+            paths.append(Path(coordinates: [baseCoordinate, targetCoordinate], movementTileType: type(of: self)))
         }
         
         // Try to append Path vertical-right
         if let targetCoordinate = try? BoardCoordinate(column: baseCoordinate.column + 1,
                                                        row: baseCoordinate.row - (1 * player.direction)) {
-            paths.append(Path(coordinates: [baseCoordinate, targetCoordinate]))
+            paths.append(Path(coordinates: [baseCoordinate, targetCoordinate], movementTileType: type(of: self)))
         }
         
         return paths

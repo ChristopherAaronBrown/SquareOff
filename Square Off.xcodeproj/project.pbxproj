@@ -45,6 +45,7 @@
 		833AFDDD1E4D7E8400C628F0 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833AFDDC1E4D7E8400C628F0 /* Session.swift */; };
 		83B4FA831E553B9900B92BA9 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B4FA821E553B9900B92BA9 /* Extensions.swift */; };
 		83B4FA871E5633EB00B92BA9 /* ShopVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B4FA861E5633EB00B92BA9 /* ShopVC.swift */; };
+		83C8FECC1E64A1FB0077A376 /* PathOptionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83C8FECB1E64A1FB0077A376 /* PathOptionVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -88,6 +89,7 @@
 		833AFDDC1E4D7E8400C628F0 /* Session.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		83B4FA821E553B9900B92BA9 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		83B4FA861E5633EB00B92BA9 /* ShopVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShopVC.swift; sourceTree = "<group>"; };
+		83C8FECB1E64A1FB0077A376 /* PathOptionVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PathOptionVC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -158,6 +160,7 @@
 				833744F51E4E6FD6005F185D /* MenuVC.swift */,
 				833AFD8B1E4D1ED700C628F0 /* GameVC.swift */,
 				83B4FA861E5633EB00B92BA9 /* ShopVC.swift */,
+				83C8FECB1E64A1FB0077A376 /* PathOptionVC.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -352,6 +355,7 @@
 				833AFDDB1E4D7A1300C628F0 /* BoardSpace.swift in Sources */,
 				833AFDDD1E4D7E8400C628F0 /* Session.swift in Sources */,
 				833AFDBA1E4D46F800C628F0 /* DefendTile.swift in Sources */,
+				83C8FECC1E64A1FB0077A376 /* PathOptionVC.swift in Sources */,
 				833AFDC41E4D46F800C628F0 /* DoubleStraightTile.swift in Sources */,
 				833AFDD21E4D478300C628F0 /* PlayerPawn.swift in Sources */,
 				833AFDDA1E4D7A1300C628F0 /* Board.swift in Sources */,

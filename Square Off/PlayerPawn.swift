@@ -13,14 +13,13 @@ class PlayerPawn {
     let image: UIImage
     
     var hasReachedGoal: Bool
+    var owner: Player {
+        return player
+    }
     
     init(player: Player) {
         self.player = player
         hasReachedGoal = false
         image = player.number == 0 ? #imageLiteral(resourceName: "PawnPink") : #imageLiteral(resourceName: "PawnGreen")
-    }
-    
-    func owner() -> Player {
-        return player
     }
 }

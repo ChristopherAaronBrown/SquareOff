@@ -18,21 +18,21 @@ class DoubleStraightTile: Tile, MovementTile {
                                                      row: baseCoordinate.row - (1 * player.direction)) {
             if let targetCoordinate = try? BoardCoordinate(column: baseCoordinate.column,
                                                            row: baseCoordinate.row - (2 * player.direction)) {
-                paths.append(Path(coordinates: [baseCoordinate, midCoordinate, targetCoordinate]))
+                paths.append(Path(coordinates: [baseCoordinate, midCoordinate, targetCoordinate], movementTileType: type(of: self)))
             }
         }
         
         // Try to append Path to left
         if  let midCoordinate = try? BoardCoordinate(column: baseCoordinate.column - 1, row: baseCoordinate.row) {
             if let targetCoordinate = try? BoardCoordinate(column: baseCoordinate.column - 2, row: baseCoordinate.row) {
-                paths.append(Path(coordinates: [baseCoordinate, midCoordinate, targetCoordinate]))
+                paths.append(Path(coordinates: [baseCoordinate, midCoordinate, targetCoordinate], movementTileType: type(of: self)))
             }
         }
         
         // Try to append Path to right
         if  let midCoordinate = try? BoardCoordinate(column: baseCoordinate.column + 1, row: baseCoordinate.row) {
             if let targetCoordinate = try? BoardCoordinate(column: baseCoordinate.column + 2, row: baseCoordinate.row) {
-                paths.append(Path(coordinates: [baseCoordinate, midCoordinate, targetCoordinate]))
+                paths.append(Path(coordinates: [baseCoordinate, midCoordinate, targetCoordinate], movementTileType: type(of: self)))
             }
         }
         

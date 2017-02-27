@@ -7,31 +7,46 @@
 //
 
 struct Path {
-    let coordinates: [BoardCoordinate]
+    fileprivate let coordinates: [BoardCoordinate]
+    private let movementTileType: MovementTile.Type
     
-    init(coordinates: [BoardCoordinate]) {
-        self.coordinates = coordinates
-    }
-    
-    func end() -> BoardCoordinate {
-        return coordinates[coordinates.count - 1]
-    }
-    
-    func beginning() -> BoardCoordinate {
-        return coordinates[0]
-    }
-    
-    func count() -> Int {
+    var count: Int {
         return coordinates.count
     }
     
-    func containsCoordinate(_ coordinate: BoardCoordinate) -> Bool {
+    var beginning: BoardCoordinate {
+        return coordinates.first!
+    }
+    
+    var end: BoardCoordinate {
+        return coordinates.last!
+    }
+    
+    init(coordinates: [BoardCoordinate], movementTileType: MovementTile.Type) {
+        self.coordinates = coordinates
+        self.movementTileType = movementTileType
+    }
+    
+    func closest(coordinate: BoardCoordinate) -> BoardCoordinate {
+        for index in 1..<coordinates.count {
+            if coordinates[index] == coordinate {
+                return coordinates[index - 1]
+            }
+        }
+        return coordinate
+    }
+    
+    func contains(coordinate: BoardCoordinate) -> Bool {
         for boardCoordinate in coordinates {
             if coordinate == boardCoordinate {
                 return true
             }
         }
         return false
+    }
+    
+    func requiredMovementTileType() -> Tile.Type {
+        return movementTileType as! Tile.Type
     }
 }
 
@@ -78,8 +93,12 @@ enum PathAction {
             return (PathAction.contains(type: JumpTile.self, in: hand, with: &tileTypes), tileTypes)
         case .Attack:
             return (PathAction.contains(type: AttackTile.self, in: hand, with: &tileTypes), tileTypes)
-        case .JumpAndAttack, .JumpOrAttack:
+        case .JumpAndAttack:
             let canPerform = PathAction.contains(type: JumpTile.self, in: hand, with: &tileTypes) &&
+                PathAction.contains(type: AttackTile.self, in: hand, with: &tileTypes)
+            return (canPerform, tileTypes)
+        case .JumpOrAttack:
+            let canPerform = PathAction.contains(type: JumpTile.self, in: hand, with: &tileTypes) ||
                 PathAction.contains(type: AttackTile.self, in: hand, with: &tileTypes)
             return (canPerform, tileTypes)
         }

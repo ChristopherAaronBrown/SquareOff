@@ -11,6 +11,10 @@ class PlayerHand {
     
     var tiles: [Tile]
     
+    var count: Int {
+        return tiles.count
+    }
+    
     init() {
         self.limit = Constants.handLimit
         self.tiles = [Tile]()
@@ -23,7 +27,7 @@ class PlayerHand {
         
         // Try to get a new hand
         do {
-            while count() < limit {
+            while count < limit {
                 if let tile = player.playerBag.draw() {
                     tiles.append(tile)
                 } else {
@@ -31,7 +35,7 @@ class PlayerHand {
                 }
             }
         } catch PlayerDiscardError.nothingDiscarded {
-            print("\(player.name) has only \(count()) total tile(s).")
+            print("\(player.name) has only \(count) total tile(s).")
         } catch { /* Do Nothing */ }
     }
     
@@ -93,11 +97,6 @@ class PlayerHand {
             }
         }
         return total
-    }
-    
-    // Convenience function
-    func count() -> Int {
-        return tiles.count
     }
 }
 

@@ -19,7 +19,7 @@ protocol ShopVCDelegate {
 
 class ShopVC: UIViewController {
 
-    var datasource: ShopVCDataSource!
+    var dataSource: ShopVCDataSource!
     var delegate: ShopVCDelegate!
     
     private var buyButton: UIButton!
@@ -74,7 +74,7 @@ class ShopVC: UIViewController {
     }
     
     private func addTotalGems() {
-        let player = datasource.currentPlayer()
+        let player = dataSource.currentPlayer()
         let totalGems = player.playerHand.totalGems()
         
         let width: CGFloat = view.bounds.width * (150/320)
@@ -93,7 +93,7 @@ class ShopVC: UIViewController {
     }
     
     private func addShop() {
-        let player = datasource.currentPlayer()
+        let player = dataSource.currentPlayer()
         let totalGems = player.playerHand.totalGems()
         let alpha: CGFloat = 0.3
         
@@ -299,7 +299,7 @@ class ShopVC: UIViewController {
     }
     
     private func selectedTile() -> Tile {
-        let player = datasource.currentPlayer()
+        let player = dataSource.currentPlayer()
         
         switch ShopTile(rawValue: tileTag)! {
         case .SingleGem:
@@ -352,7 +352,7 @@ class ShopVC: UIViewController {
     
     private func showAnimate() {
         let destination = view.center
-        view.center = datasource.shopAnimationPoint()
+        view.center = dataSource.shopAnimationPoint()
         view.transform = CGAffineTransform(scaleX: 0.3, y: 0.3)
         view.alpha = 0
         UIView.animate(withDuration: 0.25) { 
@@ -363,7 +363,7 @@ class ShopVC: UIViewController {
     }
     
     @objc private func dismissAnimate() {
-        let destination = datasource.shopAnimationPoint()
+        let destination = dataSource.shopAnimationPoint()
         
         UIView.animate(withDuration: 0.25, animations: { 
             self.view.center = destination

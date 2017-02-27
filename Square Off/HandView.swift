@@ -25,9 +25,7 @@ class HandView: UIView {
     var delegate: HandViewDelegate?
     private var handSlotImageViews: [UIImageView] = []
 
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
+    func refresh() {
         // Remove previous hand
         for subview in self.subviews {
             subview.removeFromSuperview()

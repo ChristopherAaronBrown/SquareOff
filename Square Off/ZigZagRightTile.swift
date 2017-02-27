@@ -20,7 +20,7 @@ class ZigZagRightTile: Tile, MovementTile {
                                                            row: baseCoordinate.row - (1 * player.direction)) {
                 if let targetCoordinate = try? BoardCoordinate(column: baseCoordinate.column + (1 * player.direction),
                                                                row: baseCoordinate.row - (2 * player.direction)) {
-                    paths.append(Path(coordinates: [baseCoordinate, firstCoordinate, secondCoordinate, targetCoordinate]))
+                    paths.append(Path(coordinates: [baseCoordinate, firstCoordinate, secondCoordinate, targetCoordinate], movementTileType: type(of: self)))
                 }
             }
         }
@@ -32,7 +32,7 @@ class ZigZagRightTile: Tile, MovementTile {
                                                            row: baseCoordinate.row - (1 * player.direction)) {
                 if let targetCoordinate = try? BoardCoordinate(column: baseCoordinate.column - (2 * player.direction),
                                                                row: baseCoordinate.row - (1 * player.direction)) {
-                    paths.append(Path(coordinates: [baseCoordinate, firstCoordinate, secondCoordinate, targetCoordinate]))
+                    paths.append(Path(coordinates: [baseCoordinate, firstCoordinate, secondCoordinate, targetCoordinate], movementTileType: type(of: self)))
                 }
             }
         }

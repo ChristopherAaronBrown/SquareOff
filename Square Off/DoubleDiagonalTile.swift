@@ -18,7 +18,7 @@ class DoubleDiagonalTile: Tile, MovementTile {
                                                      row: baseCoordinate.row - (1 * player.direction)) {
             if let targetCoordinate = try? BoardCoordinate(column: baseCoordinate.column - 2,
                                                            row: baseCoordinate.row - (2 * player.direction)) {
-                paths.append(Path(coordinates: [baseCoordinate, midCoordinate, targetCoordinate]))
+                paths.append(Path(coordinates: [baseCoordinate, midCoordinate, targetCoordinate], movementTileType: type(of: self)))
             }
         }
         
@@ -27,7 +27,7 @@ class DoubleDiagonalTile: Tile, MovementTile {
                                                      row: baseCoordinate.row - (1 * player.direction)) {
             if let targetCoordinate = try? BoardCoordinate(column: baseCoordinate.column + 2,
                                                            row: baseCoordinate.row - (2 * player.direction)) {
-                paths.append(Path(coordinates: [baseCoordinate, midCoordinate, targetCoordinate]))
+                paths.append(Path(coordinates: [baseCoordinate, midCoordinate, targetCoordinate], movementTileType: type(of: self)))
             }
         }
         

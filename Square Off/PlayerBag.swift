@@ -16,6 +16,10 @@ class PlayerBag {
     var player: Player!
     var tiles: [Tile] = [Tile]()
     
+    var count: Int {
+        return tiles.count
+    }
+    
     func populateInitialBag() {
         /*
          Starting bags have:
@@ -41,6 +45,11 @@ class PlayerBag {
         tiles.append(DoubleDiagonalTile(player: player))
         tiles.append(ZigZagLeftTile(player: player))
         tiles.append(ZigZagRightTile(player: player))
+        
+        tiles.append(DefendTile(player: player))
+        tiles.append(DefendTile(player: player))
+        tiles.append(DefendTile(player: player))
+        tiles.append(DefendTile(player: player))
     }
     
     func refill(_ playerDiscard: PlayerDiscard) throws {
@@ -57,9 +66,5 @@ class PlayerBag {
         let randomIndex = Int(arc4random_uniform(UInt32(tiles.count)))
         
         return tiles.remove(at: randomIndex)
-    }
-    
-    func count() -> Int {
-        return tiles.count
     }
 }
