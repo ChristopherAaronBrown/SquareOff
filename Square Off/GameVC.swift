@@ -188,21 +188,23 @@ class GameVC: UIViewController,
         let space = board.getBoardSpace(modelCoordinate)
         
         if state == .ResurrectTileTapped && space.isHome(for: player) && !space.isOccupied() {
-            setNextState(.Normal)
-            player.deadPawns -= 1
-            
             space.pawn = PlayerPawn(for: player)
-            
+            player.deadPawns -= 1
+            hand.discardTile(of: ResurrectTile.self, for: player)
+            highlightDict = [:]
+            handView.refresh()
             refresh()
         }
     }
     
     func pawnLongPressBegan(at coordinate: BoardCoordinate, with touchLocation: CGPoint) {
-        let modelCoordinate = session.currentPlayer.number == 0 ? coordinate : coordinate.inverse()
-        let space = session.board.getBoardSpace(modelCoordinate)
+        let modelCoordinate = player.number == 0 ? coordinate : coordinate.inverse()
+        let space = board.getBoardSpace(modelCoordinate)
         
         // If user long presses one of their pawns
         if space.isOccupied() && space.pawn!.owner == player && !space.pawn!.hasReachedGoal {
+            setNextState(.Normal)
+            
             // Determine all eligible paths from the origin board space
             eligiblePaths = findEligiblePaths(at: modelCoordinate)
             
@@ -615,7 +617,7 @@ class GameVC: UIViewController,
             
             shopVC.didMove(toParentViewController: self)
             
-        } else if tileType == ResurrectTile.self {
+        } else if tileType == ResurrectTile.self && player.deadPawns > 0 {
             setNextState(.ResurrectTileTapped)
             highlightResurrectSpaces()
         }
@@ -633,11 +635,10 @@ class GameVC: UIViewController,
     }
     
     private func highlightResurrectSpaces() {
-        if player.deadPawns > 0 {
-            for homeSpaceCoordinate in homeSpacesAvailable() {
-                highlightDict[homeSpaceCoordinate] = Colors.yellow
-            }
+        for homeSpaceCoordinate in homeSpacesAvailable() {
+            highlightDict[homeSpaceCoordinate] = Colors.yellow
         }
+        boardView.updateBoard()
     }
     
     private func homeSpacesAvailable() -> [BoardCoordinate] {
