@@ -8,6 +8,8 @@
 
 import UIKit
 
+typealias AnimationCallback = (Bool) -> ()
+
 struct Constants {
     
     static let numberOfBoardSpaces: Int = 6
@@ -52,4 +54,9 @@ enum ShopTile: Int {
     case DoubleDiagonal = 13
     case ZigZagRight = 14
     case KnightRight = 15
+}
+
+enum State {
+    case Normal
+    case ResurrectTileTapped
 }

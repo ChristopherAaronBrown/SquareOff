@@ -37,19 +37,20 @@ class PlayerBag {
         tiles.append(SingleDiagonalTile(player: player))
         tiles.append(AttackTile(player: player))
         tiles.append(DefendTile(player: player))
-        tiles.append(JumpTile(player: player))
+        tiles.append(DoubleStraightTile(player: player))
         
+        // TODO: Remove when done testing
+        tiles.append(JumpTile(player: player))
         tiles.append(KnightLeftTile(player: player))
         tiles.append(KnightRightTile(player: player))
-        tiles.append(DoubleStraightTile(player: player))
         tiles.append(DoubleDiagonalTile(player: player))
         tiles.append(ZigZagLeftTile(player: player))
         tiles.append(ZigZagRightTile(player: player))
         
-        tiles.append(DefendTile(player: player))
-        tiles.append(DefendTile(player: player))
-        tiles.append(DefendTile(player: player))
-        tiles.append(DefendTile(player: player))
+        tiles.append(ResurrectTile(player: player))
+        tiles.append(ResurrectTile(player: player))
+        tiles.append(ResurrectTile(player: player))
+        tiles.append(ResurrectTile(player: player))
     }
     
     func refill(_ playerDiscard: PlayerDiscard) throws {

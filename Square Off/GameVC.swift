@@ -19,16 +19,40 @@ class GameVC: UIViewController,
     @IBOutlet weak var bagCount: UILabel!
     @IBOutlet weak var discardCount: UILabel!
     
-    var boardView: BoardView!
-    var handView: HandView!
-    
     private var session: Session!
+    private var boardView: BoardView!
+    private var handView: HandView!
+    private var player: Player {
+        get {
+            return session.currentPlayer
+        }
+        set {
+            session.currentPlayer = newValue
+        }
+    }
+    private var opponent: Player {
+        return player.number == 0 ? session.player2 : session.player1
+    }
+    private var board: Board {
+        return session.board
+    }
+    private var hand: PlayerHand {
+        return player.playerHand
+    }
+    private var bag: PlayerBag {
+        return player.playerBag
+    }
+    private var discard: PlayerDiscard {
+        return player.playerDiscard
+    }
     private var longPressedPawn: UIImageView?
     private var requiredTileTypes: [BoardCoordinate:[Tile.Type]] = [:]
     private var eligiblePaths: [Path] = []
     private var highlightDict: [BoardCoordinate:UIColor] = [:]
     private var pathOptions: [PathAction] = []
     private var pathActionChosen: PathAction = .None
+    private var state: State = .Normal
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -79,26 +103,29 @@ class GameVC: UIViewController,
         view.bringSubview(toFront: bagCount)
         view.bringSubview(toFront: discardCount)
         
+        player2.playerHand.newHand(for: player2)
         refresh()
         handView.refresh()
     }
     
     override func viewDidAppear(_ animated: Bool) {
-//        super.viewDidAppear(animated)
-//        handView.animateDeal(from: bagSlot.center, callback: { _ in
-//            // TODO: Decrement the bag counter
-//        })
+        super.viewDidAppear(animated)
+        hand.newHand(for: player)
+        handView.animateDeal(from: bagSlot.center, callback: { _ in
+            self.updateLabelCounts()
+        })
     }
     
-    func refresh() {
+    private func refresh() {
+        setNextState(.Normal)
         boardView.updateBoard()
-        updateLabelCounts(for: session.currentPlayer)
+        updateLabelCounts()
     }
     
-    private func updateLabelCounts(for player: Player) {
-        if player.playerBag.count > 0 {
+    private func updateLabelCounts() {
+        if bag.count > 0 {
             bagCount.isHidden = false
-            bagCount.text = "\(player.playerBag.count)"
+            bagCount.text = "\(bag.count)"
             bagSlot.image = player.number == 0 ? #imageLiteral(resourceName: "BagDiscardFilledPink") : #imageLiteral(resourceName: "BagDiscardFilledGreen")
         } else {
             bagCount.isHidden = true
@@ -116,29 +143,24 @@ class GameVC: UIViewController,
     }
     
     @IBAction func endTurnPressed(_ sender: UIButton) {
-        let player = session.currentPlayer
-        let hand = player.playerHand
-        
         if hand.count == 0 {
             hand.newHand(for: player)
             session.currentPlayer = session.nextPlayerTurn()
             refresh()
             handView.animateDeal(from: bagSlot.center, callback: { (_) in
-                // TODO: Decrement the bag counter
+                self.updateLabelCounts()
             })
             return
         }
         
         handView.animateDiscard(to: discardSlot.center) { complete in
-            // TODO: Increment the discard counter
-//            self.updateLabelCounts(for: self.session.currentPlayer)
-//            self.view.layoutIfNeeded()
+            self.updateLabelCounts()
             if complete {
-                self.session.currentPlayer.playerHand.newHand(for: self.session.currentPlayer)
-                self.session.currentPlayer = self.session.nextPlayerTurn()
+                self.hand.newHand(for: self.session.currentPlayer)
+                self.player = self.session.nextPlayerTurn()
                 self.refresh()
                 self.handView.animateDeal(from: self.bagSlot.center, callback: { (_) in
-                    // TODO: Decrement the bag counter
+                    self.updateLabelCounts()
                 })
             }
         }
@@ -146,13 +168,13 @@ class GameVC: UIViewController,
     
     // MARK: - BoardView delegate and data source functions
     func imageForSpace(at coordinate: BoardCoordinate) -> UIImage? {
-        let modelCoordinate = session!.currentPlayer == session!.player1 ? coordinate : coordinate.inverse()
+        let modelCoordinate = player.number == 0 ? coordinate : coordinate.inverse()
         
-        return session!.board.getBoardSpace(modelCoordinate).pawn?.image
+        return board.getBoardSpace(modelCoordinate).pawn?.image
     }
     
     func highlightForSpace(at coordinate: BoardCoordinate) -> UIColor {
-        let modelCoordinate = session.currentPlayer.number == 0 ? coordinate : coordinate.inverse()
+        let modelCoordinate = player.number == 0 ? coordinate : coordinate.inverse()
         
         if let highlight = highlightDict[modelCoordinate] {
             return highlight
@@ -161,25 +183,39 @@ class GameVC: UIViewController,
         return UIColor.clear
     }
     
+    func boardSpaceTapped(at coordinate: BoardCoordinate) {
+        let modelCoordinate = player.number == 0 ? coordinate : coordinate.inverse()
+        let space = board.getBoardSpace(modelCoordinate)
+        
+        if state == .ResurrectTileTapped && space.isHome(for: player) && !space.isOccupied() {
+            setNextState(.Normal)
+            player.deadPawns -= 1
+            
+            space.pawn = PlayerPawn(for: player)
+            
+            refresh()
+        }
+    }
+    
     func pawnLongPressBegan(at coordinate: BoardCoordinate, with touchLocation: CGPoint) {
         let modelCoordinate = session.currentPlayer.number == 0 ? coordinate : coordinate.inverse()
         let space = session.board.getBoardSpace(modelCoordinate)
         
         // If user long presses one of their pawns
-        if space.isOccupied() && space.pawn!.owner == session.currentPlayer && !space.pawn!.hasReachedGoal {
+        if space.isOccupied() && space.pawn!.owner == player && !space.pawn!.hasReachedGoal {
             // Determine all eligible paths from the origin board space
             eligiblePaths = findEligiblePaths(at: modelCoordinate)
             
             highlightSpaces(for: eligiblePaths, at: modelCoordinate)
             
-            session.board.getBoardSpace(modelCoordinate).pawn = nil
+            board.getBoardSpace(modelCoordinate).pawn = nil
             if longPressedPawn == nil {
                 let imageWidth = view.bounds.size.width * (44/320) * 1.25
                 let imageHeight = view.bounds.size.height * (48/568) * 1.25
                 let xPos = touchLocation.x - imageWidth / 2
                 let yPos = touchLocation.y - imageHeight * 1.5
                 longPressedPawn = UIImageView(frame: CGRect(x: xPos, y: yPos, width: imageWidth, height: imageHeight))
-                longPressedPawn!.image = session.currentPlayer.number == 0 ? #imageLiteral(resourceName: "PawnPink") : #imageLiteral(resourceName: "PawnGreen")
+                longPressedPawn!.image = player.number == 0 ? #imageLiteral(resourceName: "PawnPink") : #imageLiteral(resourceName: "PawnGreen")
                 
                 // Add shadow
                 longPressedPawn!.layer.shadowColor = Colors.font.cgColor
@@ -203,9 +239,8 @@ class GameVC: UIViewController,
     
     func pawnLongPressEnded(at targetBoardCoordinate: BoardCoordinate, from sourceBoardCoordinate: BoardCoordinate) {
         
-        let currentPlayer = session.currentPlayer
-        let target = currentPlayer.number == 0 ? targetBoardCoordinate : targetBoardCoordinate.inverse()
-        let source = currentPlayer.number == 0 ? sourceBoardCoordinate : sourceBoardCoordinate.inverse()
+        let target = player.number == 0 ? targetBoardCoordinate : targetBoardCoordinate.inverse()
+        let source = player.number == 0 ? sourceBoardCoordinate : sourceBoardCoordinate.inverse()
         let pathOptions = pathsEnding(at: target)
         
         if pathOptions.isEmpty {
@@ -269,7 +304,6 @@ class GameVC: UIViewController,
     }
     
     private func attemptPawnPlacement(along path: Path, from source: BoardCoordinate, to target: BoardCoordinate) {
-        let opponent =  session.currentPlayer.number == 0 ? session.player2 : session.player1
         var usedTileTypes: [Tile.Type] = [path.requiredMovementTileType()]
         
         switch getPathAction(for: path) {
@@ -307,6 +341,13 @@ class GameVC: UIViewController,
     }
     
     private func showDefendAnimation(for player: Player) {
+        let backgroundView = UIView(frame: view.frame)
+        backgroundView.backgroundColor = UIColor.white
+        backgroundView.alpha = 0
+        
+        view.addSubview(backgroundView)
+        view.bringSubview(toFront: backgroundView)
+        
         let width: CGFloat = view.bounds.width * (165/320)
         let height: CGFloat = view.bounds.height * (180/568)
         let xPos: CGFloat = view.bounds.midX - width / 2
@@ -327,13 +368,16 @@ class GameVC: UIViewController,
         
         UIView.animate(withDuration: duration, animations: {
             defendImageView.center = destination
+            backgroundView.alpha = 0.7
         }) { (complete) in
             
             if complete {
                 UIView.animate(withDuration: duration, delay: delay, options: [], animations: {
                     defendImageView.center = origin
+                    backgroundView.alpha = 0
                 }, completion: { (complete) in
                     defendImageView.removeFromSuperview()
+                    backgroundView.removeFromSuperview()
                 })
             }
         }
@@ -344,19 +388,19 @@ class GameVC: UIViewController,
             longPressedPawn!.removeFromSuperview()
             longPressedPawn = nil
 
-            let space = session.board.getBoardSpace(modelCoordinate)
+            let space = board.getBoardSpace(modelCoordinate)
 
-            if space.isOccupied() && space.pawn!.owner !== session.currentPlayer {
+            if space.isOccupied() && space.pawn!.owner !== player {
                 space.pawn!.owner.deadPawns += 1
             }
 
-            space.pawn = PlayerPawn(player: session.currentPlayer)
+            space.pawn = PlayerPawn(for: player)
 
-            if space.isGoal(for: session.currentPlayer) {
+            if space.isGoal(for: player) {
                 space.pawn!.hasReachedGoal = true
             }
 
-            session.board.clearHighlights()
+            board.clearHighlights()
 
             requiredTileTypes = [:]
             highlightDict = [:]
@@ -368,9 +412,6 @@ class GameVC: UIViewController,
     }
     
     private func removeUsedTiles(in usedTileTypes: [Tile.Type]) {
-        let player = session.currentPlayer
-        let hand = player.playerHand
-        
         for tileType in usedTileTypes {
             hand.discardTile(of: tileType, for: player)
         }
@@ -379,7 +420,6 @@ class GameVC: UIViewController,
     }
     
     private func findEligiblePaths(at coordinate: BoardCoordinate) -> [Path] {
-        let hand = session.currentPlayer.playerHand
         var eligiblePaths: [Path] = []
         
         /* For each movement tile in hand:
@@ -389,7 +429,7 @@ class GameVC: UIViewController,
         */
         for tile in hand {
             if let movementTile = tile as? MovementTile {
-                let paths = movementTile.getPaths(coordinate, player: session.currentPlayer)
+                let paths = movementTile.getPaths(coordinate, player: player)
                 for path in paths {
                     let (canPerform, tileTypes) = getPathAction(for: path).canPerform(with: hand)
                     if canPerform {
@@ -424,10 +464,10 @@ class GameVC: UIViewController,
         var endOccupiedByAlly: Bool = false
         
         for coordinate in path {
-            let space = session.board.getBoardSpace(coordinate)
+            let space = board.getBoardSpace(coordinate)
             if coordinate != path.beginning {
                 if let pawn = space.pawn {
-                    if pawn.owner == session.currentPlayer || pawn.hasReachedGoal {
+                    if pawn.owner == player || pawn.hasReachedGoal {
                         allies += 1
                     } else {
                         enemies += 1
@@ -435,7 +475,7 @@ class GameVC: UIViewController,
                 }
             }
             if coordinate == path.end && space.isOccupied() {
-                if space.pawn!.owner == session.currentPlayer {
+                if space.pawn!.owner == player {
                     endOccupiedByAlly = true
                 } else {
                     endOccupiedByEnemy = true
@@ -486,9 +526,9 @@ class GameVC: UIViewController,
     
     private func attackCoordinate(along path: Path) -> BoardCoordinate? {
         for coordinate in path {
-            let space = session.board.getBoardSpace(coordinate)
+            let space = board.getBoardSpace(coordinate)
             if space.isOccupied() {
-                if space.pawn!.owner !== session.currentPlayer {
+                if space.pawn!.owner !== player {
                     return coordinate
                 }
             }
@@ -538,7 +578,6 @@ class GameVC: UIViewController,
         }
     }
 
-    
     private func isEligibleTarget(_ target: BoardCoordinate) -> Bool {
         for path in eligiblePaths {
             if path.end == target {
@@ -550,23 +589,19 @@ class GameVC: UIViewController,
     }
     
     private func removeGems() {
-        let player = session.currentPlayer
-        let hand = player.playerHand
-        
         hand.discardAllTiles(type: GemTile.self, for: player)
     }
 
     // MARK: - HandView delegate and data source functions
     func numberOfTiles() -> Int {
-        return session.currentPlayer.playerHand.count
+        return hand.count
     }
     
     func imageForTile(at index: Int) -> UIImage? {
-        return session.currentPlayer.playerHand.tiles[index].image
+        return hand.tiles[index].image
     }
     
     func handViewSlotWasTapped(at index: Int) {
-        let hand = session.currentPlayer.playerHand
         let tileType = type(of: hand.tiles[index])
         
         if tileType == GemTile.self {
@@ -581,14 +616,48 @@ class GameVC: UIViewController,
             shopVC.didMove(toParentViewController: self)
             
         } else if tileType == ResurrectTile.self {
-            // TODO: Implement resurrect
+            setNextState(.ResurrectTileTapped)
+            highlightResurrectSpaces()
         }
         
     }
     
+    private func setNextState(_ nextState: State) {
+        state = nextState
+        switch state {
+        case .Normal:
+            break
+        case .ResurrectTileTapped:
+            break
+        }
+    }
+    
+    private func highlightResurrectSpaces() {
+        if player.deadPawns > 0 {
+            for homeSpaceCoordinate in homeSpacesAvailable() {
+                highlightDict[homeSpaceCoordinate] = Colors.yellow
+            }
+        }
+    }
+    
+    private func homeSpacesAvailable() -> [BoardCoordinate] {
+        var homeSpaceCoordinates: [BoardCoordinate] = []
+        let row = player.number == 0 ? Constants.numberOfBoardSpaces - 1 : 0
+        
+        for col in 0..<Constants.numberOfBoardSpaces {
+            let coordinate = try! BoardCoordinate(column: col, row: row)
+            let space = board.getBoardSpace(coordinate)
+            if space.isHome(for: player) && !space.isOccupied() {
+                homeSpaceCoordinates.append(space.coordinate)
+            }
+        }
+        
+        return homeSpaceCoordinates
+    }
+    
     // MARK: - ShopVC delegate and data source functions
     func currentPlayer() -> Player {
-        return session.currentPlayer
+        return player
     }
     
     func shopAnimationPoint() -> CGPoint {
@@ -596,9 +665,7 @@ class GameVC: UIViewController,
     }
     
     func purchased(tile: Tile) {
-        let player = session.currentPlayer
-        
-        player.playerDiscard.add(tile)
+        discard.add(tile)
         removeGems()
         
         handView.refresh()

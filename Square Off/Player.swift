@@ -30,7 +30,7 @@ class Player {
         // Draw first hand
         playerBag.player = self
         playerBag.populateInitialBag()
-        playerHand.newHand(for: self)
+//        playerHand.newHand(for: self)
     }
     
 }

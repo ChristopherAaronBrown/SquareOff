@@ -20,31 +20,31 @@ class BoardSpace {
     }
     
     func isOccupied() -> Bool {
-        return (pawn != nil)
+        return pawn != nil
     }
     
     func isHome(for player: Player) -> Bool {
-        return (player.number == 0) ? (coordinate.row == (Constants.numberOfBoardSpaces - 1)) : (coordinate.row == 0)
+        return player.number == 0 ? coordinate.row == (Constants.numberOfBoardSpaces - 1) : coordinate.row == 0
     }
     
     func isGoal(for player: Player) -> Bool {
-        return (player.number == 0) ? (coordinate.row == 0) : (coordinate.row == (Constants.numberOfBoardSpaces - 1))
+        return player.number == 0 ? coordinate.row == 0 : coordinate.row == (Constants.numberOfBoardSpaces - 1)
     }
     
     func isHorizontalEdge() -> Bool {
-        return (coordinate.row == 0 || coordinate.row == (Constants.numberOfBoardSpaces - 1))
+        return coordinate.row == 0 || coordinate.row == (Constants.numberOfBoardSpaces - 1)
     }
     
     func isVerticalEdge() -> Bool {
-        return (coordinate.column == 0 || coordinate.column == (Constants.numberOfBoardSpaces - 1))
+        return coordinate.column == 0 || coordinate.column == (Constants.numberOfBoardSpaces - 1)
     }
 
     func isEdge() -> Bool {
-        return (isHorizontalEdge() || isVerticalEdge())
+        return isHorizontalEdge() || isVerticalEdge()
     }
     
     func isCorner() -> Bool {
-        return (isHorizontalEdge() && isVerticalEdge())
+        return isHorizontalEdge() && isVerticalEdge()
     }
     
 }

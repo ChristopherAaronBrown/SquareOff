@@ -17,6 +17,7 @@ protocol BoardViewDelegate {
     func pawnLongPressBegan(at coordinate: BoardCoordinate, with touchLocation: CGPoint)
     func pawnLongPressChanged(at location: CGPoint)
     func pawnLongPressEnded(at targetBoardCoordinage: BoardCoordinate, from sourceBoardCoordinate: BoardCoordinate)
+    func boardSpaceTapped(at coordinate: BoardCoordinate)
 }
 
 class BoardView: UIView {
@@ -77,13 +78,13 @@ class BoardView: UIView {
                 let pawnYPos = (pawnHeight + pawnTopPadding) * CGFloat(row) + pawnTopMargin
                 let pawnImageView = UIImageView(frame: CGRect(x: pawnXPos, y: pawnYPos, width: pawnWidth, height: pawnHeight))
                 
-//                let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(BoardView.boardSpaceTapped(_:)))
+                let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(BoardView.boardSpaceTapped(_:)))
                 let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(BoardView.pawnLongPressed(_:)))
                 longPressRecognizer.minimumPressDuration = 0.25
                 
                 pawnImageView.tag = tag
                 pawnImageView.isUserInteractionEnabled = true
-//                pawnImageView.addGestureRecognizer(tapRecognizer)
+                pawnImageView.addGestureRecognizer(tapRecognizer)
                 pawnImageView.addGestureRecognizer(longPressRecognizer)
                 pawnImageView.backgroundColor = UIColor.clear
                 
@@ -108,14 +109,14 @@ class BoardView: UIView {
         }
     }
     
-//    func boardSpaceTapped(_ sender: UITapGestureRecognizer) {
-//        if let boardSpaceImageView = sender.view {
-//            let tag = boardSpaceImageView.tag
-//            let coordinate = try! BoardCoordinate(column: tag % Constants.numberOfBoardSpaces,
-//                                                  row: tag / Constants.numberOfBoardSpaces)
-//            self.delegate?.boardSpaceTapped(at: coordinate)
-//        }
-//    }
+    func boardSpaceTapped(_ sender: UITapGestureRecognizer) {
+        if let boardSpaceImageView = sender.view {
+            let tag = boardSpaceImageView.tag
+            let coordinate = try! BoardCoordinate(column: tag % Constants.numberOfBoardSpaces,
+                                                  row: tag / Constants.numberOfBoardSpaces)
+            self.delegate?.boardSpaceTapped(at: coordinate)
+        }
+    }
     
     func pawnLongPressed(_ sender: UILongPressGestureRecognizer) {
         if let pawn = sender.view as? UIImageView {

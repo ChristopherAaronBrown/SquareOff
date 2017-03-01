@@ -30,10 +30,10 @@ class Board {
                 
                 switch rowNum {
                     case 0:
-                        space.pawn = PlayerPawn(player: player2)
+                        space.pawn = PlayerPawn(for: player2)
                         space.highlight = UIColor.clear
                     case Constants.numberOfBoardSpaces - 1:
-                        space.pawn = PlayerPawn(player: player1)
+                        space.pawn = PlayerPawn(for: player1)
                         space.highlight = UIColor.clear
                     default:
                         space.highlight = UIColor.clear
@@ -43,14 +43,6 @@ class Board {
             }
             board.append(column)
         }
-        
-//        // TODO: Remove when done testing
-//        board[3][5].playerPawn = PlayerPawn(player: player1)
-//        board[2][6].playerPawn = PlayerPawn(player: player1)
-//        board[1][5].playerPawn = PlayerPawn(player: player2)
-//        board[4][5].playerPawn = PlayerPawn(player: player2)
-//        board[5][6].playerPawn = PlayerPawn(player: player2)
-//        board[0][0].playerPawn = nil
         
         self.board = board
     }

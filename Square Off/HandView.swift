@@ -17,8 +17,6 @@ protocol HandViewDelegate {
     func handViewSlotWasTapped(at index: Int)
 }
 
-typealias AnimationCallback = (Bool) -> ()
-
 class HandView: UIView {
     
     var dataSource: HandViewDataSource?
@@ -148,20 +146,5 @@ class HandView: UIView {
             index += 1
             delay += duration
         }
-        
-//        let duration: TimeInterval = 0.1
-//        var delay: TimeInterval = 0
-//        
-//        for index in 0..<handSlotImageViews.count {
-//            UIView.animate(withDuration: duration, delay: delay, options: .curveEaseOut, animations: {
-//                print("handSlotImageViews[index].center: \(self.handSlotImageViews[index].center)")
-//                print("centers[index]: \(centers[index])")
-//                self.handSlotImageViews[index].center = centers[index]
-//                
-//            }) { success in
-//                callback(index == self.handSlotImageViews.count - 1)
-//            }
-//            delay += duration
-//        }
     }
 }
