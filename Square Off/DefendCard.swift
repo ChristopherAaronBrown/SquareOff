@@ -1,5 +1,5 @@
 //
-//  BurnTile.swift
+//  DefendCard.swift
 //  Square Off
 //
 //  Created by Chris Brown on 2/9/17.
@@ -8,9 +8,9 @@
 
 import UIKit
 
-class BurnTile: Tile {
+class DefendCard: Card, ActionCard {
     init(player: Player) {
-        let image = player.number == 0 ? #imageLiteral(resourceName: "BurnPink") : #imageLiteral(resourceName: "BurnGreen")
+        let image = player.number == 0 ? #imageLiteral(resourceName: "DefendPink") : #imageLiteral(resourceName: "DefendGreen")
         super.init(player: player, cost: 4, image: image)
     }
 }

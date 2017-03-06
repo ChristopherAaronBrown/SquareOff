@@ -1,5 +1,5 @@
 //
-//  SingleDiagonalTile.swift
+//  SingleDiagonalCard.swift
 //  Square Off
 //
 //  Created by Chris Brown on 2/9/17.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SingleDiagonalTile: Tile, MovementTile {
+class SingleDiagonalCard: Card, MovementCard {
     
     func getPaths(_ baseCoordinate: BoardCoordinate, player: Player) -> [Path] {
         var paths: [Path] = [Path]()
@@ -16,13 +16,13 @@ class SingleDiagonalTile: Tile, MovementTile {
         // Try to append Path vertical-left
         if let targetCoordinate = try? BoardCoordinate(column: baseCoordinate.column - 1,
                                                        row: baseCoordinate.row - (1 * player.direction)) {
-            paths.append(Path(coordinates: [baseCoordinate, targetCoordinate], movementTileType: type(of: self)))
+            paths.append(Path(coordinates: [baseCoordinate, targetCoordinate], movementCardType: type(of: self)))
         }
         
         // Try to append Path vertical-right
         if let targetCoordinate = try? BoardCoordinate(column: baseCoordinate.column + 1,
                                                        row: baseCoordinate.row - (1 * player.direction)) {
-            paths.append(Path(coordinates: [baseCoordinate, targetCoordinate], movementTileType: type(of: self)))
+            paths.append(Path(coordinates: [baseCoordinate, targetCoordinate], movementCardType: type(of: self)))
         }
         
         return paths

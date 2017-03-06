@@ -9,8 +9,8 @@
 import UIKit
 
 protocol HandViewDataSource {
-    func numberOfTiles() -> Int
-    func imageForTile(at index: Int) -> UIImage?
+    func numberOfCards() -> Int
+    func imageForCard(at index: Int) -> UIImage?
 }
 
 protocol HandViewDelegate {
@@ -30,7 +30,7 @@ class HandView: UIView {
         }
         handSlotImageViews.removeAll()
         
-        let numTiles: Int = dataSource?.numberOfTiles() ?? 0
+        let numCards: Int = dataSource?.numberOfCards() ?? 0
         
         // Background image
         let backgroundFrame = CGRect(x: 0, y: 0, width: bounds.width, height: bounds.height)
@@ -45,7 +45,7 @@ class HandView: UIView {
         let handSlotHeight: CGFloat = bounds.height * (48/58)
         let handSlotWidth: CGFloat = bounds.width * (44/254)
         
-        for index in 0..<numTiles {
+        for index in 0..<numCards {
             let xPos: CGFloat = (handSlotWidth + sidePadding) * CGFloat(index) + sideMargin
             let yPos: CGFloat = topMargin
             let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(slotImageTapped(_:)))
@@ -53,7 +53,7 @@ class HandView: UIView {
             
             handSlotImageView.isUserInteractionEnabled = true
             handSlotImageView.tag = index
-            handSlotImageView.image = dataSource?.imageForTile(at: index)
+            handSlotImageView.image = dataSource?.imageForCard(at: index)
             handSlotImageView.addGestureRecognizer(tapRecognizer)
             
             addSubview(handSlotImageView)
@@ -93,7 +93,7 @@ class HandView: UIView {
         }
         handSlotImageViews.removeAll()
         
-        let numTiles: Int = dataSource?.numberOfTiles() ?? 0
+        let numCards: Int = dataSource?.numberOfCards() ?? 0
         
         // Background image
         let backgroundFrame = CGRect(x: 0, y: 0, width: bounds.width, height: bounds.height)
@@ -103,7 +103,7 @@ class HandView: UIView {
         
         addSubview(background)
         
-        // Spacing variables for placing tile image views
+        // Spacing variables for placing card image views
         let topMargin: CGFloat = bounds.height * (5/58)
         let sideMargin: CGFloat = bounds.width * (5/254)
         let sidePadding: CGFloat = bounds.width * (6/254)
@@ -113,7 +113,7 @@ class HandView: UIView {
         var centers: [CGPoint] = []
         
         // Calculate destination but add at pointInHandView
-        for index in 0..<numTiles {
+        for index in 0..<numCards {
             let xPos: CGFloat = (handSlotWidth + sidePadding) * CGFloat(index) + sideMargin
             let yPos: CGFloat = topMargin
             var frame =  CGRect(x: xPos, y: yPos, width: handSlotWidth, height: handSlotHeight)
@@ -121,7 +121,7 @@ class HandView: UIView {
             frame.center = pointInHandView
             
             let handSlotImageView = UIImageView(frame: frame)
-            handSlotImageView.image = dataSource?.imageForTile(at: index)
+            handSlotImageView.image = dataSource?.imageForCard(at: index)
             handSlotImageView.tag = index
             
             let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.slotImageTapped))

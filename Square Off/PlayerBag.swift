@@ -14,7 +14,7 @@ enum PlayerBagError: Error {
 
 class PlayerBag {
     var player: Player!
-    var tiles: [Tile] = [Tile]()
+    var tiles: [Card] = [Card]()
     
     var count: Int {
         return tiles.count
@@ -23,34 +23,34 @@ class PlayerBag {
     func populateInitialBag() {
         /*
          Starting bags have:
-         - 5x SingleGemTile
-         - 1x SingleStraightTile
-         - 1x SingleDiagonalTile
-         - 1x AttackTile
-         - 1x DefendTile
-         - 1x JumpTile
+         - 5x SingleGemCard
+         - 1x SingleStraightCard
+         - 1x SingleDiagonalCard
+         - 1x AttackCard
+         - 1x DefendCard
+         - 1x JumpCard
          */
         for _ in 0..<5 {
-            tiles.append(GemTile(player: player, gem: Gem.Single))
+            tiles.append(GemCard(player: player, gem: Gem.Single))
         }
-        tiles.append(SingleStraightTile(player: player))
-        tiles.append(SingleDiagonalTile(player: player))
-        tiles.append(AttackTile(player: player))
-        tiles.append(DefendTile(player: player))
-        tiles.append(DoubleStraightTile(player: player))
+        tiles.append(SingleStraightCard(player: player))
+        tiles.append(SingleDiagonalCard(player: player))
+        tiles.append(AttackCard(player: player))
+        tiles.append(DefendCard(player: player))
+        tiles.append(DoubleStraightCard(player: player))
         
         // TODO: Remove when done testing
-        tiles.append(JumpTile(player: player))
-        tiles.append(KnightLeftTile(player: player))
-        tiles.append(KnightRightTile(player: player))
-        tiles.append(DoubleDiagonalTile(player: player))
-        tiles.append(ZigZagLeftTile(player: player))
-        tiles.append(ZigZagRightTile(player: player))
+        tiles.append(JumpCard(player: player))
+        tiles.append(KnightLeftCard(player: player))
+        tiles.append(KnightRightCard(player: player))
+        tiles.append(DoubleDiagonalCard(player: player))
+        tiles.append(ZigZagLeftCard(player: player))
+        tiles.append(ZigZagRightCard(player: player))
         
-        tiles.append(ResurrectTile(player: player))
-        tiles.append(ResurrectTile(player: player))
-        tiles.append(ResurrectTile(player: player))
-        tiles.append(ResurrectTile(player: player))
+        tiles.append(ResurrectCard(player: player))
+        tiles.append(ResurrectCard(player: player))
+        tiles.append(ResurrectCard(player: player))
+        tiles.append(ResurrectCard(player: player))
     }
     
     func refill(_ playerDiscard: PlayerDiscard) throws {
@@ -61,7 +61,7 @@ class PlayerBag {
         playerDiscard.tiles.removeAll()
     }
     
-    func draw() -> Tile? {
+    func draw() -> Card? {
         guard tiles.count > 0 else { return nil }
         
         let randomIndex = Int(arc4random_uniform(UInt32(tiles.count)))

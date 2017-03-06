@@ -1,5 +1,5 @@
 //
-//  SingleStraightTile.swift
+//  SingleStraightCard.swift
 //  Square Off
 //
 //  Created by Chris Brown on 2/9/17.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SingleStraightTile: Tile, MovementTile {
+class SingleStraightCard: Card, MovementCard {
     
     func getPaths(_ baseCoordinate: BoardCoordinate, player: Player) -> [Path] {
         var paths: [Path] = [Path]()
@@ -16,17 +16,17 @@ class SingleStraightTile: Tile, MovementTile {
         // Try to append Path vertically
         if let targetCoordinate = try? BoardCoordinate(column: baseCoordinate.column,
                                                        row: baseCoordinate.row - (1 * player.direction)) {
-            paths.append(Path(coordinates: [baseCoordinate, targetCoordinate], movementTileType: type(of: self)))
+            paths.append(Path(coordinates: [baseCoordinate, targetCoordinate], movementCardType: type(of: self)))
         }
         
         // Try to append Path to left
         if let targetCoordinate = try? BoardCoordinate(column: baseCoordinate.column - 1, row: baseCoordinate.row) {
-            paths.append(Path(coordinates: [baseCoordinate, targetCoordinate], movementTileType: type(of: self)))
+            paths.append(Path(coordinates: [baseCoordinate, targetCoordinate], movementCardType: type(of: self)))
         }
         
         // Try to append Path to right
         if let targetCoordinate = try? BoardCoordinate(column: baseCoordinate.column + 1, row: baseCoordinate.row) {
-            paths.append(Path(coordinates: [baseCoordinate, targetCoordinate], movementTileType: type(of: self)))
+            paths.append(Path(coordinates: [baseCoordinate, targetCoordinate], movementCardType: type(of: self)))
         }
         
         return paths

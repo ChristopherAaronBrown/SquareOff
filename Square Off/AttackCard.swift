@@ -1,5 +1,5 @@
 //
-//  JumpTile.swift
+//  AttackCard.swift
 //  Square Off
 //
 //  Created by Chris Brown on 2/9/17.
@@ -8,9 +8,9 @@
 
 import UIKit
 
-class JumpTile: Tile {
+class AttackCard: Card, ActionCard {
     init(player: Player) {
-        let image = player.number == 0 ? #imageLiteral(resourceName: "JumpPink") : #imageLiteral(resourceName: "JumpGreen")
+        let image = player.number == 0 ? #imageLiteral(resourceName: "AttackPink") : #imageLiteral(resourceName: "AttackGreen")
         super.init(player: player, cost: 4, image: image)
     }
 }

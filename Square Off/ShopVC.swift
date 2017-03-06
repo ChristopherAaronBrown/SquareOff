@@ -14,7 +14,7 @@ protocol ShopVCDataSource {
 }
 
 protocol ShopVCDelegate {
-    func purchased(tile: Tile)
+    func purchased(card: Card)
 }
 
 class ShopVC: UIViewController {
@@ -109,7 +109,7 @@ class ShopVC: UIViewController {
         
         view.addSubview(shopImageView)
 
-        // Tiles
+        // Cards
         let topMargin: CGFloat = shopYPos + view.bounds.height * (7/568)
         let sideMargin: CGFloat = shopXPos + view.bounds.width * (7/320)
         let topPadding: CGFloat = view.bounds.height * (15/568)
@@ -131,7 +131,7 @@ class ShopVC: UIViewController {
 
             let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(tileTapped(_:)))
 
-            switch ShopTile(rawValue: index)! {
+            switch ShopCard(rawValue: index)! {
             case .SingleGem:
                 tileImageView.image = player.number == 0 ? #imageLiteral(resourceName: "SingleGemPink") : #imageLiteral(resourceName: "SingleGemGreen")
                 tileImageView.addGestureRecognizer(tapRecognizer)
@@ -256,7 +256,7 @@ class ShopVC: UIViewController {
         buyButton = UIButton(frame: frame)
         buyButton.setBackgroundImage(#imageLiteral(resourceName: "BuyButton"), for: .normal)
         buyButton.setBackgroundImage(#imageLiteral(resourceName: "BuyButtonPressed"), for: .highlighted)
-        buyButton.addTarget(self, action: #selector(purchaseTileAndDismiss), for: .touchUpInside)
+        buyButton.addTarget(self, action: #selector(purchaseCardAndDismiss), for: .touchUpInside)
         buyButton.isHidden = true
         
         cancelButton = UIButton(frame: frame)
@@ -293,47 +293,47 @@ class ShopVC: UIViewController {
         }
     }
     
-    @objc private func purchaseTileAndDismiss() {
-        delegate.purchased(tile: selectedTile())
+    @objc private func purchaseCardAndDismiss() {
+        delegate.purchased(card: selectedCard())
         dismissAnimate()
     }
     
-    private func selectedTile() -> Tile {
+    private func selectedCard() -> Card {
         let player = dataSource.currentPlayer()
         
-        switch ShopTile(rawValue: tileTag)! {
+        switch ShopCard(rawValue: tileTag)! {
         case .SingleGem:
-            return GemTile(player: player, gem: Gem.Single)
+            return GemCard(player: player, gem: Gem.Single)
         case .DoubleGem:
-            return GemTile(player: player, gem: Gem.Double)
+            return GemCard(player: player, gem: Gem.Double)
         case .TripleGem:
-            return GemTile(player: player, gem: Gem.Triple)
+            return GemCard(player: player, gem: Gem.Triple)
         case .Jump:
-            return JumpTile(player: player)
+            return JumpCard(player: player)
         case .Attack:
-            return AttackTile(player: player)
+            return AttackCard(player: player)
         case .Defend:
-            return DefendTile(player: player)
+            return DefendCard(player: player)
         case .Burn:
-            return BurnTile(player: player)
+            return BurnCard(player: player)
         case .Resurrect:
-            return ResurrectTile(player: player)
+            return ResurrectCard(player: player)
         case .SingleStraight:
-            return SingleStraightTile(player: player)
+            return SingleStraightCard(player: player)
         case .SingleDiagonal:
-            return SingleDiagonalTile(player: player)
+            return SingleDiagonalCard(player: player)
         case .ZigZagLeft:
-            return ZigZagLeftTile(player: player)
+            return ZigZagLeftCard(player: player)
         case .KnightLeft:
-            return KnightLeftTile(player: player)
+            return KnightLeftCard(player: player)
         case .DoubleStraight:
-            return DoubleStraightTile(player: player)
+            return DoubleStraightCard(player: player)
         case .DoubleDiagonal:
-            return DoubleDiagonalTile(player: player)
+            return DoubleDiagonalCard(player: player)
         case .ZigZagRight:
-            return ZigZagRightTile(player: player)
+            return ZigZagRightCard(player: player)
         case .KnightRight:
-            return KnightRightTile(player: player)
+            return KnightRightCard(player: player)
         }
     }
     

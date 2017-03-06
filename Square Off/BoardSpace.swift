@@ -6,14 +6,12 @@
 //  Copyright © 2016 Chris Brown. All rights reserved.
 //
 
-import UIKit
 
 class BoardSpace {
     let coordinate: BoardCoordinate
     
-    var highlight: UIColor?
     var pawn: PlayerPawn?
-    var requiredMovementTile: Tile.Type?
+    var requiredMovementCard: Card.Type?
     
     init(coordinate: BoardCoordinate) {
         self.coordinate = coordinate

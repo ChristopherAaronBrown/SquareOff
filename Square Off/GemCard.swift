@@ -1,5 +1,5 @@
 //
-//  GemTile.swift
+//  GemCard.swift
 //  Square Off
 //
 //  Created by Chris Brown on 2/9/17.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class GemTile: Tile {
+class GemCard: Card, ActionCard {
     let gem: Gem!
     
     init(player: Player, gem: Gem) {

@@ -11,17 +11,17 @@ enum PlayerDiscardError: Error {
 }
 
 class PlayerDiscard {
-    var tiles: [Tile]
+    var tiles: [Card]
     
     var count: Int {
         return tiles.count
     }
     
     init() {
-        tiles = [Tile]()
+        tiles = [Card]()
     }
     
-    func add(_ tile: Tile) {
-        tiles.append(tile)
+    func add(_ card: Card) {
+        tiles.append(card)
     }
 }

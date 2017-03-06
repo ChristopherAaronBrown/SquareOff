@@ -14,6 +14,7 @@ class Board {
     let board: [[BoardSpace]]
     let player1: Player
     let player2: Player
+//    let highlight: [BoardSpace:UIColor]
     
     init(player1: Player, player2: Player) {
         self.player1 = player1
@@ -31,12 +32,13 @@ class Board {
                 switch rowNum {
                     case 0:
                         space.pawn = PlayerPawn(for: player2)
-                        space.highlight = UIColor.clear
+//                        highlight[space] = UIColor.clear
                     case Constants.numberOfBoardSpaces - 1:
                         space.pawn = PlayerPawn(for: player1)
-                        space.highlight = UIColor.clear
+//                        highlight[space] = UIColor.clear
                     default:
-                        space.highlight = UIColor.clear
+//                        highlight[space] = UIColor.clear
+                        break
                 }
                 
                 column.append(space)
@@ -47,15 +49,15 @@ class Board {
         self.board = board
     }
     
-    func clearHighlights() {
-        for column in 0..<Constants.numberOfBoardSpaces {
-            for row in 0..<Constants.numberOfBoardSpaces {
-                let coordinate = try! BoardCoordinate(column: column, row: row)
-                let space = getBoardSpace(coordinate)
-                space.highlight = UIColor.clear
-            }
-        }
-    }
+//    func clearHighlights() {
+//        for column in 0..<Constants.numberOfBoardSpaces {
+//            for row in 0..<Constants.numberOfBoardSpaces {
+//                let coordinate = try! BoardCoordinate(column: column, row: row)
+//                let space = getBoardSpace(coordinate)
+//                highlight[space] = UIColor.clear
+//            }
+//        }
+//    }
     
     func getBoardSpace(_ coordinate: BoardCoordinate) -> BoardSpace {
         return board[coordinate.column][coordinate.row]

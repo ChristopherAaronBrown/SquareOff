@@ -1,5 +1,5 @@
 //
-//  Tile.swift
+//  Card.swift
 //  Square Off
 //
 //  Created by Chris Brown on 2/9/17.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class Tile: Equatable {
+class Card: Equatable {
     let cost: Int
     let image: UIImage
     let player: Player
@@ -20,6 +20,8 @@ class Tile: Equatable {
     }
 }
 
-func ==(lhs: Tile, rhs: Tile) -> Bool {
+
+
+func ==(lhs: Card, rhs: Card) -> Bool {
     return lhs === rhs
 }

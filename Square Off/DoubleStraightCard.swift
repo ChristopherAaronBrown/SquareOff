@@ -1,5 +1,5 @@
 //
-//  DoubleStraightTile.swift
+//  DoubleStraightCard.swift
 //  Square Off
 //
 //  Created by Chris Brown on 2/9/17.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class DoubleStraightTile: Tile, MovementTile {
+class DoubleStraightCard: Card, MovementCard {
     
     func getPaths(_ baseCoordinate: BoardCoordinate, player: Player) -> [Path] {
         var paths: [Path] = [Path]()
@@ -18,21 +18,21 @@ class DoubleStraightTile: Tile, MovementTile {
                                                      row: baseCoordinate.row - (1 * player.direction)) {
             if let targetCoordinate = try? BoardCoordinate(column: baseCoordinate.column,
                                                            row: baseCoordinate.row - (2 * player.direction)) {
-                paths.append(Path(coordinates: [baseCoordinate, midCoordinate, targetCoordinate], movementTileType: type(of: self)))
+                paths.append(Path(coordinates: [baseCoordinate, midCoordinate, targetCoordinate], movementCardType: type(of: self)))
             }
         }
         
         // Try to append Path to left
         if  let midCoordinate = try? BoardCoordinate(column: baseCoordinate.column - 1, row: baseCoordinate.row) {
             if let targetCoordinate = try? BoardCoordinate(column: baseCoordinate.column - 2, row: baseCoordinate.row) {
-                paths.append(Path(coordinates: [baseCoordinate, midCoordinate, targetCoordinate], movementTileType: type(of: self)))
+                paths.append(Path(coordinates: [baseCoordinate, midCoordinate, targetCoordinate], movementCardType: type(of: self)))
             }
         }
         
         // Try to append Path to right
         if  let midCoordinate = try? BoardCoordinate(column: baseCoordinate.column + 1, row: baseCoordinate.row) {
             if let targetCoordinate = try? BoardCoordinate(column: baseCoordinate.column + 2, row: baseCoordinate.row) {
-                paths.append(Path(coordinates: [baseCoordinate, midCoordinate, targetCoordinate], movementTileType: type(of: self)))
+                paths.append(Path(coordinates: [baseCoordinate, midCoordinate, targetCoordinate], movementCardType: type(of: self)))
             }
         }
         

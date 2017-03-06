@@ -28,6 +28,9 @@ class GameVC: UIViewController,
         }
         set {
             session.currentPlayer = newValue
+            bagSlot.image = player.number == 0 ? #imageLiteral(resourceName: "BagDiscardFilledPink") : #imageLiteral(resourceName: "BagDiscardFilledGreen")
+            discardSlot.image = player.number == 0 ? #imageLiteral(resourceName: "BagDiscardFilledPink") : #imageLiteral(resourceName: "BagDiscardFilledGreen")
+            updateLabelCounts()
         }
     }
     private var opponent: Player {
@@ -46,13 +49,14 @@ class GameVC: UIViewController,
         return player.playerDiscard
     }
     private var longPressedPawn: UIImageView?
-    private var requiredTileTypes: [BoardCoordinate:[Tile.Type]] = [:]
+    private var requiredCardTypes: [BoardCoordinate:[Card.Type]] = [:]
     private var eligiblePaths: [Path] = []
     private var highlightDict: [BoardCoordinate:UIColor] = [:]
     private var pathOptions: [PathAction] = []
     private var pathActionChosen: PathAction = .None
+    private var movementCardOption: MovementCard.Type!
     private var state: State = .Normal
-    
+    private var playOptions: [BoardCoordinate:[PlayOption]] = [:]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -105,67 +109,79 @@ class GameVC: UIViewController,
         
         player2.playerHand.newHand(for: player2)
         refresh()
+        updateLabelCounts()
         handView.refresh()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         hand.newHand(for: player)
-        handView.animateDeal(from: bagSlot.center, callback: { _ in
-            self.updateLabelCounts()
-        })
+        handView.animateDeal(from: bagSlot.center, callback: self.animateDealCallback)
     }
     
     private func refresh() {
         setNextState(.Normal)
         boardView.updateBoard()
-        updateLabelCounts()
+//        updateLabelCounts()
     }
     
-    private func updateLabelCounts() {
-        if bag.count > 0 {
+    private func updateBagCount(_ count: Int) {
+        if count > 0 {
             bagCount.isHidden = false
-            bagCount.text = "\(bag.count)"
-            bagSlot.image = player.number == 0 ? #imageLiteral(resourceName: "BagDiscardFilledPink") : #imageLiteral(resourceName: "BagDiscardFilledGreen")
+            bagCount.text = "\(count)"
         } else {
             bagCount.isHidden = true
             bagSlot.image = #imageLiteral(resourceName: "BagSlot")
         }
-        
-        if player.playerDiscard.count > 0 {
+    }
+    
+    private func updateDiscardCount(_ count: Int) {
+        if count > 0 {
             discardCount.isHidden = false
-            discardCount.text = "\(player.playerDiscard.count)"
-            discardSlot.image = player.number == 0 ? #imageLiteral(resourceName: "BagDiscardFilledPink") : #imageLiteral(resourceName: "BagDiscardFilledGreen")
+            discardCount.text = "\(count)"
         } else {
             discardCount.isHidden = true
             discardSlot.image = #imageLiteral(resourceName: "DiscardSlot")
         }
     }
     
+    private func updateLabelCounts() {
+        updateBagCount(bag.count)
+        updateDiscardCount(discard.count)
+    }
+    
     @IBAction func endTurnPressed(_ sender: UIButton) {
-        if hand.count == 0 {
+        if hand.isEmpty {
             hand.newHand(for: player)
-            session.currentPlayer = session.nextPlayerTurn()
+            player = session.nextPlayerTurn()
             refresh()
-            handView.animateDeal(from: bagSlot.center, callback: { (_) in
-                self.updateLabelCounts()
-            })
-            return
-        }
-        
-        handView.animateDiscard(to: discardSlot.center) { complete in
-            self.updateLabelCounts()
-            if complete {
-                self.hand.newHand(for: self.session.currentPlayer)
-                self.player = self.session.nextPlayerTurn()
-                self.refresh()
-                self.handView.animateDeal(from: self.bagSlot.center, callback: { (_) in
-                    self.updateLabelCounts()
-                })
+            handView.animateDeal(from: bagSlot.center, callback: self.animateDealCallback)
+        } else {
+            handView.animateDiscard(to: discardSlot.center) { (discardComplete) in
+                if let discardText = self.discardCount.text, let discardCount = Int(discardText) {
+                    self.updateDiscardCount(discardCount + 1)
+                } else {
+                    self.updateDiscardCount(1)
+                }
+                if discardComplete {
+                    self.hand.newHand(for: self.session.currentPlayer)
+                    self.player = self.session.nextPlayerTurn()
+                    self.refresh()
+                    self.handView.animateDeal(from: self.bagSlot.center, callback: self.animateDealCallback)
+                }
             }
         }
     }
     
+    func animateDealCallback(dealComplete: Bool) {
+        if let bagText = self.bagCount.text, let bagCount = Int(bagText) {
+            updateBagCount(bagCount - 1)
+        }
+        if dealComplete {
+            updateLabelCounts()
+        }
+    }
+
     // MARK: - BoardView delegate and data source functions
     func imageForSpace(at coordinate: BoardCoordinate) -> UIImage? {
         let modelCoordinate = player.number == 0 ? coordinate : coordinate.inverse()
@@ -187,13 +203,14 @@ class GameVC: UIViewController,
         let modelCoordinate = player.number == 0 ? coordinate : coordinate.inverse()
         let space = board.getBoardSpace(modelCoordinate)
         
-        if state == .ResurrectTileTapped && space.isHome(for: player) && !space.isOccupied() {
+        if state == .ResurrectCardTapped && space.isHome(for: player) && !space.isOccupied() {
             space.pawn = PlayerPawn(for: player)
             player.deadPawns -= 1
-            hand.discardTile(of: ResurrectTile.self, for: player)
+            hand.discardCard(of: ResurrectCard.self, for: player)
             highlightDict = [:]
             handView.refresh()
             refresh()
+            updateLabelCounts()
         }
     }
     
@@ -205,12 +222,15 @@ class GameVC: UIViewController,
         if space.isOccupied() && space.pawn!.owner == player && !space.pawn!.hasReachedGoal {
             setNextState(.Normal)
             
+            // Generate play options
+            generatePlayOptions(at: modelCoordinate)
+            
             // Determine all eligible paths from the origin board space
             eligiblePaths = findEligiblePaths(at: modelCoordinate)
             
             highlightSpaces(for: eligiblePaths, at: modelCoordinate)
             
-            board.getBoardSpace(modelCoordinate).pawn = nil
+            space.pawn = nil
             if longPressedPawn == nil {
                 let imageWidth = view.bounds.size.width * (44/320) * 1.25
                 let imageHeight = view.bounds.size.height * (48/568) * 1.25
@@ -245,6 +265,8 @@ class GameVC: UIViewController,
         let source = player.number == 0 ? sourceBoardCoordinate : sourceBoardCoordinate.inverse()
         let pathOptions = pathsEnding(at: target)
         
+        print("Play Options: \(playOptions[target]?[0].requiredCardTypes())")
+        
         if pathOptions.isEmpty {
             placePawn(at: source)
         } else if pathOptions.count == 1 {
@@ -258,14 +280,75 @@ class GameVC: UIViewController,
     }
     
     // MARK: Helper functions
+    private func generatePlayOptions(at modelCoordinate: BoardCoordinate) {
+        var hasAttackCard = false
+        var hasJumpCard = false
+        
+        for card in hand {
+            if type(of: card) == AttackCard.self {
+                hasAttackCard = true
+                continue
+            }
+            if type(of: card) == JumpCard.self {
+                hasJumpCard = true
+            }
+        }
+        
+        for card in hand {
+            if let movementCard = card as? MovementCard {
+                let movementCardType = type(of: movementCard) as! Card.Type
+                let paths = movementCard.getPaths(modelCoordinate, player: player)
+                for path in paths {
+                    var playOptions: [PlayOption] = []
+                    
+                    let action = getPathAction(for: path)
+                    switch action {
+                    case .Move:
+                        playOptions = [PlayOption(path: path, actions: [action : [movementCardType]])]
+                        
+                    case .Attack:
+                        if hasAttackCard {
+                            playOptions = [PlayOption(path: path, actions: [action : [movementCardType,AttackCard.self]])]
+                        }
+                    case .Jump:
+                        if hasJumpCard {
+                            playOptions = [PlayOption(path: path, actions: [action : [movementCardType,JumpCard.self]])]
+                        }
+                    case .JumpAndAttack:
+                        if hasAttackCard && hasJumpCard {
+                            playOptions = [PlayOption(path: path, actions: [action : [movementCardType,AttackCard.self,JumpCard.self]])]
+                        }
+                    case .JumpOrAttack:
+                        if hasAttackCard && hasJumpCard {
+                            playOptions = [PlayOption(path: path, actions: [action : [movementCardType,AttackCard.self]])]
+                            playOptions.append(PlayOption(path: path, actions: [action : [movementCardType,JumpCard.self]]))
+                        }
+                    default:
+                        break
+                    }
+                    
+                    if self.playOptions.isEmpty {
+                        self.playOptions[modelCoordinate] = playOptions
+                    } else {
+                        for playOption in playOptions {
+                            self.playOptions[modelCoordinate]?.append(playOption)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    
     private func promptUser(for paths: [Path], callback: (Path) -> Void) {
         var chosenPath: Path!
         
+        chosenPath = paths[0]
 //        for path in paths {
 //            pathOptions.append(getPathAction(for: path))
 //        }
 //        
-//        if (pathOptions.contains(.Attack) || pathOptions.contains(.JumpAndAttack)) {
+//        if pathOptions.contains(.Attack) || pathOptions.contains(.JumpAndAttack) {
 //            let pathOptionVC = PathOptionVC()
 //            
 //            pathOptionVC.dataSource = self
@@ -276,70 +359,67 @@ class GameVC: UIViewController,
 //            
 //            pathOptionVC.didMove(toParentViewController: self)
 //            
-//            for path in paths {
-//                if getPathAction(for: path) == pathActionChosen {
-//                    chosenPath = path
-//                    break
-//                } else {
-//                    chosenPath = paths[0]
-//                }
-//            }
-//            
-//            print(chosenPath)
-//            
-//            pathActionChosen = .None
-//            
+//            // PathOptionVC will set pathActionChosen
 //        } else {
-//            chosenPath = paths[0]
+//            pathActionChosen = .Move
 //        }
-        
-        for path in paths {
-            if getPathAction(for: path) == .Attack {
-                chosenPath = path
-                break
-            } else {
-                chosenPath = paths[0]
-            }
-        }
+//        
+//        for path in paths {
+//            if getPathAction(for: path) == pathActionChosen {
+//                chosenPath = path
+//                break
+//            } else {
+//                chosenPath = paths[0]
+//            }
+//        }
+//        
+//        pathActionChosen = .None
+//
+//        for i in 0..<paths.count {
+//            print("#\(i):")
+//            print("Path: \(paths[i])")
+//            print("Action: \(getPathAction(for: paths[i]))")
+//        }
         
         callback(chosenPath)
     }
     
     private func attemptPawnPlacement(along path: Path, from source: BoardCoordinate, to target: BoardCoordinate) {
-        var usedTileTypes: [Tile.Type] = [path.requiredMovementTileType()]
-        
+        var usedCardTypes: [Card.Type] = [path.requiredMovementCardType()]
+        print("Action: \(getPathAction(for: path))")
         switch getPathAction(for: path) {
         case .JumpAndAttack:
-            if opponent.playerHand.containsType(DefendTile.self) {
+            if opponent.playerHand.containsType(DefendCard.self) {
                 showDefendAnimation(for: opponent)
-                opponent.playerHand.discardTile(of: DefendTile.self, for: opponent)
+                opponent.playerHand.discardCard(of: DefendCard.self, for: opponent)
                 placePawn(at: source)
             } else {
                 placePawn(at: target)
                 opponent.deadPawns += 1
             }
-            usedTileTypes.append(JumpTile.self)
-            usedTileTypes.append(AttackTile.self)
+            usedCardTypes.append(JumpCard.self)
+            usedCardTypes.append(AttackCard.self)
         case .Attack:
-            if opponent.playerHand.containsType(DefendTile.self) {
+            if opponent.playerHand.containsType(DefendCard.self) {
                 showDefendAnimation(for: opponent)
-                opponent.playerHand.discardTile(of: DefendTile.self, for: opponent)
+                opponent.playerHand.discardCard(of: DefendCard.self, for: opponent)
                 let pawnCoordinate = attackCoordinate(along: path)!
                 let closest = path.closest(coordinate: pawnCoordinate)
                 placePawn(at: closest)
             } else {
                 placePawn(at: target)
             }
-            usedTileTypes.append(AttackTile.self)
+            usedCardTypes.append(AttackCard.self)
         case .Jump:
             placePawn(at: target)
-            usedTileTypes.append(JumpTile.self)
+            usedCardTypes.append(JumpCard.self)
         case .Move:
             placePawn(at: target)
         default:
             break
         }
-        removeUsedTiles(in: usedTileTypes)
+        removeUsedCards(in: usedCardTypes)
+        playOptions = [:]
     }
     
     private func showDefendAnimation(for player: Player) {
@@ -402,9 +482,9 @@ class GameVC: UIViewController,
                 space.pawn!.hasReachedGoal = true
             }
 
-            board.clearHighlights()
+//            board.clearHighlights()
 
-            requiredTileTypes = [:]
+            requiredCardTypes = [:]
             highlightDict = [:]
             eligiblePaths = []
             
@@ -413,9 +493,9 @@ class GameVC: UIViewController,
         }
     }
     
-    private func removeUsedTiles(in usedTileTypes: [Tile.Type]) {
-        for tileType in usedTileTypes {
-            hand.discardTile(of: tileType, for: player)
+    private func removeUsedCards(in usedCardTypes: [Card.Type]) {
+        for tileType in usedCardTypes {
+            hand.discardCard(of: tileType, for: player)
         }
         handView.refresh()
         refresh()
@@ -424,22 +504,22 @@ class GameVC: UIViewController,
     private func findEligiblePaths(at coordinate: BoardCoordinate) -> [Path] {
         var eligiblePaths: [Path] = []
         
-        /* For each movement tile in hand:
+        /* For each movement card in hand:
          - Get paths and check if hand has tiles required to perform path.
-         - If so, add to eligible paths and add required tile to path end board space.
-         - Then append all other tile types needed to perform that path.
+         - If so, add to eligible paths and add required card to path end board space.
+         - Then append all other card types needed to perform that path.
         */
-        for tile in hand {
-            if let movementTile = tile as? MovementTile {
-                let paths = movementTile.getPaths(coordinate, player: player)
+        for card in hand {
+            if let movementCard = card as? MovementCard {
+                let paths = movementCard.getPaths(coordinate, player: player)
                 for path in paths {
                     let (canPerform, tileTypes) = getPathAction(for: path).canPerform(with: hand)
                     if canPerform {
                         eligiblePaths.append(path)
-                        if requiredTileTypes[path.end] == nil {
-                            requiredTileTypes[path.end] = [type(of: tile)]
+                        if requiredCardTypes[path.end] == nil {
+                            requiredCardTypes[path.end] = [type(of: card)]
                         }
-                        requiredTileTypes[path.end]?.append(contentsOf: tileTypes)
+                        requiredCardTypes[path.end]?.append(contentsOf: tileTypes)
                     }
                 }
             }
@@ -567,7 +647,7 @@ class GameVC: UIViewController,
             case .JumpOrAttack:
                 if let attack = attackCoordinate(along: path) {
                     for coordinate in path {
-                        if coordinate == attack {
+                        if coordinate == attack && hand.containsType(AttackCard.self) {
                             highlightDict[coordinate] = Colors.yellow
                         } else if coordinate == path.end {
                             highlightDict[coordinate] = Colors.blueShadow
@@ -591,22 +671,22 @@ class GameVC: UIViewController,
     }
     
     private func removeGems() {
-        hand.discardAllTiles(type: GemTile.self, for: player)
+        hand.discardAllCards(type: GemCard.self, for: player)
     }
 
     // MARK: - HandView delegate and data source functions
-    func numberOfTiles() -> Int {
+    func numberOfCards() -> Int {
         return hand.count
     }
     
-    func imageForTile(at index: Int) -> UIImage? {
+    func imageForCard(at index: Int) -> UIImage? {
         return hand.tiles[index].image
     }
     
     func handViewSlotWasTapped(at index: Int) {
         let tileType = type(of: hand.tiles[index])
         
-        if tileType == GemTile.self {
+        if tileType == GemCard.self {
             let shopVC = ShopVC()
             
             shopVC.dataSource = self
@@ -617,9 +697,11 @@ class GameVC: UIViewController,
             
             shopVC.didMove(toParentViewController: self)
             
-        } else if tileType == ResurrectTile.self && player.deadPawns > 0 {
-            setNextState(.ResurrectTileTapped)
+        } else if tileType == ResurrectCard.self && player.deadPawns > 0 {
+            setNextState(.ResurrectCardTapped)
             highlightResurrectSpaces()
+        } else if tileType == BurnCard.self {
+            // TODO: Implement Burn Card
         }
         
     }
@@ -629,7 +711,7 @@ class GameVC: UIViewController,
         switch state {
         case .Normal:
             break
-        case .ResurrectTileTapped:
+        case .ResurrectCardTapped:
             break
         }
     }
@@ -665,12 +747,13 @@ class GameVC: UIViewController,
         return handView.center
     }
     
-    func purchased(tile: Tile) {
-        discard.add(tile)
+    func purchased(card: Card) {
+        discard.add(card)
         removeGems()
         
         handView.refresh()
         refresh()
+        updateLabelCounts()
     }
     
     // MARK: - PathOptionVC delegate and data source functions
@@ -680,6 +763,10 @@ class GameVC: UIViewController,
     
     func pathActionChoices() -> [PathAction] {
         return pathOptions
+    }
+    
+    func movementCard() -> MovementCard.Type {
+        return movementCardOption
     }
 }
 

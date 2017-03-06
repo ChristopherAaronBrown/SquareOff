@@ -11,6 +11,7 @@ import UIKit
 protocol PathOptionVCDataSource {
     func currentPlayer() -> Player
     func pathActionChoices() -> [PathAction]
+    func movementCard() -> MovementCard.Type
 }
 
 protocol PathOptionVCDelegate {
@@ -77,12 +78,12 @@ class PathOptionVC: UIViewController {
         
         print(dataSource.pathActionChoices())
         
-        // Movement Tile
+        // Movement Card
         yPos += (height + (16/528)) * tileNum
         
         tileNum += 1
         
-        // Attack Tile
+        // Attack Card
         if dataSource.pathActionChoices().contains(PathAction.Attack) {
             yPos += (height + (16/528)) * tileNum
             
@@ -98,7 +99,7 @@ class PathOptionVC: UIViewController {
             tileNum += 1
         }
         
-        // Jump Tile
+        // Jump Card
         if dataSource.pathActionChoices().contains(PathAction.Jump) {
             yPos += (height + (16/528)) * tileNum
             
@@ -114,31 +115,31 @@ class PathOptionVC: UIViewController {
             tileNum += 1
         }
         
-        // Jump + Attack Tile
+        // Jump + Attack Card
         if dataSource.pathActionChoices().contains(PathAction.JumpAndAttack) {
             yPos += (height + (16/528)) * tileNum
             
             // Jump
             xPos = view.bounds.midX - width
             let jumpFrame: CGRect = CGRect(x: xPos, y: yPos, width: width, height: height)
-            let jumpTileImageView = UIImageView(frame: jumpFrame)
-            jumpTileImageView.image = currentPlayer.number == 0 ? #imageLiteral(resourceName: "JumpPink") : #imageLiteral(resourceName: "JumpGreen")
-            jumpTileImageView.isUserInteractionEnabled = true
-            jumpTileImageView.addGestureRecognizer(tapRecognizer)
-            jumpTileImageView.tag = 3
+            let jumpCardImageView = UIImageView(frame: jumpFrame)
+            jumpCardImageView.image = currentPlayer.number == 0 ? #imageLiteral(resourceName: "JumpPink") : #imageLiteral(resourceName: "JumpGreen")
+            jumpCardImageView.isUserInteractionEnabled = true
+            jumpCardImageView.addGestureRecognizer(tapRecognizer)
+            jumpCardImageView.tag = 3
             
-            view.addSubview(jumpTileImageView)
+            view.addSubview(jumpCardImageView)
             
             // Attack
             xPos = view.bounds.midX + width
             let attackFrame: CGRect = CGRect(x: xPos, y: yPos, width: width, height: height)
-            let attackTileImageView = UIImageView(frame: attackFrame)
-            attackTileImageView.image = currentPlayer.number == 0 ? #imageLiteral(resourceName: "AttackPink") : #imageLiteral(resourceName: "AttackGreen")
-            attackTileImageView.isUserInteractionEnabled = true
-            attackTileImageView.addGestureRecognizer(tapRecognizer)
-            attackTileImageView.tag = 4
+            let attackCardImageView = UIImageView(frame: attackFrame)
+            attackCardImageView.image = currentPlayer.number == 0 ? #imageLiteral(resourceName: "AttackPink") : #imageLiteral(resourceName: "AttackGreen")
+            attackCardImageView.isUserInteractionEnabled = true
+            attackCardImageView.addGestureRecognizer(tapRecognizer)
+            attackCardImageView.tag = 4
             
-            view.addSubview(attackTileImageView)
+            view.addSubview(attackCardImageView)
             
             tileNum += 1
         }
