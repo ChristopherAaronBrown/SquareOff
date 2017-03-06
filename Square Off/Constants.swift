@@ -31,7 +31,7 @@ struct Colors {
     static let blueShadow: UIColor = UIColor(red: 91/255, green: 167/255, blue: 244/255, alpha: 1)
     static let yellow: UIColor = UIColor(red: 255/255, green: 205/255, blue: 93/255, alpha: 1)
     
-    var player1Light: UIColor {
+    static var player1Light: UIColor {
         get {
             switch ColorPairings(rawValue: UserDefaults.standard.integer(forKey: "ColorPairing"))! {
             case .GreenVsPink:
@@ -45,7 +45,7 @@ struct Colors {
             }
         }
     }
-    var player1Dark: UIColor {
+    static var player1Dark: UIColor {
         get {
             switch ColorPairings(rawValue: UserDefaults.standard.integer(forKey: "ColorPairing"))! {
             case .GreenVsPink:
@@ -59,7 +59,7 @@ struct Colors {
             }
         }
     }
-    var player2Light: UIColor {
+    static var player2Light: UIColor {
         get {
             switch ColorPairings(rawValue: UserDefaults.standard.integer(forKey: "ColorPairing"))! {
             case .GreenVsPink:
@@ -73,7 +73,7 @@ struct Colors {
             }
         }
     }
-    var player2Dark: UIColor {
+    static var player2Dark: UIColor {
         get {
             switch ColorPairings(rawValue: UserDefaults.standard.integer(forKey: "ColorPairing"))! {
             case .GreenVsPink:

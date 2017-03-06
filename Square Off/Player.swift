@@ -14,7 +14,7 @@ class Player {
     let direction: Int
     
     var deadPawns: Int = 0
-    var playerBag: PlayerBag
+    var playerDeck: PlayerDeck
     var playerHand: PlayerHand
     var playerDiscard: PlayerDiscard
     
@@ -22,14 +22,14 @@ class Player {
         self.number = number
         self.name = name
         direction = number == 0 ? 1 : -1
-        playerBag = PlayerBag()
+        playerDeck = PlayerDeck()
         playerHand = PlayerHand()
         playerDiscard = PlayerDiscard()
         
         
         // Draw first hand
-        playerBag.player = self
-        playerBag.populateInitialBag()
+        playerDeck.player = self
+        playerDeck.populateInitialBag()
 //        playerHand.newHand(for: self)
     }
     

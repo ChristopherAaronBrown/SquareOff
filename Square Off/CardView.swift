@@ -8,14 +8,38 @@
 
 import UIKit
 
+protocol CardViewDataSource {
+    func lightColor() -> CGColor
+    func darkColor() -> CGColor
+    func cardIcon() -> UIImage
+}
+
 class CardView: UIView {
 
-    /*
-    // Only override draw() if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func draw(_ rect: CGRect) {
-        // Drawing code
+    var dataSource: CardViewDataSource!
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        
     }
-    */
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func generate() {
+        // Background Rect
+        let card = CAGradientLayer()
+        card.frame = frame
+        card.colors = [dataSource.lightColor(), dataSource.darkColor()]
+        card.cornerRadius = 4
+        
+        layer.insertSublayer(card, at: 0)
+        
+        let icon = UIImageView(image: dataSource.cardIcon())
+        
+        addSubview(icon)
+    }
 
 }

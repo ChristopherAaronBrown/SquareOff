@@ -11,19 +11,29 @@ import UIKit
 protocol HandViewDataSource {
     func numberOfCards() -> Int
     func imageForCard(at index: Int) -> UIImage?
+    func currentPlayer() -> Player
 }
 
 protocol HandViewDelegate {
     func handViewSlotWasTapped(at index: Int)
 }
 
-class HandView: UIView {
+class HandView: UIView, CardViewDataSource {
     
     var dataSource: HandViewDataSource?
     var delegate: HandViewDelegate?
     private var handSlotImageViews: [UIImageView] = []
 
     func refresh() {
+        
+        let cardRect = CGRect(x: 0, y: 0, width: 50, height: 70)
+        let cardView = CardView(frame: cardRect)
+        
+        cardView.dataSource = self
+        cardView.generate()
+        
+        addSubview(cardView)
+        
         // Remove previous hand
         for subview in self.subviews {
             subview.removeFromSuperview()
@@ -146,5 +156,19 @@ class HandView: UIView {
             index += 1
             delay += duration
         }
+    }
+    
+    
+    // CardView Data Source functions
+    func lightColor() -> CGColor {
+        return dataSource?.currentPlayer().number == 0 ? Colors.player1Light.cgColor : Colors.player2Light.cgColor
+    }
+    
+    func darkColor() -> CGColor {
+        return dataSource?.currentPlayer().number == 0 ? Colors.player1Dark.cgColor : Colors.player2Dark.cgColor
+    }
+    
+    func cardIcon() -> UIImage {
+        return #imageLiteral(resourceName: "PawnPink")
     }
 }

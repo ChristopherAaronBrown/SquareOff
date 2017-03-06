@@ -1,5 +1,5 @@
 //
-//  PlayerBag.swift
+//  PlayerDeck.swift
 //  Square Off
 //
 //  Created by Chris Brown on 2/9/17.
@@ -12,7 +12,7 @@ enum PlayerBagError: Error {
     case bagNotEmpty
 }
 
-class PlayerBag {
+class PlayerDeck {
     var player: Player!
     var tiles: [Card] = [Card]()
     

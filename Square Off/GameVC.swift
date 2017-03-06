@@ -42,8 +42,8 @@ class GameVC: UIViewController,
     private var hand: PlayerHand {
         return player.playerHand
     }
-    private var bag: PlayerBag {
-        return player.playerBag
+    private var deck: PlayerDeck {
+        return player.playerDeck
     }
     private var discard: PlayerDiscard {
         return player.playerDiscard
@@ -146,7 +146,7 @@ class GameVC: UIViewController,
     }
     
     private func updateLabelCounts() {
-        updateBagCount(bag.count)
+        updateBagCount(deck.count)
         updateDiscardCount(discard.count)
     }
     

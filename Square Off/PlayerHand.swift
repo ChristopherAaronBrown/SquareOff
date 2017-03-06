@@ -32,10 +32,10 @@ class PlayerHand {
         // Try to get a new hand
         do {
             while count < limit {
-                if let card = player.playerBag.draw() {
+                if let card = player.playerDeck.draw() {
                     tiles.append(card)
                 } else {
-                    try player.playerBag.refill(player.playerDiscard)
+                    try player.playerDeck.refill(player.playerDiscard)
                 }
             }
         } catch PlayerDiscardError.nothingDiscarded {
