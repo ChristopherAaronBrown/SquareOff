@@ -326,7 +326,6 @@ class GameVC: UIViewController,
     }
     
     func pawnLongPressEnded(at targetBoardCoordinate: Coordinate, from sourceBoardCoordinate: Coordinate) {
-        
         let target = player.number == 0 ? targetBoardCoordinate : targetBoardCoordinate.inverse
         let source = player.number == 0 ? sourceBoardCoordinate : sourceBoardCoordinate.inverse
         let pathOptions = pathsEnding(at: target)
@@ -527,29 +526,27 @@ class GameVC: UIViewController,
     }
     
     private func placePawn(at modelCoordinate: Coordinate) {
-        if longPressedPawn != nil {
-            longPressedPawn!.removeFromSuperview()
-            longPressedPawn = nil
+        longPressedPawn!.removeFromSuperview()
+        longPressedPawn = nil
 
-            let space = board.getBoardSpace(modelCoordinate)
+        let space = board.getBoardSpace(modelCoordinate)
 
-            if space.isOccupied() && space.pawn!.owner !== player {
-                space.pawn!.owner.deadPawns += 1
-            }
-
-            space.pawn = Pawn(owner: player)
-
-            if space.isGoal(for: player) {
-                space.pawn!.hasReachedGoal = true
-            }
-
-            requiredCardTypes = [:]
-            highlightDict = [:]
-            eligiblePaths = []
-            
-            refresh()
-            handView.refresh()
+        if space.isOccupied() && space.pawn!.owner == opponent {
+            opponent.deadPawns += 1
         }
+
+        space.pawn = Pawn(owner: player)
+
+        if space.isGoal(for: player) {
+            space.pawn!.hasReachedGoal = true
+        }
+
+        requiredCardTypes = [:]
+        highlightDict = [:]
+        eligiblePaths = []
+        
+        refresh()
+        handView.refresh()
     }
     
     private func removeUsedCards(in usedCardTypes: [Card.Type]) {

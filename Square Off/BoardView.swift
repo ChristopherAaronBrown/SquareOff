@@ -37,10 +37,23 @@ class BoardView: UIView {
         
         super.init(frame: frame)
         
+        updateBoard()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented. Do not create BoardView in Interface Builder.")
+    }
+    
+    func updateBoard() {
+        // Remove subviews
+        for subview in subviews {
+            subview.removeFromSuperview()
+        }
+        
         // Highlight image view spacing
         let spaceWidth: CGFloat = bounds.width * (46/304)
         let spaceHeight: CGFloat = spaceWidth
-        let spaceMargin: CGFloat = (bounds.width - CGFloat(Constants.numberOfSpaces) * spaceWidth) / CGFloat(Constants.numberOfSpaces - 1)
+        let spaceMargin: CGFloat = (bounds.width - CGFloat(board.count) * spaceWidth) / CGFloat(board.count - 1)
         
         // Pawn image view spacing
         let pawnTop: CGFloat = bounds.height * (-3/304)
@@ -48,10 +61,10 @@ class BoardView: UIView {
         let pawnHeight: CGFloat = bounds.height * (48/304)
         let pawnWidth: CGFloat = bounds.width * (44/304)
         
-        for column in 0..<Constants.numberOfSpaces {
-            for row in 0..<Constants.numberOfSpaces {
+        for column in 0..<board.count {
+            for row in 0..<board.count {
                 let coordinate = try! Coordinate(column: column, row: row)
-                let tag: Int = column + (row * Constants.numberOfSpaces)
+                let tag: Int = column + (row * board.count)
                 
                 // Generate highlights
                 let spaceXPos = (spaceWidth + spaceMargin) * CGFloat(column)
@@ -88,37 +101,21 @@ class BoardView: UIView {
         }
     }
     
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented. Do not create BoardView in Interface Builder.")
-    }
-    
-    func updateBoard() {
-        
-//        for (coordinate, space) in spaceDict {
-//            space.backgroundColor = dataSource?.highlightForSpace(at: coordinate)
-//        }
-//        for (coordinate, pawnView) in pawnDict {
-//            pawnView = dataSource?.pawnViewForSpace(at: coordinate)
-//        }
-    }
-    
-    func boardSpaceTapped(_ sender: UITapGestureRecognizer) {
+    @objc private func boardSpaceTapped(_ sender: UITapGestureRecognizer) {
         if let boardSpaceImageView = sender.view {
             let tag = boardSpaceImageView.tag
-            let coordinate = try! Coordinate(column: tag % Constants.numberOfSpaces,
-                                                  row: tag / Constants.numberOfSpaces)
+            let coordinate = try! Coordinate(column: tag % board.count, row: tag / board.count)
             self.delegate?.boardSpaceTapped(at: coordinate)
         }
     }
     
-    func pawnLongPressed(_ sender: UILongPressGestureRecognizer) {
-        if let pawn = sender.view as? UIImageView {
+    @objc private func pawnLongPressed(_ sender: UILongPressGestureRecognizer) {
+        if let pawn = sender.view as? PawnView {
             let startTag = pawn.tag
-            let coordinate = try! Coordinate(column: startTag % Constants.numberOfSpaces,
-                                                  row: startTag / Constants.numberOfSpaces)
+            let coordinate = try! Coordinate(column: startTag % board.count, row: startTag / board.count)
             switch sender.state {
             case .began:
-                self.delegate?.pawnLongPressBegan(at: coordinate, with: sender.location(in: self.superview))
+                delegate?.pawnLongPressBegan(at: coordinate, with: sender.location(in: self.superview))
             case .changed:
                 delegate?.pawnLongPressChanged(at: sender.location(in: self.superview))
             case .ended:
@@ -130,7 +127,7 @@ class BoardView: UIView {
         }
     }
     
-    func nearestBoardCoordinate(_ touchLocation: CGPoint, from originalBoardCoordinate: Coordinate) -> Coordinate {
+    private func nearestBoardCoordinate(_ touchLocation: CGPoint, from originalBoardCoordinate: Coordinate) -> Coordinate {
         var boardCoordinate: Coordinate!
         var closestDistance: CGFloat = CGFloat.greatestFiniteMagnitude
         
