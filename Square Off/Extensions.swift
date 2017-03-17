@@ -17,7 +17,7 @@ extension GameVC: UIViewControllerPreviewingDelegate {
         
         previewVC.preferredContentSize = CGSize(width: 100, height: 100)
         
-        previewingContext.sourceRect = discardSlot.frame
+//        previewingContext.sourceRect = discardSlot.frame
         
         return previewVC
     }
@@ -25,5 +25,33 @@ extension GameVC: UIViewControllerPreviewingDelegate {
     // Pop
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
         
+    }
+}
+
+extension CGRect {
+    var center: CGPoint {
+        get {
+            let centerX = origin.x + (size.width / 2)
+            let centerY = origin.y + (size.height / 2)
+            return CGPoint(x: centerX, y: centerY)
+        }
+        set(newCenter) {
+            origin.x = newCenter.x - (size.width / 2)
+            origin.y = newCenter.y - (size.height / 2)
+        }
+    }
+}
+
+extension CGPoint {
+    func distanceTo(_ point: CGPoint) -> CGFloat {
+        let xDist = self.x - point.x
+        let yDist = self.y - point.y
+        return CGFloat(sqrt(pow(xDist,2) + pow(yDist,2)))
+    }
+}
+
+extension Hand: Sequence {
+    func makeIterator() -> AnyIterator<Card> {
+        return AnyIterator(cards.makeIterator())
     }
 }

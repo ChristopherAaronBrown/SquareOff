@@ -10,22 +10,22 @@ import UIKit
 
 class DoubleDiagonalCard: Card, MovementCard {
     
-    func getPaths(_ baseCoordinate: BoardCoordinate, player: Player) -> [Path] {
+    func getPaths(_ baseCoordinate: Coordinate, player: Player) -> [Path] {
         var paths: [Path] = [Path]()
         
         // Try to append Path vertical-left
-        if  let midCoordinate = try? BoardCoordinate(column: baseCoordinate.column - 1,
+        if  let midCoordinate = try? Coordinate(column: baseCoordinate.column - 1,
                                                      row: baseCoordinate.row - (1 * player.direction)) {
-            if let targetCoordinate = try? BoardCoordinate(column: baseCoordinate.column - 2,
+            if let targetCoordinate = try? Coordinate(column: baseCoordinate.column - 2,
                                                            row: baseCoordinate.row - (2 * player.direction)) {
                 paths.append(Path(coordinates: [baseCoordinate, midCoordinate, targetCoordinate], movementCardType: type(of: self)))
             }
         }
         
         // Try to append Path vertical-right
-        if  let midCoordinate = try? BoardCoordinate(column: baseCoordinate.column + 1,
+        if  let midCoordinate = try? Coordinate(column: baseCoordinate.column + 1,
                                                      row: baseCoordinate.row - (1 * player.direction)) {
-            if let targetCoordinate = try? BoardCoordinate(column: baseCoordinate.column + 2,
+            if let targetCoordinate = try? Coordinate(column: baseCoordinate.column + 2,
                                                            row: baseCoordinate.row - (2 * player.direction)) {
                 paths.append(Path(coordinates: [baseCoordinate, midCoordinate, targetCoordinate], movementCardType: type(of: self)))
             }
@@ -34,8 +34,7 @@ class DoubleDiagonalCard: Card, MovementCard {
         return paths
     }
     
-    init(player: Player) {
-        let image = player.number == 0 ? #imageLiteral(resourceName: "DoubleDiagonalPink") : #imageLiteral(resourceName: "DoubleDiagonalGreen")
-        super.init(player: player, cost: 5, image: image)
+    init() {
+        super.init(cost: 5)
     }
 }

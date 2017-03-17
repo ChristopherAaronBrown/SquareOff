@@ -10,17 +10,11 @@ import UIKit
 
 class Card: Equatable {
     let cost: Int
-    let image: UIImage
-    let player: Player
     
-    init(player: Player, cost: Int, image: UIImage) {
-        self.player = player
+    init(cost: Int) {
         self.cost = cost
-        self.image = image
     }
 }
-
-
 
 func ==(lhs: Card, rhs: Card) -> Bool {
     return lhs === rhs

@@ -75,7 +75,7 @@ class ShopVC: UIViewController {
     
     private func addTotalGems() {
         let player = dataSource.currentPlayer()
-        let totalGems = player.playerHand.totalGems()
+        let totalGems = player.hand.totalGems()
         
         let width: CGFloat = view.bounds.width * (150/320)
         let height: CGFloat = view.bounds.height * (48/568)
@@ -94,7 +94,7 @@ class ShopVC: UIViewController {
     
     private func addShop() {
         let player = dataSource.currentPlayer()
-        let totalGems = player.playerHand.totalGems()
+        let totalGems = player.hand.totalGems()
         let alpha: CGFloat = 0.3
         
         // Shop image
@@ -299,41 +299,39 @@ class ShopVC: UIViewController {
     }
     
     private func selectedCard() -> Card {
-        let player = dataSource.currentPlayer()
-        
         switch ShopCard(rawValue: tileTag)! {
         case .SingleGem:
-            return GemCard(player: player, gem: Gem.Single)
+            return GemCard(gem: Gem.Single)
         case .DoubleGem:
-            return GemCard(player: player, gem: Gem.Double)
+            return GemCard(gem: Gem.Double)
         case .TripleGem:
-            return GemCard(player: player, gem: Gem.Triple)
+            return GemCard(gem: Gem.Triple)
         case .Jump:
-            return JumpCard(player: player)
+            return JumpCard()
         case .Attack:
-            return AttackCard(player: player)
+            return AttackCard()
         case .Defend:
-            return DefendCard(player: player)
+            return DefendCard()
         case .Burn:
-            return BurnCard(player: player)
+            return BurnCard()
         case .Resurrect:
-            return ResurrectCard(player: player)
+            return ResurrectCard()
         case .SingleStraight:
-            return SingleStraightCard(player: player)
+            return SingleStraightCard()
         case .SingleDiagonal:
-            return SingleDiagonalCard(player: player)
+            return SingleDiagonalCard()
         case .ZigZagLeft:
-            return ZigZagLeftCard(player: player)
+            return ZigZagLeftCard()
         case .KnightLeft:
-            return KnightLeftCard(player: player)
+            return KnightLeftCard()
         case .DoubleStraight:
-            return DoubleStraightCard(player: player)
+            return DoubleStraightCard()
         case .DoubleDiagonal:
-            return DoubleDiagonalCard(player: player)
+            return DoubleDiagonalCard()
         case .ZigZagRight:
-            return ZigZagRightCard(player: player)
+            return ZigZagRightCard()
         case .KnightRight:
-            return KnightRightCard(player: player)
+            return KnightRightCard()
         }
     }
     

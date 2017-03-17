@@ -7,5 +7,5 @@
 //
 
 protocol MovementCard {
-    func getPaths(_ baseCoordinate: BoardCoordinate, player: Player) -> [Path]
+    func getPaths(_ baseCoordinate: Coordinate, player: Player) -> [Path]
 }

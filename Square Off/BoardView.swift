@@ -9,15 +9,16 @@
 import UIKit
 
 protocol BoardViewDataSource {
-    func imageForSpace(at coordinate: BoardCoordinate) -> UIImage?
-    func highlightForSpace(at coordinate: BoardCoordinate) -> UIColor
+    func pawnViewForSpace(at coordinate: Coordinate) -> PawnView?
+    func highlightForSpace(at coordinate: Coordinate) -> UIColor
+    func currentBoard() -> Board
 }
 
 protocol BoardViewDelegate {
-    func pawnLongPressBegan(at coordinate: BoardCoordinate, with touchLocation: CGPoint)
+    func pawnLongPressBegan(at coordinate: Coordinate, with touchLocation: CGPoint)
     func pawnLongPressChanged(at location: CGPoint)
-    func pawnLongPressEnded(at targetBoardCoordinage: BoardCoordinate, from sourceBoardCoordinate: BoardCoordinate)
-    func boardSpaceTapped(at coordinate: BoardCoordinate)
+    func pawnLongPressEnded(at targetBoardCoordinage: Coordinate, from sourceBoardCoordinate: Coordinate)
+    func boardSpaceTapped(at coordinate: Coordinate)
 }
 
 class BoardView: UIView {
@@ -25,160 +26,87 @@ class BoardView: UIView {
     var dataSource: BoardViewDataSource?
     var delegate: BoardViewDelegate?
     
-    private var pawnDict: [BoardCoordinate : UIImageView]
-    private var highlightDict: [BoardCoordinate : UIImageView]
+    private let board: Board
+    private var pawnDict: [Coordinate:PawnView?]
+    private var spaceDict: [Coordinate:UIImageView]
     
-    override init(frame: CGRect) {
+    init(frame: CGRect, board: Board) {
         pawnDict = [:]
-        highlightDict = [:]
+        spaceDict = [:]
+        self.board = board
         
         super.init(frame: frame)
         
-        let backgroundFrame = CGRect(x: 0, y: 0, width: bounds.width, height: bounds.height)
-        let background = UIImageView(frame: backgroundFrame)
-        background.contentMode = .scaleToFill
-        background.image = #imageLiteral(resourceName: "Board")
-        addSubview(background)
+        // Highlight image view spacing
+        let spaceWidth: CGFloat = bounds.width * (46/304)
+        let spaceHeight: CGFloat = spaceWidth
+        let spaceMargin: CGFloat = (bounds.width - CGFloat(Constants.numberOfSpaces) * spaceWidth) / CGFloat(Constants.numberOfSpaces - 1)
         
         // Pawn image view spacing
-        let pawnTopMargin: CGFloat = bounds.height * (5/308)
-        let pawnSideMargin: CGFloat = bounds.width * (5/304)
-        let pawnTopPadding: CGFloat = bounds.height * (2/308)
-        let pawnSidePadding: CGFloat = bounds.width * (6/304)
-        let pawnHeight: CGFloat = bounds.height * (48/308)
+        let pawnTop: CGFloat = bounds.height * (-3/304)
+        let pawnMargin: CGFloat = bounds.width * (1/304)
+        let pawnHeight: CGFloat = bounds.height * (48/304)
         let pawnWidth: CGFloat = bounds.width * (44/304)
         
-        // Highlight image view spacing
-        let highlightTopMargin: CGFloat = bounds.height * (8/308)
-        let highlightSideMargin: CGFloat = bounds.width * (4/304)
-        let highlightTopPadding: CGFloat = bounds.height * (4/308)
-        let highlightSidePadding: CGFloat = bounds.width * (4/304)
-        let highlightHeight: CGFloat = bounds.height * (46/308)
-        let highlightWidth: CGFloat = bounds.width * (46/304)
-        
-        for column in 0..<Constants.numberOfBoardSpaces {
-            for row in 0..<Constants.numberOfBoardSpaces {
-                let coordinate = try! BoardCoordinate(column: column, row: row)
-                let tag: Int = column + (row * Constants.numberOfBoardSpaces)
+        for column in 0..<Constants.numberOfSpaces {
+            for row in 0..<Constants.numberOfSpaces {
+                let coordinate = try! Coordinate(column: column, row: row)
+                let tag: Int = column + (row * Constants.numberOfSpaces)
                 
                 // Generate highlights
-                let highlightXPos = (highlightWidth + highlightSidePadding) * CGFloat(column) + highlightSideMargin
-                let highlightYPos = (highlightHeight + highlightTopPadding) * CGFloat(row) + highlightTopMargin
-                let highlightImageView = UIImageView(frame: CGRect(x: highlightXPos, y: highlightYPos, width: highlightWidth, height: highlightHeight))
+                let spaceXPos = (spaceWidth + spaceMargin) * CGFloat(column)
+                let spaceYPos = (spaceHeight + spaceMargin) * CGFloat(row)
+                let spaceImageView = UIImageView(frame: CGRect(x: spaceXPos, y: spaceYPos, width: spaceWidth, height: spaceHeight))
                 
-                highlightImageView.backgroundColor = UIColor.clear
-                highlightImageView.layer.cornerRadius = 8
+                spaceImageView.backgroundColor = Colors.grey
+                spaceImageView.layer.cornerRadius = 8
                 
-                highlightDict[coordinate] = highlightImageView
+                spaceDict[coordinate] = spaceImageView
                 
-                addSubview(highlightImageView)
+                addSubview(spaceImageView)
                 
                 // Generate pawns
-                let pawnXPos = (pawnWidth + pawnSidePadding) * CGFloat(column) + pawnSideMargin
-                let pawnYPos = (pawnHeight + pawnTopPadding) * CGFloat(row) + pawnTopMargin
-                let pawnImageView = UIImageView(frame: CGRect(x: pawnXPos, y: pawnYPos, width: pawnWidth, height: pawnHeight))
-                
-                let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(BoardView.boardSpaceTapped(_:)))
-                let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(BoardView.pawnLongPressed(_:)))
-                longPressRecognizer.minimumPressDuration = 0.25
-                
-                pawnImageView.tag = tag
-                pawnImageView.isUserInteractionEnabled = true
-                pawnImageView.addGestureRecognizer(tapRecognizer)
-                pawnImageView.addGestureRecognizer(longPressRecognizer)
-                pawnImageView.backgroundColor = UIColor.clear
-                
-                pawnDict[coordinate] = pawnImageView
-                
-                addSubview(pawnImageView)
-                
+                if let pawn = board.getBoardSpace(coordinate).pawn {
+                    let pawnXPos = spaceXPos + pawnMargin
+                    let pawnYPos = spaceYPos + pawnTop
+                    let pawnFrame = CGRect(x: pawnXPos, y: pawnYPos, width: pawnWidth, height: pawnHeight)
+                    let pawnView = PawnView(frame: pawnFrame, owner: pawn.owner)
+                    let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(boardSpaceTapped))
+                    let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(pawnLongPressed))
+                    longPressRecognizer.minimumPressDuration = 0
+                    
+                    pawnView.tag = tag
+                    pawnView.isUserInteractionEnabled = true
+                    pawnView.addGestureRecognizer(tapRecognizer)
+                    pawnView.addGestureRecognizer(longPressRecognizer)
+                    
+                    pawnDict[coordinate] = pawnView
+                    
+                    addSubview(pawnView)
+                }
             }
         }
     }
     
     required init?(coder aDecoder: NSCoder) {
-//        fatalError("init(coder:) has not been implemented. Do not create BoardView in Interface Builder.")
-        pawnDict = [:]
-        highlightDict = [:]
-        
-        super.init(coder: aDecoder)
-        
-        let backgroundFrame = CGRect(x: 0, y: 0, width: bounds.width, height: bounds.height)
-        let background = UIImageView(frame: backgroundFrame)
-        background.contentMode = .scaleToFill
-        background.image = #imageLiteral(resourceName: "Board")
-        addSubview(background)
-        
-        // Pawn image view spacing
-        let pawnTopMargin: CGFloat = bounds.height * (5/308)
-        let pawnSideMargin: CGFloat = bounds.width * (5/304)
-        let pawnTopPadding: CGFloat = bounds.height * (2/308)
-        let pawnSidePadding: CGFloat = bounds.width * (6/304)
-        let pawnHeight: CGFloat = bounds.height * (48/308)
-        let pawnWidth: CGFloat = bounds.width * (44/304)
-        
-        // Highlight image view spacing
-        let highlightTopMargin: CGFloat = bounds.height * (8/308)
-        let highlightSideMargin: CGFloat = bounds.width * (4/304)
-        let highlightTopPadding: CGFloat = bounds.height * (4/308)
-        let highlightSidePadding: CGFloat = bounds.width * (4/304)
-        let highlightHeight: CGFloat = bounds.height * (46/308)
-        let highlightWidth: CGFloat = bounds.width * (46/304)
-        
-        for column in 0..<Constants.numberOfBoardSpaces {
-            for row in 0..<Constants.numberOfBoardSpaces {
-                let coordinate = try! BoardCoordinate(column: column, row: row)
-                let tag: Int = column + (row * Constants.numberOfBoardSpaces)
-                
-                // Generate highlights
-                let highlightXPos = (highlightWidth + highlightSidePadding) * CGFloat(column) + highlightSideMargin
-                let highlightYPos = (highlightHeight + highlightTopPadding) * CGFloat(row) + highlightTopMargin
-                let highlightImageView = UIImageView(frame: CGRect(x: highlightXPos, y: highlightYPos, width: highlightWidth, height: highlightHeight))
-                
-                highlightImageView.backgroundColor = UIColor.clear
-                highlightImageView.layer.cornerRadius = 8
-                
-                highlightDict[coordinate] = highlightImageView
-                
-                addSubview(highlightImageView)
-                
-                // Generate pawns
-                let pawnXPos = (pawnWidth + pawnSidePadding) * CGFloat(column) + pawnSideMargin
-                let pawnYPos = (pawnHeight + pawnTopPadding) * CGFloat(row) + pawnTopMargin
-                let pawnImageView = UIImageView(frame: CGRect(x: pawnXPos, y: pawnYPos, width: pawnWidth, height: pawnHeight))
-                
-                let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(BoardView.boardSpaceTapped(_:)))
-                let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(BoardView.pawnLongPressed(_:)))
-                longPressRecognizer.minimumPressDuration = 0.25
-                
-                pawnImageView.tag = tag
-                pawnImageView.isUserInteractionEnabled = true
-                pawnImageView.addGestureRecognizer(tapRecognizer)
-                pawnImageView.addGestureRecognizer(longPressRecognizer)
-                pawnImageView.backgroundColor = UIColor.clear
-                
-                pawnDict[coordinate] = pawnImageView
-                
-                addSubview(pawnImageView)
-                
-            }
-        }
+        fatalError("init(coder:) has not been implemented. Do not create BoardView in Interface Builder.")
     }
     
     func updateBoard() {
-        for (coordinate, highlight) in highlightDict {
-            highlight.backgroundColor = dataSource?.highlightForSpace(at: coordinate)
-        }
-        for (coordinate, pawn) in pawnDict {
-            pawn.image = dataSource?.imageForSpace(at: coordinate)
-        }
+        
+//        for (coordinate, space) in spaceDict {
+//            space.backgroundColor = dataSource?.highlightForSpace(at: coordinate)
+//        }
+//        for (coordinate, pawnView) in pawnDict {
+//            pawnView = dataSource?.pawnViewForSpace(at: coordinate)
+//        }
     }
     
     func boardSpaceTapped(_ sender: UITapGestureRecognizer) {
         if let boardSpaceImageView = sender.view {
             let tag = boardSpaceImageView.tag
-            let coordinate = try! BoardCoordinate(column: tag % Constants.numberOfBoardSpaces,
-                                                  row: tag / Constants.numberOfBoardSpaces)
+            let coordinate = try! Coordinate(column: tag % Constants.numberOfSpaces,
+                                                  row: tag / Constants.numberOfSpaces)
             self.delegate?.boardSpaceTapped(at: coordinate)
         }
     }
@@ -186,8 +114,8 @@ class BoardView: UIView {
     func pawnLongPressed(_ sender: UILongPressGestureRecognizer) {
         if let pawn = sender.view as? UIImageView {
             let startTag = pawn.tag
-            let coordinate = try! BoardCoordinate(column: startTag % Constants.numberOfBoardSpaces,
-                                                  row: startTag / Constants.numberOfBoardSpaces)
+            let coordinate = try! Coordinate(column: startTag % Constants.numberOfSpaces,
+                                                  row: startTag / Constants.numberOfSpaces)
             switch sender.state {
             case .began:
                 self.delegate?.pawnLongPressBegan(at: coordinate, with: sender.location(in: self.superview))
@@ -202,18 +130,18 @@ class BoardView: UIView {
         }
     }
     
-    func nearestBoardCoordinate(_ touchLocation: CGPoint, from originalBoardCoordinate: BoardCoordinate) -> BoardCoordinate {
-        var boardCoordinate: BoardCoordinate!
+    func nearestBoardCoordinate(_ touchLocation: CGPoint, from originalBoardCoordinate: Coordinate) -> Coordinate {
+        var boardCoordinate: Coordinate!
         var closestDistance: CGFloat = CGFloat.greatestFiniteMagnitude
         
         // Touch is in BoardView
-        if self.bounds.contains(touchLocation) {
-            for (coordinate, image) in pawnDict {
+        if bounds.contains(touchLocation) {
+            for (coordinate, pawnView) in pawnDict {
                 // Touch is in board space
-                if image.frame.contains(touchLocation) {
+                if pawnView!.frame.contains(touchLocation) {
                     return coordinate
                 }
-                let distance = image.frame.center.distanceTo(touchLocation)
+                let distance = pawnView!.frame.center.distanceTo(touchLocation)
                 if distance < closestDistance {
                     closestDistance = distance
                     boardCoordinate = coordinate
@@ -228,24 +156,3 @@ class BoardView: UIView {
 
 }
 
-extension CGRect {
-    var center: CGPoint {
-        get {
-            let centerX = origin.x + (size.width / 2)
-            let centerY = origin.y + (size.height / 2)
-            return CGPoint(x: centerX, y: centerY)
-        }
-        set(newCenter) {
-            origin.x = newCenter.x - (size.width / 2)
-            origin.y = newCenter.y - (size.height / 2)
-        }
-    }
-}
-
-extension CGPoint {
-    func distanceTo(_ point: CGPoint) -> CGFloat {
-        let xDist = self.x - point.x
-        let yDist = self.y - point.y
-        return CGFloat(sqrt(pow(xDist,2) + pow(yDist,2)))
-    }
-}

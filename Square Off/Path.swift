@@ -7,27 +7,27 @@
 //
 
 struct Path {
-    fileprivate let coordinates: [BoardCoordinate]
+    fileprivate let coordinates: [Coordinate]
     private let movementCardType: MovementCard.Type
     
     var count: Int {
         return coordinates.count
     }
     
-    var beginning: BoardCoordinate {
+    var beginning: Coordinate {
         return coordinates.first!
     }
     
-    var end: BoardCoordinate {
+    var end: Coordinate {
         return coordinates.last!
     }
     
-    init(coordinates: [BoardCoordinate], movementCardType: MovementCard.Type) {
+    init(coordinates: [Coordinate], movementCardType: MovementCard.Type) {
         self.coordinates = coordinates
         self.movementCardType = movementCardType
     }
     
-    func closest(coordinate: BoardCoordinate) -> BoardCoordinate {
+    func closest(coordinate: Coordinate) -> Coordinate {
         for index in 1..<coordinates.count {
             if coordinates[index] == coordinate {
                 return coordinates[index - 1]
@@ -36,7 +36,7 @@ struct Path {
         return coordinate
     }
     
-    func contains(coordinate: BoardCoordinate) -> Bool {
+    func contains(coordinate: Coordinate) -> Bool {
         for boardCoordinate in coordinates {
             if coordinate == boardCoordinate {
                 return true
@@ -51,7 +51,7 @@ struct Path {
 }
 
 extension Path: Sequence {
-    func makeIterator() -> AnyIterator<BoardCoordinate> {
+    func makeIterator() -> AnyIterator<Coordinate> {
         return AnyIterator(self.coordinates.makeIterator())
     }
 }
@@ -83,7 +83,7 @@ enum PathAction {
 //            return [JumpCard.self,AttackCard.self]
 //        }
 //    }
-    func canPerform(with hand: PlayerHand) -> (Bool, [Card.Type]) {
+    func canPerform(with hand: Hand) -> (Bool, [Card.Type]) {
         var tileTypes: [Card.Type] = []
         switch self {
         case .None:
@@ -105,8 +105,8 @@ enum PathAction {
         }
     }
     
-    private static func contains(type: Card.Type, in hand: PlayerHand, with tileTypes: inout [Card.Type]) -> Bool {
-        if hand.tiles.contains(where: { (card) -> Bool in type(of: card) == type }) {
+    private static func contains(type: Card.Type, in hand: Hand, with tileTypes: inout [Card.Type]) -> Bool {
+        if hand.cards.contains(where: { (card) -> Bool in type(of: card) == type }) {
             tileTypes.append(type)
             return true
         } else {

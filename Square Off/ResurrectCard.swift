@@ -9,8 +9,7 @@
 import UIKit
 
 class ResurrectCard: Card, ActionCard {
-    init(player: Player) {
-        let image = player.number == 0 ? #imageLiteral(resourceName: "ResurrectPink") : #imageLiteral(resourceName: "ResurrectGreen")
-        super.init(player: player, cost: 6, image: image)
+    init() {
+        super.init(cost: 6)
     }
 }

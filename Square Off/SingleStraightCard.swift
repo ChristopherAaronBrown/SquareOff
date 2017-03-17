@@ -10,30 +10,29 @@ import UIKit
 
 class SingleStraightCard: Card, MovementCard {
     
-    func getPaths(_ baseCoordinate: BoardCoordinate, player: Player) -> [Path] {
+    func getPaths(_ baseCoordinate: Coordinate, player: Player) -> [Path] {
         var paths: [Path] = [Path]()
         
         // Try to append Path vertically
-        if let targetCoordinate = try? BoardCoordinate(column: baseCoordinate.column,
+        if let targetCoordinate = try? Coordinate(column: baseCoordinate.column,
                                                        row: baseCoordinate.row - (1 * player.direction)) {
             paths.append(Path(coordinates: [baseCoordinate, targetCoordinate], movementCardType: type(of: self)))
         }
         
         // Try to append Path to left
-        if let targetCoordinate = try? BoardCoordinate(column: baseCoordinate.column - 1, row: baseCoordinate.row) {
+        if let targetCoordinate = try? Coordinate(column: baseCoordinate.column - 1, row: baseCoordinate.row) {
             paths.append(Path(coordinates: [baseCoordinate, targetCoordinate], movementCardType: type(of: self)))
         }
         
         // Try to append Path to right
-        if let targetCoordinate = try? BoardCoordinate(column: baseCoordinate.column + 1, row: baseCoordinate.row) {
+        if let targetCoordinate = try? Coordinate(column: baseCoordinate.column + 1, row: baseCoordinate.row) {
             paths.append(Path(coordinates: [baseCoordinate, targetCoordinate], movementCardType: type(of: self)))
         }
         
         return paths
     }
     
-    init(player: Player) {
-        let image = player.number == 0 ? #imageLiteral(resourceName: "SingleStraightPink") : #imageLiteral(resourceName: "SingleStraightGreen")
-        super.init(player: player, cost: 3, image: image)
+    init() {
+        super.init(cost: 3)
     }
 }

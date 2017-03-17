@@ -1,5 +1,5 @@
 //
-//  BoardSpace.swift
+//  Space.swift
 //  Square Off
 //
 //  Created by Chris Brown on 8/5/16.
@@ -7,13 +7,12 @@
 //
 
 
-class BoardSpace {
-    let coordinate: BoardCoordinate
+class Space {
+    let coordinate: Coordinate
     
-    var pawn: PlayerPawn?
-    var requiredMovementCard: Card.Type?
+    var pawn: Pawn?
     
-    init(coordinate: BoardCoordinate) {
+    init(coordinate: Coordinate) {
         self.coordinate = coordinate
     }
     
@@ -22,19 +21,19 @@ class BoardSpace {
     }
     
     func isHome(for player: Player) -> Bool {
-        return player.number == 0 ? coordinate.row == (Constants.numberOfBoardSpaces - 1) : coordinate.row == 0
+        return player.number == 0 ? coordinate.row == (Constants.numberOfSpaces - 1) : coordinate.row == 0
     }
     
     func isGoal(for player: Player) -> Bool {
-        return player.number == 0 ? coordinate.row == 0 : coordinate.row == (Constants.numberOfBoardSpaces - 1)
+        return player.number == 0 ? coordinate.row == 0 : coordinate.row == (Constants.numberOfSpaces - 1)
     }
     
     func isHorizontalEdge() -> Bool {
-        return coordinate.row == 0 || coordinate.row == (Constants.numberOfBoardSpaces - 1)
+        return coordinate.row == 0 || coordinate.row == (Constants.numberOfSpaces - 1)
     }
     
     func isVerticalEdge() -> Bool {
-        return coordinate.column == 0 || coordinate.column == (Constants.numberOfBoardSpaces - 1)
+        return coordinate.column == 0 || coordinate.column == (Constants.numberOfSpaces - 1)
     }
 
     func isEdge() -> Bool {

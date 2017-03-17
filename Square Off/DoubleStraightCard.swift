@@ -10,28 +10,28 @@ import UIKit
 
 class DoubleStraightCard: Card, MovementCard {
     
-    func getPaths(_ baseCoordinate: BoardCoordinate, player: Player) -> [Path] {
+    func getPaths(_ baseCoordinate: Coordinate, player: Player) -> [Path] {
         var paths: [Path] = [Path]()
         
         // Try to append Path vertically
-        if  let midCoordinate = try? BoardCoordinate(column: baseCoordinate.column,
+        if  let midCoordinate = try? Coordinate(column: baseCoordinate.column,
                                                      row: baseCoordinate.row - (1 * player.direction)) {
-            if let targetCoordinate = try? BoardCoordinate(column: baseCoordinate.column,
+            if let targetCoordinate = try? Coordinate(column: baseCoordinate.column,
                                                            row: baseCoordinate.row - (2 * player.direction)) {
                 paths.append(Path(coordinates: [baseCoordinate, midCoordinate, targetCoordinate], movementCardType: type(of: self)))
             }
         }
         
         // Try to append Path to left
-        if  let midCoordinate = try? BoardCoordinate(column: baseCoordinate.column - 1, row: baseCoordinate.row) {
-            if let targetCoordinate = try? BoardCoordinate(column: baseCoordinate.column - 2, row: baseCoordinate.row) {
+        if  let midCoordinate = try? Coordinate(column: baseCoordinate.column - 1, row: baseCoordinate.row) {
+            if let targetCoordinate = try? Coordinate(column: baseCoordinate.column - 2, row: baseCoordinate.row) {
                 paths.append(Path(coordinates: [baseCoordinate, midCoordinate, targetCoordinate], movementCardType: type(of: self)))
             }
         }
         
         // Try to append Path to right
-        if  let midCoordinate = try? BoardCoordinate(column: baseCoordinate.column + 1, row: baseCoordinate.row) {
-            if let targetCoordinate = try? BoardCoordinate(column: baseCoordinate.column + 2, row: baseCoordinate.row) {
+        if  let midCoordinate = try? Coordinate(column: baseCoordinate.column + 1, row: baseCoordinate.row) {
+            if let targetCoordinate = try? Coordinate(column: baseCoordinate.column + 2, row: baseCoordinate.row) {
                 paths.append(Path(coordinates: [baseCoordinate, midCoordinate, targetCoordinate], movementCardType: type(of: self)))
             }
         }
@@ -39,8 +39,7 @@ class DoubleStraightCard: Card, MovementCard {
         return paths
     }
     
-    init(player: Player) {
-        let image = player.number == 0 ? #imageLiteral(resourceName: "DoubleStraightPink") : #imageLiteral(resourceName: "DoubleStraightGreen")
-        super.init(player: player, cost: 4, image: image)
+    init() {
+        super.init(cost: 4)
     }
 }

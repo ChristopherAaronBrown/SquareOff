@@ -13,7 +13,7 @@ typealias AnimationCallback = (Bool) -> ()
 
 struct Constants {
     
-    static let numberOfBoardSpaces: Int = 6
+    static let numberOfSpaces: Int = 6
     static let handLimit: Int = 5
     
 }
@@ -30,6 +30,7 @@ struct Colors {
     static let blue: UIColor = UIColor(red: 97/255, green: 203/255, blue: 255/255, alpha: 1)
     static let blueShadow: UIColor = UIColor(red: 91/255, green: 167/255, blue: 244/255, alpha: 1)
     static let yellow: UIColor = UIColor(red: 255/255, green: 205/255, blue: 93/255, alpha: 1)
+    static let grey: UIColor = UIColor(red: 233/255, green: 233/255, blue: 233/255, alpha: 1)
     
     static var player1Light: UIColor {
         get {

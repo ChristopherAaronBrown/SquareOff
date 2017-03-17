@@ -9,21 +9,18 @@
 import UIKit
 
 class GemCard: Card, ActionCard {
-    let gem: Gem!
-    
-    init(player: Player, gem: Gem) {
-        let image: UIImage
-        self.gem = gem
+    init(gem: Gem) {
+        let cost: Int
         
         switch gem {
         case .Single:
-            image = player.number == 0 ? #imageLiteral(resourceName: "SingleGemPink") : #imageLiteral(resourceName: "SingleGemGreen")
+            cost = 0
         case .Double:
-            image = player.number == 0 ? #imageLiteral(resourceName: "DoubleGemPink") : #imageLiteral(resourceName: "DoubleGemGreen")
+            cost = 3
         case .Triple:
-            image = player.number == 0 ? #imageLiteral(resourceName: "TripleGemPink") : #imageLiteral(resourceName: "TripleGemGreen")
+            cost = 6
         }
         
-        super.init(player: player, cost: (gem.rawValue * (gem.rawValue + 1) / 2), image: image)
+        super.init(cost: cost)
     }
 }

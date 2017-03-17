@@ -1,5 +1,5 @@
 //
-//  PlayerDiscard.swift
+//  Discard.swift
 //  Square Off
 //
 //  Created by Chris Brown on 2/9/17.
@@ -10,18 +10,18 @@ enum PlayerDiscardError: Error {
     case nothingDiscarded
 }
 
-class PlayerDiscard {
-    var tiles: [Card]
+class Discard {
+    var cards: [Card]
     
     var count: Int {
-        return tiles.count
+        return cards.count
     }
     
     init() {
-        tiles = [Card]()
+        cards = [Card]()
     }
     
     func add(_ card: Card) {
-        tiles.append(card)
+        cards.append(card)
     }
 }
