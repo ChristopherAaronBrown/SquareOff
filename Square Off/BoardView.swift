@@ -9,16 +9,15 @@
 import UIKit
 
 protocol BoardViewDataSource {
-    func pawnViewForSpace(at coordinate: Coordinate) -> PawnView?
     func highlightForSpace(at coordinate: Coordinate) -> UIColor
     func currentBoard() -> Board
 }
 
 protocol BoardViewDelegate {
-    func pawnLongPressBegan(at coordinate: Coordinate, with touchLocation: CGPoint)
+    func pawnLongPressBegan(at coordinate: Coordinate, at location: CGPoint)
     func pawnLongPressChanged(at location: CGPoint)
-    func pawnLongPressEnded(at targetBoardCoordinage: Coordinate, from sourceBoardCoordinate: Coordinate)
-    func boardSpaceTapped(at coordinate: Coordinate)
+    func pawnLongPressEnded(at target: Coordinate, from source: Coordinate)
+    func spaceTapped(at coordinate: Coordinate)
 }
 
 class BoardView: UIView {
@@ -84,7 +83,7 @@ class BoardView: UIView {
                     let pawnYPos = spaceYPos + pawnTop
                     let pawnFrame = CGRect(x: pawnXPos, y: pawnYPos, width: pawnWidth, height: pawnHeight)
                     let pawnView = PawnView(frame: pawnFrame, owner: pawn.owner)
-                    let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(boardSpaceTapped))
+                    let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(spaceTapped))
                     let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(pawnLongPressed))
                     longPressRecognizer.minimumPressDuration = 0
                     
@@ -101,11 +100,11 @@ class BoardView: UIView {
         }
     }
     
-    @objc private func boardSpaceTapped(_ sender: UITapGestureRecognizer) {
+    @objc private func spaceTapped(_ sender: UITapGestureRecognizer) {
         if let boardSpaceImageView = sender.view {
             let tag = boardSpaceImageView.tag
             let coordinate = try! Coordinate(column: tag % board.count, row: tag / board.count)
-            self.delegate?.boardSpaceTapped(at: coordinate)
+            self.delegate?.spaceTapped(at: coordinate)
         }
     }
     
@@ -118,40 +117,40 @@ class BoardView: UIView {
                 if let pawnView = pawnDict[coordinate] {
                     pawnView?.alpha = 0.3
                 }
-                delegate?.pawnLongPressBegan(at: coordinate, with: sender.location(in: superview))
+                delegate?.pawnLongPressBegan(at: coordinate, at: sender.location(in: superview))
             case .changed:
                 delegate?.pawnLongPressChanged(at: sender.location(in: superview))
             case .ended:
-                let targetBoardCoordinate = nearestBoardCoordinate(sender.location(in: self), from: coordinate)
-                delegate?.pawnLongPressEnded(at: targetBoardCoordinate, from: coordinate)
+                let target = nearestBoardCoordinate(sender.location(in: self), from: coordinate)
+                delegate?.pawnLongPressEnded(at: target, from: coordinate)
             default:
                 break
             }
         }
     }
     
-    private func nearestBoardCoordinate(_ touchLocation: CGPoint, from originalBoardCoordinate: Coordinate) -> Coordinate {
-        var boardCoordinate: Coordinate!
+    private func nearestBoardCoordinate(_ touchLocation: CGPoint, from source: Coordinate) -> Coordinate {
+        var target: Coordinate!
         var closestDistance: CGFloat = CGFloat.greatestFiniteMagnitude
         
         // Touch is in BoardView
         if bounds.contains(touchLocation) {
-            for (coordinate, pawnView) in pawnDict {
+            for (coordinate, spaceView) in spaceDict {
                 // Touch is in board space
-                if pawnView!.frame.contains(touchLocation) {
+                if spaceView.frame.contains(touchLocation) {
                     return coordinate
                 }
-                let distance = pawnView!.frame.center.distanceTo(touchLocation)
+                let distance = spaceView.frame.center.distanceTo(touchLocation)
                 if distance < closestDistance {
                     closestDistance = distance
-                    boardCoordinate = coordinate
+                    target = coordinate
                 }
             }
         } else {
-            return originalBoardCoordinate
+            return source
         }
         
-        return boardCoordinate
+        return target
     }
 
 }

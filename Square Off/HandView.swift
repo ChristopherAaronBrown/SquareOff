@@ -14,7 +14,7 @@ protocol HandViewDataSource {
 }
 
 protocol HandViewDelegate {
-    func handViewSlotWasTapped(at index: Int)
+    func cardTapped(at index: Int)
 }
 
 class HandView: UIView {
@@ -43,7 +43,7 @@ class HandView: UIView {
         for index in 0..<numCards {
             let icon: UIImage = cardIcon(at: index)!
             let xPos: CGFloat = (cardWidth + padding) * CGFloat(index) + padding
-            let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(slotImageTapped(_:)))
+            let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(slotImageTapped))
             let cardFrame = CGRect(x: xPos, y: yPos, width: cardWidth, height: cardHeight)
             let cardView = CardView(frame: cardFrame, player: player, icon: icon)
             
@@ -58,7 +58,7 @@ class HandView: UIView {
     
     func slotImageTapped(_ sender: UITapGestureRecognizer) {
         if let handSlotView = sender.view {
-            delegate.handViewSlotWasTapped(at: handSlotView.tag)
+            delegate.cardTapped(at: handSlotView.tag)
         }
     }
     

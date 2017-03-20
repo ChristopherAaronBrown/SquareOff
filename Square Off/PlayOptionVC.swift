@@ -1,5 +1,5 @@
 //
-//  PathOptionVC.swift
+//  PlayOptionVC.swift
 //  Square Off
 //
 //  Created by Chris Brown on 2/27/17.
@@ -8,20 +8,20 @@
 
 import UIKit
 
-protocol PathOptionVCDataSource {
+protocol PlayOptionVCDataSource {
     func currentPlayer() -> Player
     func pathActionChoices() -> [PathAction]
     func movementCard() -> MovementCard.Type
 }
 
-protocol PathOptionVCDelegate {
+protocol PlayOptionVCDelegate {
     func chosenAction(action: PathAction)
 }
 
-class PathOptionVC: UIViewController {
+class PlayOptionVC: UIViewController {
     
-    var dataSource: PathOptionVCDataSource!
-    var delegate: PathOptionVCDelegate!
+    var dataSource: PlayOptionVCDataSource!
+    var delegate: PlayOptionVCDelegate!
     
     override func viewDidLoad() {
         super.viewDidLoad()

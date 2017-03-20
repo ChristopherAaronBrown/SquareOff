@@ -19,7 +19,7 @@ class Board {
         return board.count
     }
     
-    var coordinatesDescription: String {
+    var printCoordinates: String {
         var result = "Coordinates:\n"
         for row in 0..<count {
             for column in 0..<count {
@@ -33,7 +33,7 @@ class Board {
         return result
     }
     
-    var pawnsDescription: String {
+    var printPawns: String {
         var result = "Pawns:\n"
         for row in 0..<count {
             for column in 0..<count {
@@ -45,9 +45,9 @@ class Board {
                     }
                 } else {
                     if column == count - 1 {
-                        result += "[_]\n"
+                        result += "[ ]\n"
                     } else {
-                        result += "[_],"
+                        result += "[ ],"
                     }
                 }
             }

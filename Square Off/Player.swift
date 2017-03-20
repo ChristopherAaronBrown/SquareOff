@@ -11,7 +11,6 @@ import UIKit
 class Player {
     let number: Int
     let name: String
-    let direction: Int
     
     var deadPawns: Int = 0
     var deck: Deck
@@ -21,7 +20,6 @@ class Player {
     init(number: Int, name: String) {
         self.number = number
         self.name = name
-        direction = number == 0 ? 1 : -1
         deck = Deck()
         hand = Hand()
         discard = Discard()

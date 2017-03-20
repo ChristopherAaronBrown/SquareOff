@@ -10,8 +10,17 @@ import Foundation
 
 class PlayOption {
     
-    private var path: Path
-    private var actions: [PathAction:[Card.Type]]
+    var path: Path
+    var actions: [PathAction:[Card.Type]]
+    
+    var description: String {
+        var result: String = "- Path: \(path.description)\n- Actions: "
+        for action in actions {
+            result += "\(action.key)"
+        }
+        result += "\n"
+        return result
+    }
     
     init(path: Path, actions: [PathAction:[Card.Type]]) {
         self.path = path

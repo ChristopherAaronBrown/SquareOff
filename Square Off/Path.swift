@@ -14,6 +14,19 @@ struct Path {
         return coordinates.count
     }
     
+    var description: String {
+        var result = ""
+        for index in 0..<coordinates.count {
+            let coordinate = coordinates[index]
+            if index == coordinates.count - 1 {
+                result += "\(coordinate.description)"
+            } else {
+                result += "\(coordinate.description),"
+            }
+        }
+        return result
+    }
+    
     var beginning: Coordinate {
         return coordinates.first!
     }
@@ -57,32 +70,14 @@ extension Path: Sequence {
 }
 
 enum PathAction {
-    // TODO: Remove None, JumpAndAttack, JumpOrAttack and replace with PlayOptions
+    
     case None
     case Move
     case Jump
     case Attack
     case JumpAndAttack
     case JumpOrAttack
-//    case moveOrAttack
-//    case moveOrJump
-
-//    func requiredCards() -> [Card.Type] {
-//        switch self {
-//        case .None:
-//            return []
-//        case .Move:
-//            return []
-//        case .Jump:
-//            return [JumpCard.self]
-//        case .Attack:
-//            return [AttackCard.self]
-//        case .JumpAndAttack:
-//            return [JumpCard.self,AttackCard.self]
-//        case .JumpOrAttack:
-//            return [JumpCard.self,AttackCard.self]
-//        }
-//    }
+    
     func canPerform(with hand: Hand) -> (Bool, [Card.Type]) {
         var tileTypes: [Card.Type] = []
         switch self {

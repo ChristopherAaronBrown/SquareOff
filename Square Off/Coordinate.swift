@@ -20,6 +20,10 @@ struct Coordinate: Hashable {
         return column + row
     }
     
+    var description: String {
+        return "[\(column),\(row)]"
+    }
+    
     var inverse: Coordinate {
         return try! Coordinate(column: (Constants.numberOfSpaces - 1) - column, row: (Constants.numberOfSpaces - 1) - row)
     }
