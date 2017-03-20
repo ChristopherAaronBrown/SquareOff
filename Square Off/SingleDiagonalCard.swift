@@ -10,19 +10,17 @@ import UIKit
 
 class SingleDiagonalCard: Card, MovementCard {
     
-    func getPaths(_ baseCoordinate: Coordinate, player: Player) -> [Path] {
+    func getPaths(_ source: Coordinate) -> [Path] {
         var paths: [Path] = [Path]()
         
         // Try to append Path vertical-left
-        if let targetCoordinate = try? Coordinate(column: baseCoordinate.column - 1,
-                                                       row: baseCoordinate.row - (1 * player.direction)) {
-            paths.append(Path(coordinates: [baseCoordinate, targetCoordinate], movementCardType: type(of: self)))
+        if let target = try? Coordinate(column: source.column - 1, row: source.row - 1) {
+            paths.append(Path(coordinates: [source, target], movementCardType: type(of: self)))
         }
         
         // Try to append Path vertical-right
-        if let targetCoordinate = try? Coordinate(column: baseCoordinate.column + 1,
-                                                       row: baseCoordinate.row - (1 * player.direction)) {
-            paths.append(Path(coordinates: [baseCoordinate, targetCoordinate], movementCardType: type(of: self)))
+        if let target = try? Coordinate(column: source.column + 1, row: source.row - 1) {
+            paths.append(Path(coordinates: [source, target], movementCardType: type(of: self)))
         }
         
         return paths

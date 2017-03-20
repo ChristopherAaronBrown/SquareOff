@@ -240,9 +240,7 @@ class GameVC: UIViewController,
     
     // MARK: - BoardView delegate and data source functions
     func pawnViewForSpace(at coordinate: Coordinate) -> PawnView? {
-        let modelCoordinate = player.number == 0 ? coordinate : coordinate.inverse
-        
-        if let pawn = board.getBoardSpace(modelCoordinate).pawn {
+        if let pawn = board.getSpace(coordinate).pawn {
             let frame = CGRect(x: 0, y: 0, width: 44, height: 48)
             return PawnView(frame: frame, owner: pawn.owner)
         }
@@ -252,9 +250,7 @@ class GameVC: UIViewController,
     }
     
     func highlightForSpace(at coordinate: Coordinate) -> UIColor {
-        let modelCoordinate = player.number == 0 ? coordinate : coordinate.inverse
-        
-        if let highlight = highlightDict[modelCoordinate] {
+        if let highlight = highlightDict[coordinate] {
             return highlight
         }
         
@@ -266,8 +262,7 @@ class GameVC: UIViewController,
     }
     
     func boardSpaceTapped(at coordinate: Coordinate) {
-        let modelCoordinate = player.number == 0 ? coordinate : coordinate.inverse
-        let space = board.getBoardSpace(modelCoordinate)
+        let space = board.getSpace(coordinate)
         
         if state == .ResurrectCardTapped && space.isHome(for: player) && !space.isOccupied() {
             space.pawn = Pawn(owner: player)
@@ -281,40 +276,38 @@ class GameVC: UIViewController,
     }
     
     func pawnLongPressBegan(at coordinate: Coordinate, with touchLocation: CGPoint) {
-        let modelCoordinate = player.number == 0 ? coordinate : coordinate.inverse
-        let space = board.getBoardSpace(modelCoordinate)
+        let space = board.getSpace(coordinate)
         
         // If user long presses one of their pawns
         if space.isOccupied() && space.pawn!.owner == player && !space.pawn!.hasReachedGoal {
             setNextState(.Normal)
             
             // Generate play options
-            generatePlayOptions(at: modelCoordinate)
+            generatePlayOptions(at: coordinate)
             
             // Determine all eligible paths from the origin board space
-            eligiblePaths = findEligiblePaths(at: modelCoordinate)
+            eligiblePaths = findEligiblePaths(at: coordinate)
             
-            highlightSpaces(for: eligiblePaths, at: modelCoordinate)
+            highlightSpaces(for: eligiblePaths)
             
             space.pawn = nil
-            if longPressedPawn == nil {
-                let imageWidth = view.bounds.size.width * (44/320) * 1.25
-                let imageHeight = view.bounds.size.height * (48/568) * 1.25
-                let xPos = touchLocation.x - imageWidth / 2
-                let yPos = touchLocation.y - imageHeight * 1.5
-                let longPressedPawnFrame = CGRect(x: xPos, y: yPos, width: imageWidth, height: imageHeight)
-                longPressedPawn = PawnView(frame: longPressedPawnFrame, owner: player)
-                
-                // Add shadow
-                longPressedPawn!.layer.shadowColor = Colors.font.cgColor
-                longPressedPawn!.layer.shadowOpacity = 0.7
-                longPressedPawn!.layer.shadowOffset = CGSize(width: 0, height: imageHeight)
-                longPressedPawn!.layer.shadowRadius = 1.5
-                
-                self.view.addSubview(longPressedPawn!)
-            }
             
-            refresh()
+            let imageWidth = view.bounds.size.width * (44/320) * 1.25
+            let imageHeight = view.bounds.size.height * (48/568) * 1.25
+            let xPos = touchLocation.x - imageWidth / 2
+            let yPos = touchLocation.y - imageHeight * 1.5
+            let longPressedPawnFrame = CGRect(x: xPos, y: yPos, width: imageWidth, height: imageHeight)
+            longPressedPawn = PawnView(frame: longPressedPawnFrame, owner: player)
+            
+            // Add shadow
+            longPressedPawn!.layer.shadowColor = Colors.font.cgColor
+            longPressedPawn!.layer.shadowOpacity = 0.7
+            longPressedPawn!.layer.shadowOffset = CGSize(width: 0, height: imageHeight)
+            longPressedPawn!.layer.shadowRadius = 1.5
+            
+            self.view.addSubview(longPressedPawn!)
+            
+            //refresh()
         }
     }
     
@@ -325,9 +318,7 @@ class GameVC: UIViewController,
         longPressedPawn?.center = CGPoint(x: xPos, y: yPos)
     }
     
-    func pawnLongPressEnded(at targetBoardCoordinate: Coordinate, from sourceBoardCoordinate: Coordinate) {
-        let target = player.number == 0 ? targetBoardCoordinate : targetBoardCoordinate.inverse
-        let source = player.number == 0 ? sourceBoardCoordinate : sourceBoardCoordinate.inverse
+    func pawnLongPressEnded(at target: Coordinate, from source: Coordinate) {
         let pathOptions = pathsEnding(at: target)
         
         if pathOptions.isEmpty {
@@ -345,7 +336,7 @@ class GameVC: UIViewController,
     }
     
     // MARK: Helper functions
-    private func generatePlayOptions(at modelCoordinate: Coordinate) {
+    private func generatePlayOptions(at coordinate: Coordinate) {
         var hasAttackCard = false
         var hasJumpCard = false
         
@@ -362,7 +353,7 @@ class GameVC: UIViewController,
         for card in hand {
             if let movementCard = card as? MovementCard {
                 let movementCardType = type(of: movementCard) as! Card.Type
-                let paths = movementCard.getPaths(modelCoordinate, player: player)
+                let paths = movementCard.getPaths(coordinate)
                 for path in paths {
                     var playOptions: [PlayOption] = []
                     
@@ -393,10 +384,10 @@ class GameVC: UIViewController,
                     }
                     
                     if self.playOptions.isEmpty {
-                        self.playOptions[modelCoordinate] = playOptions
+                        self.playOptions[coordinate] = playOptions
                     } else {
                         for playOption in playOptions {
-                            self.playOptions[modelCoordinate]?.append(playOption)
+                            self.playOptions[coordinate]?.append(playOption)
                         }
                     }
                 }
@@ -525,11 +516,12 @@ class GameVC: UIViewController,
         }
     }
     
-    private func placePawn(at modelCoordinate: Coordinate) {
+    private func placePawn(at coordinate: Coordinate) {
+        
         longPressedPawn!.removeFromSuperview()
-        longPressedPawn = nil
+//        longPressedPawn = nil
 
-        let space = board.getBoardSpace(modelCoordinate)
+        let space = board.getSpace(coordinate)
 
         if space.isOccupied() && space.pawn!.owner == opponent {
             opponent.deadPawns += 1
@@ -567,7 +559,7 @@ class GameVC: UIViewController,
         */
         for card in hand {
             if let movementCard = card as? MovementCard {
-                let paths = movementCard.getPaths(coordinate, player: player)
+                let paths = movementCard.getPaths(coordinate)
                 for path in paths {
                     let (canPerform, tileTypes) = getPathAction(for: path).canPerform(with: hand)
                     if canPerform {
@@ -602,7 +594,7 @@ class GameVC: UIViewController,
         var endOccupiedByAlly: Bool = false
         
         for coordinate in path {
-            let space = board.getBoardSpace(coordinate)
+            let space = board.getSpace(coordinate)
             if coordinate != path.beginning {
                 if let pawn = space.pawn {
                     if pawn.owner == player || pawn.hasReachedGoal {
@@ -664,18 +656,17 @@ class GameVC: UIViewController,
     
     private func attackCoordinate(along path: Path) -> Coordinate? {
         for coordinate in path {
-            let space = board.getBoardSpace(coordinate)
+            let space = board.getSpace(coordinate)
             if space.isOccupied() {
                 if space.pawn!.owner !== player {
                     return coordinate
                 }
             }
         }
-        
         return nil
     }
     
-    private func highlightSpaces(for paths: [Path], at modelCoordinate: Coordinate) {
+    private func highlightSpaces(for paths: [Path]) {
         for path in paths {
             switch getPathAction(for: path) {
             case .None:
@@ -783,7 +774,7 @@ class GameVC: UIViewController,
         
         for col in 0..<Constants.numberOfSpaces {
             let coordinate = try! Coordinate(column: col, row: row)
-            let space = board.getBoardSpace(coordinate)
+            let space = board.getSpace(coordinate)
             if space.isHome(for: player) && !space.isOccupied() {
                 homeSpaceCoordinates.append(space.coordinate)
             }

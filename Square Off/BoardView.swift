@@ -79,7 +79,7 @@ class BoardView: UIView {
                 addSubview(spaceImageView)
                 
                 // Generate pawns
-                if let pawn = board.getBoardSpace(coordinate).pawn {
+                if let pawn = board.getSpace(coordinate).pawn {
                     let pawnXPos = spaceXPos + pawnMargin
                     let pawnYPos = spaceYPos + pawnTop
                     let pawnFrame = CGRect(x: pawnXPos, y: pawnYPos, width: pawnWidth, height: pawnHeight)
@@ -115,9 +115,12 @@ class BoardView: UIView {
             let coordinate = try! Coordinate(column: startTag % board.count, row: startTag / board.count)
             switch sender.state {
             case .began:
-                delegate?.pawnLongPressBegan(at: coordinate, with: sender.location(in: self.superview))
+                if let pawnView = pawnDict[coordinate] {
+                    pawnView?.alpha = 0.3
+                }
+                delegate?.pawnLongPressBegan(at: coordinate, with: sender.location(in: superview))
             case .changed:
-                delegate?.pawnLongPressChanged(at: sender.location(in: self.superview))
+                delegate?.pawnLongPressChanged(at: sender.location(in: superview))
             case .ended:
                 let targetBoardCoordinate = nearestBoardCoordinate(sender.location(in: self), from: coordinate)
                 delegate?.pawnLongPressEnded(at: targetBoardCoordinate, from: coordinate)

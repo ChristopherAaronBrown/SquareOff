@@ -11,7 +11,7 @@ import UIKit
 class Board {
     
     // 2D Array of GameSpaces top left origin [column,row]
-    var board: [[Space]]
+    private var board: [[Space]]
     private let player1: Player
     private let player2: Player
     
@@ -19,13 +19,48 @@ class Board {
         return board.count
     }
     
+    var coordinatesDescription: String {
+        var result = "Coordinates:\n"
+        for row in 0..<count {
+            for column in 0..<count {
+                if column == count - 1 {
+                    result += "\(board[column][row].description)\n"
+                } else {
+                    result += "\(board[column][row].description),"
+                }
+            }
+        }
+        return result
+    }
+    
+    var pawnsDescription: String {
+        var result = "Pawns:\n"
+        for row in 0..<count {
+            for column in 0..<count {
+                if let pawn = board[column][row].pawn {
+                    if column == count - 1 {
+                        result += "[\(pawn.owner.number)]\n"
+                    } else {
+                        result += "[\(pawn.owner.number)],"
+                    }
+                } else {
+                    if column == count - 1 {
+                        result += "[_]\n"
+                    } else {
+                        result += "[_],"
+                    }
+                }
+            }
+        }
+        return result
+    }
+    
     init(player1: Player, player2: Player) {
         self.player1 = player1
         self.player2 = player2
         
-        var board = [[Space]]()
+        board = [[Space]]()
         
-        // Build an empty game board
         for columnNum in 0..<Constants.numberOfSpaces {
             var column = [Space]()
             for rowNum in 0..<Constants.numberOfSpaces {
@@ -40,22 +75,19 @@ class Board {
                     default:
                         break
                 }
-                
                 column.append(space)
             }
             board.append(column)
         }
-        
-        self.board = board
     }
     
-    func getBoardSpace(_ coordinate: Coordinate) -> Space {
+    func getSpace(_ coordinate: Coordinate) -> Space {
         return board[coordinate.column][coordinate.row]
     }
     
     func hasOpenHomeSpot(player: Player) -> Bool {
-        let row = player.number == 0 ? Constants.numberOfSpaces - 1 : 0
-        for column in 0..<Constants.numberOfSpaces {
+        let row = player.number == 0 ? count - 1 : 0
+        for column in 0..<count {
             if !board[column][row].isOccupied() {
                 return true
             }
@@ -63,19 +95,22 @@ class Board {
         return false
     }
     
+    // Coordinates remain but Pawns are rotated
     func rotateBoard() {
-        print("Before: \(board[0][0].coordinate) and \(board[5][5].coordinate)")
         var rotatedBoard = [[Space]]()
-        for columnNum in (0..<board.count).reversed() {
+        for columnNum in 0..<count {
             var column = [Space]()
-            for rowNum in (0..<board[columnNum].count).reversed() {
-                let space = board[columnNum][rowNum]
+            for rowNum in 0..<count {
+                let coordinate = try! Coordinate(column: columnNum, row: rowNum)
+                let space = Space(coordinate: coordinate)
+                let inversedColumn = count - 1 - columnNum
+                let inversedRow = count - 1 - rowNum
+                space.pawn = board[inversedColumn][inversedRow].pawn
                 column.append(space)
             }
             rotatedBoard.append(column)
         }
         board = rotatedBoard
-        print("After: \(board[0][0].coordinate) and \(board[5][5].coordinate)")
     }
     
 }

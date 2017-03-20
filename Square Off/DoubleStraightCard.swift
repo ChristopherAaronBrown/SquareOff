@@ -10,29 +10,27 @@ import UIKit
 
 class DoubleStraightCard: Card, MovementCard {
     
-    func getPaths(_ baseCoordinate: Coordinate, player: Player) -> [Path] {
+    func getPaths(_ source: Coordinate) -> [Path] {
         var paths: [Path] = [Path]()
         
         // Try to append Path vertically
-        if  let midCoordinate = try? Coordinate(column: baseCoordinate.column,
-                                                     row: baseCoordinate.row - (1 * player.direction)) {
-            if let targetCoordinate = try? Coordinate(column: baseCoordinate.column,
-                                                           row: baseCoordinate.row - (2 * player.direction)) {
-                paths.append(Path(coordinates: [baseCoordinate, midCoordinate, targetCoordinate], movementCardType: type(of: self)))
+        if  let second = try? Coordinate(column: source.column, row: source.row - 1) {
+            if let target = try? Coordinate(column: source.column, row: source.row - 2) {
+                paths.append(Path(coordinates: [source, second, target], movementCardType: type(of: self)))
             }
         }
         
         // Try to append Path to left
-        if  let midCoordinate = try? Coordinate(column: baseCoordinate.column - 1, row: baseCoordinate.row) {
-            if let targetCoordinate = try? Coordinate(column: baseCoordinate.column - 2, row: baseCoordinate.row) {
-                paths.append(Path(coordinates: [baseCoordinate, midCoordinate, targetCoordinate], movementCardType: type(of: self)))
+        if  let second = try? Coordinate(column: source.column - 1, row: source.row) {
+            if let target = try? Coordinate(column: source.column - 2, row: source.row) {
+                paths.append(Path(coordinates: [source, second, target], movementCardType: type(of: self)))
             }
         }
         
         // Try to append Path to right
-        if  let midCoordinate = try? Coordinate(column: baseCoordinate.column + 1, row: baseCoordinate.row) {
-            if let targetCoordinate = try? Coordinate(column: baseCoordinate.column + 2, row: baseCoordinate.row) {
-                paths.append(Path(coordinates: [baseCoordinate, midCoordinate, targetCoordinate], movementCardType: type(of: self)))
+        if  let second = try? Coordinate(column: source.column + 1, row: source.row) {
+            if let target = try? Coordinate(column: source.column + 2, row: source.row) {
+                paths.append(Path(coordinates: [source, second, target], movementCardType: type(of: self)))
             }
         }
         

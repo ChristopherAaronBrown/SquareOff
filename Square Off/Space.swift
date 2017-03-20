@@ -11,6 +11,9 @@ class Space {
     let coordinate: Coordinate
     
     var pawn: Pawn?
+    var description: String {
+        return "[\(coordinate.column),\(coordinate.row)]"
+    }
     
     init(coordinate: Coordinate) {
         self.coordinate = coordinate
