@@ -124,5 +124,7 @@ enum ShopCard: Int {
 
 enum State {
     case Normal
-    case ResurrectCardTapped
+    case Burn
+    case Shop
+    case Resurrect
 }

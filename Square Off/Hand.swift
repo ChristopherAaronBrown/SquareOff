@@ -38,8 +38,9 @@ class Hand {
                     try player.deck.refill()
                 }
             }
-        } catch PlayerDiscardError.nothingDiscarded {
-            print("\(player.name) has only \(count) total card(s).")
+        } catch DiscardError.NothingDiscarded {
+            let error = count == 1 ? "\(player.name) has only 1 card." : "\(player.name) has only \(count) total card(s)."
+            print(error)
         } catch { /* Do Nothing */ }
     }
     
@@ -58,7 +59,7 @@ class Hand {
             if type(of: card) == type {
                 player.discard.add(cards[index])
                 cards.remove(at: index)
-                break
+                return
             }
         }
     }

@@ -70,7 +70,7 @@ class BoardView: UIView {
                 let spaceYPos = (spaceHeight + spaceMargin) * CGFloat(row)
                 let spaceImageView = UIImageView(frame: CGRect(x: spaceXPos, y: spaceYPos, width: spaceWidth, height: spaceHeight))
                 
-                spaceImageView.backgroundColor = Colors.grey
+                spaceImageView.backgroundColor = dataSource?.highlightForSpace(at: coordinate)
                 spaceImageView.layer.cornerRadius = 8
                 
                 spaceDict[coordinate] = spaceImageView

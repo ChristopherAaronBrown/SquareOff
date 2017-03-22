@@ -11,6 +11,7 @@
 		8313380A1E524E2200054F56 /* HandView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831338091E524E2200054F56 /* HandView.swift */; };
 		8313380C1E52871F00054F56 /* Anita semi-square.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8313380B1E52871F00054F56 /* Anita semi-square.ttf */; };
 		8318D02A1E79FA12001B3FB1 /* PawnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8318D0291E79FA12001B3FB1 /* PawnView.swift */; };
+		831EAC671E81B390007C1209 /* PlayOptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831EAC661E81B390007C1209 /* PlayOptionCell.swift */; };
 		833744F61E4E6FD6005F185D /* MenuVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833744F51E4E6FD6005F185D /* MenuVC.swift */; };
 		833AFD8A1E4D1ED700C628F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833AFD891E4D1ED700C628F0 /* AppDelegate.swift */; };
 		833AFD8C1E4D1ED700C628F0 /* GameVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833AFD8B1E4D1ED700C628F0 /* GameVC.swift */; };
@@ -79,6 +80,7 @@
 		831338091E524E2200054F56 /* HandView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = HandView.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		8313380B1E52871F00054F56 /* Anita semi-square.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Anita semi-square.ttf"; sourceTree = "<group>"; };
 		8318D0291E79FA12001B3FB1 /* PawnView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PawnView.swift; sourceTree = "<group>"; };
+		831EAC661E81B390007C1209 /* PlayOptionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayOptionCell.swift; sourceTree = "<group>"; };
 		833744F51E4E6FD6005F185D /* MenuVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuVC.swift; sourceTree = "<group>"; };
 		833AFD861E4D1ED700C628F0 /* Square Off.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Square Off.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		833AFD891E4D1ED700C628F0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -246,6 +248,7 @@
 				833AFD9E1E4D1F8000C628F0 /* BoardView.swift */,
 				831338091E524E2200054F56 /* HandView.swift */,
 				83C8FEFB1E6DFC140077A376 /* GradientView.swift */,
+				831EAC661E81B390007C1209 /* PlayOptionCell.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -549,6 +552,7 @@
 				833AFDC41E4D46F800C628F0 /* DoubleStraightCard.swift in Sources */,
 				833AFDD21E4D478300C628F0 /* Pawn.swift in Sources */,
 				833AFDDA1E4D7A1300C628F0 /* Board.swift in Sources */,
+				831EAC671E81B390007C1209 /* PlayOptionCell.swift in Sources */,
 				833AFDB91E4D46F800C628F0 /* BurnCard.swift in Sources */,
 				833AFDB81E4D46F800C628F0 /* AttackCard.swift in Sources */,
 				83B4FA831E553B9900B92BA9 /* Extensions.swift in Sources */,

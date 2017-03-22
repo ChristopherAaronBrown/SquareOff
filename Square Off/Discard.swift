@@ -6,8 +6,8 @@
 //  Copyright © 2016 Chris Brown. All rights reserved.
 //
 
-enum PlayerDiscardError: Error {
-    case nothingDiscarded
+enum DiscardError: Error {
+    case NothingDiscarded
 }
 
 class Discard {

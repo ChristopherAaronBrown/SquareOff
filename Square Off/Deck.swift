@@ -47,15 +47,15 @@ class Deck {
         deck.append(ZigZagLeftCard())
         deck.append(ZigZagRightCard())
         
-        deck.append(ResurrectCard())
-        deck.append(ResurrectCard())
+        deck.append(BurnCard())
+        deck.append(BurnCard())
         deck.append(ResurrectCard())
         deck.append(ResurrectCard())
     }
     
     func refill() throws {
         guard deck.count == 0 else { throw DeckError.deckNotEmpty }
-        guard player.discard.count > 0 else { throw PlayerDiscardError.nothingDiscarded }
+        guard player.discard.count > 0 else { throw DiscardError.NothingDiscarded }
         
         deck.append(contentsOf: player.discard.cards)
         player.discard.cards.removeAll()

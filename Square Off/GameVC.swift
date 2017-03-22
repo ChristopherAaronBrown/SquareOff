@@ -34,6 +34,7 @@ class GameVC: UIViewController,
     private var session: Session!
     private var boardView: BoardView!
     private var handView: HandView!
+    private var burnView: UIView?
     private var longPressedPawn: PawnView?
     private var highlightDict: [Coordinate:UIColor] = [:]
     private var state: State = .Normal
@@ -190,7 +191,7 @@ class GameVC: UIViewController,
         resurrectLabel.text = player.deadPawns > 0 ? "SPAWN (\(player.deadPawns))" : "SPAWN"
     }
     
-    // MARK: IBActions
+    // MARK: - IBActions
     @IBAction func endTurnPressed(_ sender: UIButton) {
         hand.newHand(for: player)
         player = session.nextPlayerTurn()
@@ -201,6 +202,19 @@ class GameVC: UIViewController,
     }
     
     @IBAction func burnPressed(_ sender: UIButton) {
+        setNextState(.Burn)
+        burnView = UIView(frame: view.frame)
+        burnView!.backgroundColor = Colors.offWhite
+        burnView!.alpha = 0.4
+        
+        let infoFrame = CGRect(x: 0, y: view.bounds.height / 3, width: view.bounds.width, height: 25)
+        let infoLabel = UILabel(frame: infoFrame)
+        infoLabel.text = "Tap the card you wish to remove from your deck."
+        burnView?.addSubview(infoLabel)
+        
+        view.addSubview(burnView!)
+        view.bringSubview(toFront: handView)
+        
         enableEndTurn()
     }
     
@@ -222,13 +236,13 @@ class GameVC: UIViewController,
         enableEndTurn()
     }
     
-    func animateDealCallback(dealComplete: Bool) {
+    private func animateDealCallback(dealComplete: Bool) {
         if dealComplete {
             updateActionButtons()
         }
     }
 
-    func enableEndTurn() {
+    @objc private func enableEndTurn() {
         if endTurnButton.isHidden {
             endTurnTimer?.invalidate()
             endTurnTimer = nil
@@ -239,7 +253,7 @@ class GameVC: UIViewController,
         }
     }
     
-    func toggleTurnLabel() {
+    private func toggleTurnLabel() {
         endTurnLabel.isHidden = !endTurnLabel.isHidden
         endTurnButton.isHidden = !endTurnLabel.isHidden
         shimmerView.isHidden = !shimmerView.isHidden
@@ -261,7 +275,7 @@ class GameVC: UIViewController,
     func spaceTapped(at coordinate: Coordinate) {
         let space = board.getSpace(coordinate)
         
-        if state == .ResurrectCardTapped && space.isHome(for: player) && !space.isOccupied() {
+        if state == .Resurrect && space.isHome(for: player) && !space.isOccupied() {
             space.pawn = Pawn(owner: player)
             player.deadPawns -= 1
             hand.discardCard(of: ResurrectCard.self, for: player)
@@ -284,6 +298,7 @@ class GameVC: UIViewController,
             
             // FIXME: Cannot update boardView without breaking long press
 //            highlightSpaces(for: eligiblePaths)
+            highlightOptions(playOptionDict)
             
             space.pawn = nil
             
@@ -601,6 +616,16 @@ class GameVC: UIViewController,
         return nil
     }
     
+    private func highlightOptions(_ playOptionDict: [Coordinate:[PlayOption]]) {
+        for (_, playOptions) in playOptionDict {
+            for playOption in playOptions {
+                for coordinate in playOption.path {
+                    highlightDict[coordinate] = Colors.blue
+                }
+            }
+        }
+    }
+    
     private func highlightSpaces(for paths: [Path]) {
         for path in paths {
             switch getPathAction(for: path) {
@@ -652,26 +677,17 @@ class GameVC: UIViewController,
     }
     
     func cardTapped(at index: Int) {
-        let tileType = type(of: hand.cards[index])
-        
         enableEndTurn()
         
-        if tileType == GemCard.self {
-            let shopVC = ShopVC()
-            
-            shopVC.dataSource = self
-            shopVC.delegate = self
-            
-            addChildViewController(shopVC)
-            view.addSubview(shopVC.view)
-            
-            shopVC.didMove(toParentViewController: self)
-            
-        } else if tileType == ResurrectCard.self && player.deadPawns > 0 {
-            setNextState(.ResurrectCardTapped)
-            highlightResurrectSpaces()
-        } else if tileType == BurnCard.self {
-            // TODO: Implement Burn Card
+        if state == .Burn {
+            hand.burnCard(at: index)
+            hand.discardCard(of: BurnCard.self, for: player)
+            handView.refresh()
+            updateActionButtons()
+            burnView?.removeFromSuperview()
+            setNextState(.Normal)
+        } else {
+            // TODO: Info card
         }
         
     }
@@ -681,7 +697,11 @@ class GameVC: UIViewController,
         switch state {
         case .Normal:
             break
-        case .ResurrectCardTapped:
+        case .Burn:
+            break
+        case .Shop:
+            break
+        case .Resurrect:
             break
         }
     }
