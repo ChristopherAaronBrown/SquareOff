@@ -15,6 +15,15 @@ enum DeckError: Error {
 class Deck {
     var player: Player!
     private var deck: [Card] = [Card]()
+    private let randFunc: Random
+
+    init(randFunc: @escaping Random) {
+        self.randFunc = randFunc
+    }
+    
+    convenience init() {
+        self.init(randFunc: arc4random_uniform)
+    }
     
     var count: Int {
         return deck.count
@@ -40,17 +49,17 @@ class Deck {
         deck.append(DoubleStraightCard())
         
         // TODO: Remove when done testing
-        deck.append(JumpCard())
-        deck.append(KnightLeftCard())
-        deck.append(KnightRightCard())
-        deck.append(DoubleDiagonalCard())
-        deck.append(ZigZagLeftCard())
-        deck.append(ZigZagRightCard())
-        
-        deck.append(BurnCard())
-        deck.append(BurnCard())
-        deck.append(ResurrectCard())
-        deck.append(ResurrectCard())
+//        deck.append(JumpCard())
+//        deck.append(KnightLeftCard())
+//        deck.append(KnightRightCard())
+//        deck.append(DoubleDiagonalCard())
+//        deck.append(ZigZagLeftCard())
+//        deck.append(ZigZagRightCard())
+//        
+//        deck.append(BurnCard())
+//        deck.append(BurnCard())
+//        deck.append(ResurrectCard())
+//        deck.append(ResurrectCard())
     }
     
     func refill() throws {
@@ -64,7 +73,7 @@ class Deck {
     func draw() -> Card? {
         guard deck.count > 0 else { return nil }
         
-        let randomIndex = Int(arc4random_uniform(UInt32(deck.count)))
+        let randomIndex = Int(randFunc(UInt32(deck.count)))
         
         return deck.remove(at: randomIndex)
     }

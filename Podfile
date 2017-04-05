@@ -6,6 +6,6 @@ target 'Square Off' do
   use_frameworks!
 
   # Pods for Square Off
-  pod 'Shimmer', '~> 1.0'
+  pod 'Shimmer', :inhibit_warnings => true
 
 end

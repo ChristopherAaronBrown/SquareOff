@@ -11,40 +11,35 @@ class Space {
     let coordinate: Coordinate
     
     var pawn: Pawn?
+    var hasPawn: Bool {
+        return pawn != nil
+    }
     var description: String {
         return "[\(coordinate.column),\(coordinate.row)]"
     }
-    
-    init(coordinate: Coordinate) {
-        self.coordinate = coordinate
+    var isHome: Bool {
+        return coordinate.row == (Constants.numberOfSpaces - 1)
     }
-    
-    func isOccupied() -> Bool {
+    var isGoal: Bool {
+        return coordinate.row == 0
+    }
+    var isOccupied: Bool {
         return pawn != nil
     }
-    
-    func isHome(for player: Player) -> Bool {
-        return player.number == 0 ? coordinate.row == (Constants.numberOfSpaces - 1) : coordinate.row == 0
-    }
-    
-    func isGoal(for player: Player) -> Bool {
-        return player.number == 0 ? coordinate.row == 0 : coordinate.row == (Constants.numberOfSpaces - 1)
-    }
-    
-    func isHorizontalEdge() -> Bool {
+    var isHorizontalEdge: Bool {
         return coordinate.row == 0 || coordinate.row == (Constants.numberOfSpaces - 1)
     }
-    
-    func isVerticalEdge() -> Bool {
+    var isVerticalEdge: Bool {
         return coordinate.column == 0 || coordinate.column == (Constants.numberOfSpaces - 1)
     }
-
-    func isEdge() -> Bool {
-        return isHorizontalEdge() || isVerticalEdge()
+    var isEdge: Bool {
+        return isHorizontalEdge || isVerticalEdge
     }
-    
-    func isCorner() -> Bool {
-        return isHorizontalEdge() && isVerticalEdge()
+    var isCorner: Bool {
+        return isHorizontalEdge && isVerticalEdge
+    }
+    init(coordinate: Coordinate) {
+        self.coordinate = coordinate
     }
     
 }

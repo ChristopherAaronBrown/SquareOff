@@ -95,8 +95,8 @@ class GameVC: UIViewController,
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let player1 = Player(number: 0, name: "Chris")
-        let player2 = Player(number: 1, name: "Greg")
+        let player1 = Player(number: 0, name: "Rachael")
+        let player2 = Player(number: 1, name: "Chris")
         let board = Board(player1: player1, player2: player2)
         let session = Session(player1: player1, player2: player2, board: board)
         
@@ -149,6 +149,7 @@ class GameVC: UIViewController,
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        player.hand.newHand(for: player)
         opponent.hand.newHand(for: opponent)
         startNewTurn()
     }
@@ -156,12 +157,20 @@ class GameVC: UIViewController,
     private func startNewTurn() {
         endTurnTimer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(enableEndTurn), userInfo: nil, repeats: false)
         playerLabel.text = "\(player.name.uppercased())"
-        hand.newHand(for: player)
         handView.animateDeal(from: view.frame.center) { (completed) in
             self.animateDealCallback(dealComplete: completed)
         }
         canShop = true
         updateActionButtons()
+    }
+    
+    private func endTurn() {
+        hand.newHand(for: player)
+        player = session.nextPlayerTurn()
+        board.rotateBoard()
+        toggleTurnLabel()
+        refresh()
+        startNewTurn()
     }
     
     private func refresh() {
@@ -193,29 +202,40 @@ class GameVC: UIViewController,
     
     // MARK: - IBActions
     @IBAction func endTurnPressed(_ sender: UIButton) {
-        hand.newHand(for: player)
-        player = session.nextPlayerTurn()
-        board.rotateBoard()
-        toggleTurnLabel()
-        refresh()
-        startNewTurn()
+        endTurn()
     }
     
     @IBAction func burnPressed(_ sender: UIButton) {
         setNextState(.Burn)
         burnView = UIView(frame: view.frame)
         burnView!.backgroundColor = Colors.offWhite
-        burnView!.alpha = 0.4
+        burnView!.alpha = 0.95
         
-        let infoFrame = CGRect(x: 0, y: view.bounds.height / 3, width: view.bounds.width, height: 25)
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissBurnView))
+        burnView?.addGestureRecognizer(tapRecognizer)
+        
+        let width: CGFloat = view.bounds.width * 2/3
+        let height: CGFloat = 50
+        let xPos: CGFloat = view.bounds.width / 6
+        let yPos: CGFloat = handView.frame.minY - height
+        let infoFrame = CGRect(x: xPos, y: yPos, width: width, height: height)
         let infoLabel = UILabel(frame: infoFrame)
         infoLabel.text = "Tap the card you wish to remove from your deck."
+        infoLabel.textColor = Colors.font
+        infoLabel.font = UIFont(name: "Montserrat-Regular", size: 20)
+        infoLabel.numberOfLines = 2
+        infoLabel.textAlignment = .center
         burnView?.addSubview(infoLabel)
         
         view.addSubview(burnView!)
         view.bringSubview(toFront: handView)
         
         enableEndTurn()
+    }
+    
+    @objc private func dismissBurnView() {
+        setNextState(.Normal)
+        burnView?.removeFromSuperview()
     }
     
     @IBAction func shopPressed(_ sender: UIButton) {
@@ -233,6 +253,16 @@ class GameVC: UIViewController,
     }
     
     @IBAction func resurrectPressed(_ sender: UIButton) {
+        setNextState(.Resurrect)
+        
+        for column in 0..<board.count {
+            let coordinate = try! Coordinate(column: column, row: board.count - 1)
+            let space = board.getSpace(coordinate)
+            if space.isHome && !space.isOccupied {
+                highlightDict[coordinate] = Colors.yellow
+            }
+        }
+        boardView.updateBoard()
         enableEndTurn()
     }
     
@@ -261,21 +291,13 @@ class GameVC: UIViewController,
     
     // MARK: - BoardView delegate and data source functions
     func highlightForSpace(at coordinate: Coordinate) -> UIColor {
-        if let highlight = highlightDict[coordinate] {
-            return highlight
-        }
-        
-        return Colors.grey
-    }
-    
-    func currentBoard() -> Board {
-        return board
+        return highlightDict[coordinate] ?? Colors.grey
     }
     
     func spaceTapped(at coordinate: Coordinate) {
         let space = board.getSpace(coordinate)
         
-        if state == .Resurrect && space.isHome(for: player) && !space.isOccupied() {
+        if state == .Resurrect && space.isHome && !space.isOccupied {
             space.pawn = Pawn(owner: player)
             player.deadPawns -= 1
             hand.discardCard(of: ResurrectCard.self, for: player)
@@ -284,21 +306,22 @@ class GameVC: UIViewController,
             refresh()
             updateActionButtons()
         }
+        
+        setNextState(.Normal)
     }
     
     func pawnLongPressBegan(at coordinate: Coordinate, at location: CGPoint) {
         let space = board.getSpace(coordinate)
         
         // If user long presses one of their pawns
-        if space.isOccupied() && space.pawn!.owner == player && !space.pawn!.hasReachedGoal {
+        if space.isOccupied && space.pawn!.owner == player && !space.pawn!.hasReachedGoal {
             setNextState(.Normal)
             
             generatePlayOptions(at: coordinate)
             print(printPlayOptions)
             
-            // FIXME: Cannot update boardView without breaking long press
-//            highlightSpaces(for: eligiblePaths)
             highlightOptions(playOptionDict)
+            boardView.updateHighlights()
             
             space.pawn = nil
             
@@ -328,22 +351,42 @@ class GameVC: UIViewController,
     
     func pawnLongPressEnded(at target: Coordinate, from source: Coordinate) {
         let playOptions = playOptionDict[target] ?? []
+        let finishingTouches: () -> () = {
+            self.playOptionDict = [:]
+            self.updateActionButtons()
+            self.enableEndTurn()
+            if self.playerHasWon() {
+                print("\(self.player.name) has won!!")
+            }
+        }
+        let callback: (PlayOption) -> () = { chosenOption in
+            self.attemptPawnPlacement(using: chosenOption, from: source, to: target)
+            finishingTouches()
+        }
         
         if playOptions.isEmpty {
             placePawn(at: source)
+            finishingTouches()
         } else if playOptions.count == 1 {
-            attemptPawnPlacement(along: playOptions[0].path, from: source, to: target)
+            callback(playOptions[0])
         } else {
             // Prompt user for which path to use
-            promptUser(for: playOptions) { chosenOption in
-                attemptPawnPlacement(along: chosenOption, from: source, to: target)
-            }
+            print("Prompting user...")
+            promptUser(for: playOptions, callback: callback)
         }
         
-        // TODO: Check for winner
-        
-        playOptionDict = [:]
-        enableEndTurn()
+    }
+    
+    private func playerHasWon() -> Bool {
+        var pawnsReachedGoal: Int = 0
+        for column in 0..<board.count {
+            let coordinate = try! Coordinate(column: column, row: 0)
+            let space = board.getSpace(coordinate)
+            if let pawn = space.pawn {
+                pawnsReachedGoal += pawn.hasReachedGoal ? 1 : 0
+            }
+        }
+        return pawnsReachedGoal == Constants.numberOfSpaces
     }
     
     // MARK: Helper functions
@@ -371,31 +414,31 @@ class GameVC: UIViewController,
                     let action = getPathAction(for: path)
                     switch action {
                     case .Move:
-                        let moveOption = PlayOption(path: path, actions: [action : [movementCardType]])
+                        let moveOption = PlayOption(path: path, action: action, requiredCards: [movementCardType])
                         playOptions = [moveOption]
                         
                     case .Attack:
                         if hasAttackCard {
-                            let attackOption = PlayOption(path: path, actions: [action : [movementCardType,AttackCard.self]])
+                            let attackOption = PlayOption(path: path, action: action, requiredCards: [movementCardType,AttackCard.self])
                             playOptions = [attackOption]
                         }
                     case .Jump:
                         if hasJumpCard {
-                            let jumpOption = PlayOption(path: path, actions: [action : [movementCardType,JumpCard.self]])
+                            let jumpOption = PlayOption(path: path, action: action, requiredCards: [movementCardType,JumpCard.self])
                             playOptions = [jumpOption]
                         }
                     case .JumpAndAttack:
                         if hasAttackCard && hasJumpCard {
-                            let jumpAttackOption = PlayOption(path: path, actions: [action : [movementCardType,AttackCard.self,JumpCard.self]])
+                            let jumpAttackOption = PlayOption(path: path, action: action, requiredCards: [movementCardType,AttackCard.self,JumpCard.self])
                             playOptions = [jumpAttackOption]
                         }
                     case .JumpOrAttack:
                         if hasAttackCard {
-                            let attackOption = PlayOption(path: path, actions: [action : [movementCardType,AttackCard.self]])
+                            let attackOption = PlayOption(path: path, action: .Attack, requiredCards: [movementCardType,AttackCard.self])
                             playOptions.append(attackOption)
                         }
                         if hasJumpCard {
-                            let jumpOption = PlayOption(path: path, actions: [action : [movementCardType,JumpCard.self]])
+                            let jumpOption = PlayOption(path: path, action: .Jump, requiredCards: [movementCardType,JumpCard.self])
                             playOptions.append(jumpOption)
                         }
                     case .None:
@@ -416,7 +459,7 @@ class GameVC: UIViewController,
     }
     
     
-    private func promptUser(for playOptions: [PlayOption], callback: (Path) -> Void) {
+    private func promptUser(for playOptions: [PlayOption], callback: (PlayOption) -> Void) {
         var chosenOption: PlayOption!
         
         // FIXME: Remove temp
@@ -426,21 +469,22 @@ class GameVC: UIViewController,
         
         // TODO: Prompt user
         
-        callback(chosenOption.path)
+        callback(chosenOption)
     }
     
-    private func attemptPawnPlacement(along path: Path, from source: Coordinate, to target: Coordinate) {
+    private func attemptPawnPlacement(using playOption: PlayOption, from source: Coordinate, to target: Coordinate) {
+        let path = playOption.path
         var usedCardTypes: [Card.Type] = [path.requiredMovementCardType()]
         
-        switch getPathAction(for: path) {
+        switch playOption.action {
         case .JumpAndAttack:
             if opponent.hand.containsType(DefendCard.self) {
                 showDefendAnimation()
                 opponent.hand.discardCard(of: DefendCard.self, for: opponent)
                 placePawn(at: source)
             } else {
+                removeOpponentPawns(along: path)
                 placePawn(at: target)
-                opponent.deadPawns += 1
             }
             usedCardTypes.append(JumpCard.self)
             usedCardTypes.append(AttackCard.self)
@@ -452,6 +496,7 @@ class GameVC: UIViewController,
                 let closest = path.closest(coordinate: pawnCoordinate)
                 placePawn(at: closest)
             } else {
+                removeOpponentPawns(along: path)
                 placePawn(at: target)
             }
             usedCardTypes.append(AttackCard.self)
@@ -507,17 +552,12 @@ class GameVC: UIViewController,
     private func placePawn(at coordinate: Coordinate) {
         
         longPressedPawn!.removeFromSuperview()
-//        longPressedPawn = nil
 
         let space = board.getSpace(coordinate)
 
-        if space.isOccupied() && space.pawn!.owner == opponent {
-            opponent.deadPawns += 1
-        }
-
         space.pawn = Pawn(owner: player)
 
-        if space.isGoal(for: player) {
+        if space.isGoal {
             space.pawn!.hasReachedGoal = true
         }
         
@@ -529,12 +569,25 @@ class GameVC: UIViewController,
         handView.refresh()
     }
     
+    private func removeOpponentPawns(along path: Path) {
+        for coordinate in path {
+            let space = board.getSpace(coordinate)
+            if space.isOccupied && space.pawn!.owner == opponent {
+                opponent.deadPawns += 1
+                space.pawn = nil
+            }
+        }
+    }
+    
     private func removeUsedCards(in usedCardTypes: [Card.Type]) {
         for tileType in usedCardTypes {
             hand.discardCard(of: tileType, for: player)
         }
         handView.refresh()
         refresh()
+        if hand.isEmpty {
+            endTurn()
+        }
     }
     
     private func getPathAction(for path: Path) -> PathAction {
@@ -554,7 +607,7 @@ class GameVC: UIViewController,
                     }
                 }
             }
-            if coordinate == path.end && space.isOccupied() {
+            if coordinate == path.end && space.isOccupied {
                 if space.pawn!.owner == player {
                     endOccupiedByAlly = true
                 } else {
@@ -563,7 +616,7 @@ class GameVC: UIViewController,
             }
         }
         
-        let endUnoccupied = !(endOccupiedByEnemy || endOccupiedByAlly)
+        let endUnoccupied: Bool = !(endOccupiedByEnemy || endOccupiedByAlly)
         
         if path.count == 2 {
             if endOccupiedByEnemy {
@@ -607,7 +660,7 @@ class GameVC: UIViewController,
     private func attackCoordinate(along path: Path) -> Coordinate? {
         for coordinate in path {
             let space = board.getSpace(coordinate)
-            if space.isOccupied() {
+            if space.isOccupied {
                 if space.pawn!.owner !== player {
                     return coordinate
                 }
@@ -617,10 +670,19 @@ class GameVC: UIViewController,
     }
     
     private func highlightOptions(_ playOptionDict: [Coordinate:[PlayOption]]) {
+        // TODO: Use PlayOptions to make highlights
+        
         for (_, playOptions) in playOptionDict {
             for playOption in playOptions {
                 for coordinate in playOption.path {
-                    highlightDict[coordinate] = Colors.blue
+                    let path = playOption.path
+                    if coordinate == path.end {
+                        highlightDict[coordinate] = Colors.blueShadow
+                    } else if highlightDict[coordinate] != Colors.blueShadow && coordinate != path.beginning {
+                        highlightDict[coordinate] = Colors.blue
+                    } else if coordinate == path.beginning {
+                        highlightDict[coordinate] = Colors.grey
+                    }
                 }
             }
         }
@@ -669,6 +731,9 @@ class GameVC: UIViewController,
     
     private func removeGems() {
         hand.discardAllCards(type: GemCard.self, for: player)
+        if hand.isEmpty {
+            endTurn()
+        }
     }
 
     // MARK: - HandView delegate and data source functions
@@ -686,6 +751,9 @@ class GameVC: UIViewController,
             updateActionButtons()
             burnView?.removeFromSuperview()
             setNextState(.Normal)
+            if hand.isEmpty {
+                endTurn()
+            }
         } else {
             // TODO: Info card
         }
@@ -720,7 +788,7 @@ class GameVC: UIViewController,
         for col in 0..<Constants.numberOfSpaces {
             let coordinate = try! Coordinate(column: col, row: row)
             let space = board.getSpace(coordinate)
-            if space.isHome(for: player) && !space.isOccupied() {
+            if space.isHome && !space.isOccupied {
                 homeSpaceCoordinates.append(space.coordinate)
             }
         }

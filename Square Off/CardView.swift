@@ -23,7 +23,12 @@ class CardView: GradientView {
         topColor = player.number == 0 ? Colors.player1Light : Colors.player2Light
         bottomColor = player.number == 0 ? Colors.player1Dark : Colors.player2Dark
         
-        let iconImageView = UIImageView(image: icon)
+        let iconWidth: CGFloat = bounds.width * (38/50)
+        let iconHeight: CGFloat = bounds.height * (28/70)
+        let iconOffset: CGFloat = frame.midX - iconWidth / 2
+        let iconFrame = CGRect(x: iconOffset, y: iconOffset, width: iconWidth, height: iconHeight)
+        let iconImageView = UIImageView(frame: iconFrame)
+        iconImageView.image = icon
         iconImageView.center = bounds.center
         
         addSubview(iconImageView)

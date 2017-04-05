@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 
 typealias AnimationCallback = (Bool) -> ()
+typealias Random = (UInt32) -> UInt32
 
 struct Constants {
     

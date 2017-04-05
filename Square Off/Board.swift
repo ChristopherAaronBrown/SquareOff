@@ -88,7 +88,7 @@ class Board {
     func hasOpenHomeSpot(player: Player) -> Bool {
         let row = player.number == 0 ? count - 1 : 0
         for column in 0..<count {
-            if !board[column][row].isOccupied() {
+            if !board[column][row].isOccupied {
                 return true
             }
         }

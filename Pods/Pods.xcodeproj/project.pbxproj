@@ -9,12 +9,12 @@
 /* Begin PBXBuildFile section */
 		00358D71B9FDF4F4721282C65DC377FA /* Pods-Square Off-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = B19FBF9D92D7D09DFF1E1EAC8D4F657C /* Pods-Square Off-dummy.m */; };
 		27700B55DF14767F2FFAEB5010532B10 /* FBShimmering.h in Headers */ = {isa = PBXBuildFile; fileRef = B9938F3FB367B91F9BAF71F63271D427 /* FBShimmering.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		27A30384E2FC9A6B7A05EA99B1E7C6EA /* FBShimmeringView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB1EEB10864F2C51E85EDCB2754B0C4 /* FBShimmeringView.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		3067D432393EDC6927C43128B4626ADA /* FBShimmeringLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = F0B200D484E29069D760D9AEEB5988F5 /* FBShimmeringLayer.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
 		3445891C1FE249F6FD5EFDCA1578893A /* FBShimmeringView.h in Headers */ = {isa = PBXBuildFile; fileRef = D67CAAA415CE4325475B3F9D6D80B50D /* FBShimmeringView.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		65930EE37CB704C0C4ECDBB772C5337C /* Shimmer-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 2155C6C926196C8D20A80B0DE9C7A127 /* Shimmer-dummy.m */; };
 		6A5F7216F12DFF87C18A5B53EC862C0A /* FBShimmeringLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 424C2285EF0A3DB314A706437F43ADA7 /* FBShimmeringLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		714E50F6D3998AE464DF58CFBDEFF518 /* FBShimmeringView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB1EEB10864F2C51E85EDCB2754B0C4 /* FBShimmeringView.m */; };
 		74D7D9F5988A5CA38773AF8315C2537F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CBB3DE36805AF21409EC968A9691732F /* Foundation.framework */; };
-		92442DDBCBCF1D56473FE93408BB7561 /* FBShimmeringLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = F0B200D484E29069D760D9AEEB5988F5 /* FBShimmeringLayer.m */; };
+		B263DDC113F395F12CFAD275D8BC2CFC /* Shimmer-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 2155C6C926196C8D20A80B0DE9C7A127 /* Shimmer-dummy.m */; };
 		C241CC87B5EC56C62554F71D7F82B1B5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CBB3DE36805AF21409EC968A9691732F /* Foundation.framework */; };
 		F13C1CB9A8F8CEEA28AEC75E8F594543 /* Pods-Square Off-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = AB0636D2A922754685CE08C01D18ED6A /* Pods-Square Off-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FCDDC6950785907419C576F6ABCCF996 /* Shimmer-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = C08472149FEFBC14B56D34FDC753B8DD /* Shimmer-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -223,7 +223,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = FC9E3230F7C84B83C26E2B249C0235F7 /* Build configuration list for PBXNativeTarget "Shimmer" */;
 			buildPhases = (
-				BADC7F891306DCE57029DDB17A71484F /* Sources */,
+				445B33B346ECF6BB3E50499951245ED5 /* Sources */,
 				DD923DAF24727453BD4097EAEB772BBB /* Frameworks */,
 				74D0BB1A6AD4BE3CC5E2151BEECCD3C0 /* Headers */,
 			);
@@ -272,13 +272,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		BADC7F891306DCE57029DDB17A71484F /* Sources */ = {
+		445B33B346ECF6BB3E50499951245ED5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				92442DDBCBCF1D56473FE93408BB7561 /* FBShimmeringLayer.m in Sources */,
-				714E50F6D3998AE464DF58CFBDEFF518 /* FBShimmeringView.m in Sources */,
-				65930EE37CB704C0C4ECDBB772C5337C /* Shimmer-dummy.m in Sources */,
+				3067D432393EDC6927C43128B4626ADA /* FBShimmeringLayer.m in Sources */,
+				27A30384E2FC9A6B7A05EA99B1E7C6EA /* FBShimmeringView.m in Sources */,
+				B263DDC113F395F12CFAD275D8BC2CFC /* Shimmer-dummy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

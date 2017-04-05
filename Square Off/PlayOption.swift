@@ -10,32 +10,25 @@ import Foundation
 
 class PlayOption {
     
-    var path: Path
-    var actions: [PathAction:[Card.Type]]
+    let path: Path
+    let action: PathAction
+    let requiredCards: [Card.Type]
+    let description: String
     
-    var description: String {
-        var result: String = "- Path: \(path.description)\n- Actions: "
-        for action in actions {
-            result += "\(action.key)"
-        }
-        result += "\n"
-        return result
-    }
-    
-    init(path: Path, actions: [PathAction:[Card.Type]]) {
+    init(path: Path, action: PathAction, requiredCards: [Card.Type]) {
         self.path = path
-        self.actions = actions
+        self.action = action
+        self.requiredCards = requiredCards
+        self.description = "- Path: \(path.description)\n- Action: \(action)\n"
     }
     
     func requiredCardTypes() -> [Card.Type] {
         var resultCardTypes: [Card.Type] = [path.requiredMovementCardType()]
-        for (_, tileTypes) in actions {
-            for tileType in tileTypes {
-                if !resultCardTypes.contains(where: { (type) -> Bool in
-                    return tileType == type
-                }) {
-                    resultCardTypes.append(tileType)
-                }
+        for cardType in requiredCards {
+            if !resultCardTypes.contains(where: { (type) -> Bool in
+                return cardType == type
+            }) {
+                resultCardTypes.append(cardType)
             }
         }
         return resultCardTypes
