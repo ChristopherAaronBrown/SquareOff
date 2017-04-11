@@ -31,17 +31,20 @@ class Deck {
     
     func populateInitialDeck() {
         /*
-         Starting bags have:
-         - 5x SingleGemCard
+         Starting decks have:
+         - 3x SingleGemCard
+         - 2x DoubleGemCard
          - 1x SingleStraightCard
          - 1x SingleDiagonalCard
          - 1x AttackCard
          - 1x DefendCard
-         - 1x JumpCard
+         - 1x DoubleStraightCard
          */
-        for _ in 0..<5 {
-            deck.append(GemCard(gem: Gem.Single))
-        }
+        deck.append(GemCard(gem: .Single))
+        deck.append(GemCard(gem: .Single))
+        deck.append(GemCard(gem: .Single))
+        deck.append(GemCard(gem: .Double))
+        deck.append(GemCard(gem: .Double))
         deck.append(SingleStraightCard())
         deck.append(SingleDiagonalCard())
         deck.append(AttackCard())

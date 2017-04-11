@@ -46,6 +46,7 @@
 		833AFDDA1E4D7A1300C628F0 /* Board.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833AFDD81E4D7A1300C628F0 /* Board.swift */; };
 		833AFDDB1E4D7A1300C628F0 /* Space.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833AFDD91E4D7A1300C628F0 /* Space.swift */; };
 		833AFDDD1E4D7E8400C628F0 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833AFDDC1E4D7E8400C628F0 /* Session.swift */; };
+		83A736CD1E9AA89F00FDC9D8 /* PlayOptionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83A736CC1E9AA89F00FDC9D8 /* PlayOptionCell.xib */; };
 		83B4FA831E553B9900B92BA9 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B4FA821E553B9900B92BA9 /* Extensions.swift */; };
 		83B4FA871E5633EB00B92BA9 /* ShopVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B4FA861E5633EB00B92BA9 /* ShopVC.swift */; };
 		83C8FECC1E64A1FB0077A376 /* PlayOptionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83C8FECB1E64A1FB0077A376 /* PlayOptionVC.swift */; };
@@ -117,6 +118,7 @@
 		833AFDD81E4D7A1300C628F0 /* Board.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Board.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		833AFDD91E4D7A1300C628F0 /* Space.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Space.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		833AFDDC1E4D7E8400C628F0 /* Session.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
+		83A736CC1E9AA89F00FDC9D8 /* PlayOptionCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlayOptionCell.xib; sourceTree = "<group>"; };
 		83B4FA821E553B9900B92BA9 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Extensions.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		83B4FA861E5633EB00B92BA9 /* ShopVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = ShopVC.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		83C8FECB1E64A1FB0077A376 /* PlayOptionVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayOptionVC.swift; sourceTree = "<group>"; };
@@ -249,6 +251,7 @@
 				831338091E524E2200054F56 /* HandView.swift */,
 				83C8FEFB1E6DFC140077A376 /* GradientView.swift */,
 				831EAC661E81B390007C1209 /* PlayOptionCell.swift */,
+				83A736CC1E9AA89F00FDC9D8 /* PlayOptionCell.xib */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -445,6 +448,7 @@
 				83C8FEEE1E6DF8050077A376 /* Montserrat-ExtraLightItalic.ttf in Resources */,
 				833AFD911E4D1ED700C628F0 /* Assets.xcassets in Resources */,
 				83C8FEF11E6DF8050077A376 /* Montserrat-LightItalic.ttf in Resources */,
+				83A736CD1E9AA89F00FDC9D8 /* PlayOptionCell.xib in Resources */,
 				83C8FEF51E6DF8050077A376 /* Montserrat-SemiBold.ttf in Resources */,
 				83C8FEF31E6DF8050077A376 /* Montserrat-MediumItalic.ttf in Resources */,
 				83C8FEF91E6DF8050077A376 /* OFL.txt in Resources */,

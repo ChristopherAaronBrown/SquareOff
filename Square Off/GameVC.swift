@@ -29,6 +29,9 @@ class GameVC: UIViewController,
     @IBOutlet weak var resurrectImageView: UIImageView!
     @IBOutlet weak var resurrectLabel: UILabel!
     
+    var player1Name: String!
+    var player2Name: String!
+    
     private var shimmerView: FBShimmeringView!
     private var endTurnTimer: Timer?
     private var session: Session!
@@ -95,8 +98,8 @@ class GameVC: UIViewController,
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let player1 = Player(number: 0, name: "Rachael")
-        let player2 = Player(number: 1, name: "Chris")
+        let player1 = Player(number: 0, name: player1Name)
+        let player2 = Player(number: 1, name: player2Name)
         let board = Board(player1: player1, player2: player2)
         let session = Session(player1: player1, player2: player2, board: board)
         
@@ -145,13 +148,25 @@ class GameVC: UIViewController,
         refresh()
         updateActionButtons()
         handView.refresh()
+        
+        // TODO: From viewDidAppear. Delete later?
+        player.hand.newHand(for: player)
+        opponent.hand.newHand(for: opponent)
+        startNewTurn()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        player.hand.newHand(for: player)
-        opponent.hand.newHand(for: opponent)
-        startNewTurn()
+//        player.hand.newHand(for: player)
+//        opponent.hand.newHand(for: opponent)
+//        startNewTurn()
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let desination = segue.destination as? ShopVC {
+            desination.dataSource = self
+            desination.delegate = self
+        }
     }
     
     private func startNewTurn() {
@@ -239,17 +254,17 @@ class GameVC: UIViewController,
     }
     
     @IBAction func shopPressed(_ sender: UIButton) {
-        let shopVC = ShopVC()
-        
+//        let shopVC = ShopVC()
+//        
         enableEndTurn()
-        
-        shopVC.dataSource = self
-        shopVC.delegate = self
-        
-        addChildViewController(shopVC)
-        view.addSubview(shopVC.view)
-        
-        shopVC.didMove(toParentViewController: self)
+//        
+//        shopVC.dataSource = self
+//        shopVC.delegate = self
+//        
+//        addChildViewController(shopVC)
+//        view.addSubview(shopVC.view)
+//        
+//        shopVC.didMove(toParentViewController: self)
     }
     
     @IBAction func resurrectPressed(_ sender: UIButton) {
@@ -459,17 +474,22 @@ class GameVC: UIViewController,
     }
     
     
-    private func promptUser(for playOptions: [PlayOption], callback: (PlayOption) -> Void) {
+    private func promptUser(for playOptions: [PlayOption], callback: @escaping (PlayOption) -> Void) {
         var chosenOption: PlayOption!
         
         // FIXME: Remove temp
         let index = Int(arc4random_uniform(UInt32(playOptions.count)))
         chosenOption = playOptions[index]
         print("Chosen Option: \(index)")
+        callback(chosenOption)
         
         // TODO: Prompt user
-        
-        callback(chosenOption)
+//        let playOptionVC = PlayOptionVC(playOptions: playOptions)
+//        present(playOptionVC, animated: true) { 
+//            code
+//        }
+//        
+//        callback(chosenOption)
     }
     
     private func attemptPawnPlacement(using playOption: PlayOption, from source: Coordinate, to target: Coordinate) {

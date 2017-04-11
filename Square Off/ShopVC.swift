@@ -22,9 +22,11 @@ class ShopVC: UIViewController {
     var dataSource: ShopVCDataSource!
     var delegate: ShopVCDelegate!
     
-    private var buyButton: UIButton!
+    @IBOutlet weak var buyButton: UIButton!
+    @IBOutlet weak var totalGemsLabel: UILabel!
+    private var costLabels: [UILabel] = []
     private var cancelButton: UIButton!
-    private var tileTag: Int = -1
+    private var cardTag: Int = -1
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,272 +36,202 @@ class ShopVC: UIViewController {
     }
     
     private func configureShop() {
-        addBackground()
-        addPopup()
-        addTotalGems()
-        addShop()
-        addButtons()
-    }
-    
-    private func addBackground() {
-        let backgroundView = UIView(frame: view.frame)
-        backgroundView.backgroundColor = UIColor.white
-        backgroundView.alpha = 0.3
-        
-        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissAnimate))
-        backgroundView.addGestureRecognizer(tapRecognizer)
-        
-        view.addSubview(backgroundView)
-    }
-    
-    private func addPopup() {
-        let width: CGFloat = view.bounds.width * (274/320)
-        let height: CGFloat = view.bounds.height * (431/568)
-        let xPos: CGFloat = view.bounds.midX - width / 2
-        let yPos: CGFloat = view.bounds.midY - height / 2
-        let frame = CGRect(x: xPos, y: yPos, width: width, height: height)
-        let popupView = UIView(frame: frame)
-        
-        popupView.backgroundColor = Colors.offWhite
-        popupView.layer.cornerRadius = 8
-        popupView.layer.shadowColor = Colors.font.cgColor
-        popupView.layer.shadowOpacity = 0.7
-        popupView.layer.shadowOffset = CGSize(width: 0, height: 8)
-        popupView.layer.shadowRadius = 10
-        
-        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(showCancelButton))
-        popupView.addGestureRecognizer(tapRecognizer)
-        
-        view.addSubview(popupView)
-    }
-    
-    private func addTotalGems() {
         let player = dataSource.currentPlayer()
         let totalGems = player.hand.totalGems()
         
-        let width: CGFloat = view.bounds.width * (150/320)
-        let height: CGFloat = view.bounds.height * (48/568)
-        let xPos: CGFloat = view.bounds.midX - width / 2
-        let yPos: CGFloat = view.bounds.height * (116.5/568) - height
-        let frame = CGRect(x: xPos, y: yPos, width: width, height: height)
-        let label = UILabel(frame: frame)
+        totalGemsLabel.text = "Total Gems: \(totalGems)"
+        buyButton.backgroundColor = player.number == 0 ? Colors.player1Light : Colors.player2Light
         
-        label.font = UIFont(name: "Anita semi-square", size: 20)
-        label.textColor = Colors.font
-        label.textAlignment = .center
-        label.text = "Total Gems: \(totalGems)"
-        
-        view.addSubview(label)
+        addCards()
     }
     
-    private func addShop() {
+    private func addCards() {
         let player = dataSource.currentPlayer()
         let totalGems = player.hand.totalGems()
         let alpha: CGFloat = 0.3
-        
-        // Shop image
-        let shopXPos: CGFloat = view.bounds.width * (31/320)
-        let shopYPos: CGFloat = view.bounds.height * (116.5/568)
-        let shopWidth: CGFloat = view.bounds.width * (258/320)
-        let shopHeight: CGFloat = view.bounds.height * (311/568)
-        let shopFrame = CGRect(x: shopXPos, y: shopYPos, width: shopWidth, height: shopHeight)
-        let shopImageView = UIImageView(frame: shopFrame)
-        
-        shopImageView.image = #imageLiteral(resourceName: "Shop")
-        
-        view.addSubview(shopImageView)
 
         // Cards
-        let topMargin: CGFloat = shopYPos + view.bounds.height * (7/568)
-        let sideMargin: CGFloat = shopXPos + view.bounds.width * (7/320)
-        let topPadding: CGFloat = view.bounds.height * (15/568)
-        let sidePadding: CGFloat = view.bounds.width * (8/320)
-        let tileWidth: CGFloat = view.bounds.width * (55/320)
-        let tileHeight: CGFloat = view.bounds.height * (60/568)
-
+        let topMargin: CGFloat = 8
+        let sideMargin: CGFloat = 24
+        let cardWidth: CGFloat = view.bounds.width * (55/320)
+        let cardHeight: CGFloat = view.bounds.height * (77/568)
+        let topPadding: CGFloat = (buyButton.frame.minY - totalGemsLabel.frame.maxY - 2 * topMargin - 4 * cardHeight - 88) / 3
+        let sidePadding: CGFloat = (view.bounds.width - 2 * sideMargin - 4 * cardWidth) / 3
+        
+        
         for index in 0..<16 {
             let column = index % 4
             let row = Int(index / 4)
 
-            let xPos: CGFloat = sideMargin + CGFloat(column) * (sidePadding + tileWidth)
-            let yPos: CGFloat = topMargin + CGFloat(row) * (topPadding + tileHeight)
-            let frame = CGRect(x: xPos, y: yPos, width: tileWidth, height: tileHeight)
+            let cardView: CardView
+            let xPos: CGFloat = sideMargin + CGFloat(column) * (sidePadding + cardWidth)
+            let yPos: CGFloat = totalGemsLabel.frame.maxY + topMargin + CGFloat(row) * (topPadding + cardHeight + 20)
+            let cardFrame = CGRect(x: xPos, y: yPos, width: cardWidth, height: cardHeight)
+            let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(cardTapped))
 
-            let tileImageView = UIImageView(frame: frame)
-            tileImageView.tag = column + (row * 4)
-            tileImageView.isUserInteractionEnabled = true
-
-            let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(tileTapped(_:)))
-
+            let labelFrame = CGRect(x: xPos, y: yPos + cardHeight + 8, width: cardWidth, height: 20)
+            let costLabel = UILabel(frame: labelFrame)
+            costLabel.font = UIFont(name: "Montserrat-Light", size: 16)
+            costLabel.textAlignment = .center
+            costLabel.textColor = Colors.font
+            costLabel.layer.borderWidth = 2
+            costLabel.layer.borderColor = UIColor.clear.cgColor
+            
             switch ShopCard(rawValue: index)! {
             case .SingleGem:
-                tileImageView.image = player.number == 0 ? #imageLiteral(resourceName: "SingleGemPink") : #imageLiteral(resourceName: "SingleGemGreen")
-                tileImageView.addGestureRecognizer(tapRecognizer)
+                costLabel.text = "Cost: 0"
+                cardView = CardView(frame: cardFrame, player: player, icon: #imageLiteral(resourceName: "SingleGem-Card"))
+                cardView.addGestureRecognizer(tapRecognizer)
             case .DoubleGem:
-                tileImageView.image = player.number == 0 ? #imageLiteral(resourceName: "DoubleGemPink") : #imageLiteral(resourceName: "DoubleGemGreen")
+                costLabel.text = "Cost: 3"
+                cardView = CardView(frame: cardFrame, player: player, icon: #imageLiteral(resourceName: "DoubleGem-Card"))
                 if totalGems >= 3 {
-                    tileImageView.addGestureRecognizer(tapRecognizer)
+                    cardView.addGestureRecognizer(tapRecognizer)
                 } else {
-                    tileImageView.alpha = alpha
+                    cardView.alpha = alpha
                 }
             case .TripleGem:
-                tileImageView.image = player.number == 0 ? #imageLiteral(resourceName: "TripleGemPink") : #imageLiteral(resourceName: "TripleGemGreen")
+                costLabel.text = "Cost: 6"
+                cardView = CardView(frame: cardFrame, player: player, icon: #imageLiteral(resourceName: "TripleGem-Card"))
                 if totalGems >= 6 {
-                    tileImageView.addGestureRecognizer(tapRecognizer)
+                    cardView.addGestureRecognizer(tapRecognizer)
                 } else {
-                    tileImageView.alpha = alpha
+                    cardView.alpha = alpha
                 }
             case .Jump:
-                tileImageView.image = player.number == 0 ? #imageLiteral(resourceName: "JumpPink") : #imageLiteral(resourceName: "JumpGreen")
+                costLabel.text = "Cost: 4"
+                cardView = CardView(frame: cardFrame, player: player, icon: #imageLiteral(resourceName: "Jump-Card"))
                 if totalGems >= 4 {
-                    tileImageView.addGestureRecognizer(tapRecognizer)
+                    cardView.addGestureRecognizer(tapRecognizer)
                 } else {
-                    tileImageView.alpha = alpha
+                    cardView.alpha = alpha
                 }
             case .Attack:
-                tileImageView.image = player.number == 0 ? #imageLiteral(resourceName: "AttackPink") : #imageLiteral(resourceName: "AttackGreen")
+                costLabel.text = "Cost: 4"
+                cardView = CardView(frame: cardFrame, player: player, icon: #imageLiteral(resourceName: "Attack-Card"))
                 if totalGems >= 4 {
-                    tileImageView.addGestureRecognizer(tapRecognizer)
+                    cardView.addGestureRecognizer(tapRecognizer)
                 } else {
-                    tileImageView.alpha = alpha
+                    cardView.alpha = alpha
                 }
             case .Defend:
-                tileImageView.image = player.number == 0 ? #imageLiteral(resourceName: "DefendPink") : #imageLiteral(resourceName: "DefendGreen")
+                costLabel.text = "Cost: 4"
+                cardView = CardView(frame: cardFrame, player: player, icon: #imageLiteral(resourceName: "Defend-Card"))
                 if totalGems >= 4 {
-                    tileImageView.addGestureRecognizer(tapRecognizer)
+                    cardView.addGestureRecognizer(tapRecognizer)
                 } else {
-                    tileImageView.alpha = alpha
+                    cardView.alpha = alpha
                 }
             case .Burn:
-                tileImageView.image = player.number == 0 ? #imageLiteral(resourceName: "BurnPink") : #imageLiteral(resourceName: "BurnGreen")
+                costLabel.text = "Cost: 4"
+                cardView = CardView(frame: cardFrame, player: player, icon: #imageLiteral(resourceName: "Burn-Card"))
                 if totalGems >= 4 {
-                    tileImageView.addGestureRecognizer(tapRecognizer)
+                    cardView.addGestureRecognizer(tapRecognizer)
                 } else {
-                    tileImageView.alpha = alpha
+                    cardView.alpha = alpha
                 }
             case .Resurrect:
-                tileImageView.image = player.number == 0 ? #imageLiteral(resourceName: "ResurrectPink") : #imageLiteral(resourceName: "ResurrectGreen")
+                costLabel.text = "Cost: 6"
+                cardView = CardView(frame: cardFrame, player: player, icon: #imageLiteral(resourceName: "Resurrect-Card"))
                 if totalGems >= 6 {
-                    tileImageView.addGestureRecognizer(tapRecognizer)
+                    cardView.addGestureRecognizer(tapRecognizer)
                 } else {
-                    tileImageView.alpha = alpha
+                    cardView.alpha = alpha
                 }
             case .SingleStraight:
-                tileImageView.image = player.number == 0 ? #imageLiteral(resourceName: "SingleStraightPink") : #imageLiteral(resourceName: "SingleStraightGreen")
+                costLabel.text = "Cost: 3"
+                cardView = CardView(frame: cardFrame, player: player, icon: #imageLiteral(resourceName: "SingleStraight-Card"))
                 if totalGems >= 3 {
-                    tileImageView.addGestureRecognizer(tapRecognizer)
+                    cardView.addGestureRecognizer(tapRecognizer)
                 } else {
-                    tileImageView.alpha = alpha
+                    cardView.alpha = alpha
                 }
             case .SingleDiagonal:
-                tileImageView.image = player.number == 0 ? #imageLiteral(resourceName: "SingleDiagonalPink") : #imageLiteral(resourceName: "SingleDiagonalGreen")
+                costLabel.text = "Cost: 3"
+                cardView = CardView(frame: cardFrame, player: player, icon: #imageLiteral(resourceName: "SingleDiagonal-Card"))
                 if totalGems >= 3 {
-                    tileImageView.addGestureRecognizer(tapRecognizer)
+                    cardView.addGestureRecognizer(tapRecognizer)
                 } else {
-                    tileImageView.alpha = alpha
+                    cardView.alpha = alpha
                 }
             case .ZigZagLeft:
-                tileImageView.image = player.number == 0 ? #imageLiteral(resourceName: "ZigZagLeftPink") : #imageLiteral(resourceName: "ZigZagLeftGreen")
+                costLabel.text = "Cost: 5"
+                cardView = CardView(frame: cardFrame, player: player, icon: #imageLiteral(resourceName: "ZigZagLeft-Card"))
                 if totalGems >= 5 {
-                    tileImageView.addGestureRecognizer(tapRecognizer)
+                    cardView.addGestureRecognizer(tapRecognizer)
                 } else {
-                    tileImageView.alpha = alpha
+                    cardView.alpha = alpha
                 }
             case .KnightLeft:
-                tileImageView.image = player.number == 0 ? #imageLiteral(resourceName: "KnightLeftPink") : #imageLiteral(resourceName: "KnightLeftGreen")
+                costLabel.text = "Cost: 5"
+                cardView = CardView(frame: cardFrame, player: player, icon: #imageLiteral(resourceName: "KnightLeft-Card"))
                 if totalGems >= 5 {
-                    tileImageView.addGestureRecognizer(tapRecognizer)
+                    cardView.addGestureRecognizer(tapRecognizer)
                 } else {
-                    tileImageView.alpha = alpha
+                    cardView.alpha = alpha
                 }
             case .DoubleStraight:
-                tileImageView.image = player.number == 0 ? #imageLiteral(resourceName: "DoubleStraightPink") : #imageLiteral(resourceName: "DoubleStraightGreen")
+                costLabel.text = "Cost: 4"
+                cardView = CardView(frame: cardFrame, player: player, icon: #imageLiteral(resourceName: "DoubleStraight-Card"))
                 if totalGems >= 4 {
-                    tileImageView.addGestureRecognizer(tapRecognizer)
+                    cardView.addGestureRecognizer(tapRecognizer)
                 } else {
-                    tileImageView.alpha = alpha
+                    cardView.alpha = alpha
                 }
             case .DoubleDiagonal:
-                tileImageView.image = player.number == 0 ? #imageLiteral(resourceName: "DoubleDiagonalPink") : #imageLiteral(resourceName: "DoubleDiagonalGreen")
+                costLabel.text = "Cost: 5"
+                cardView = CardView(frame: cardFrame, player: player, icon: #imageLiteral(resourceName: "DoubleDiagonal-Card"))
                 if totalGems >= 5 {
-                    tileImageView.addGestureRecognizer(tapRecognizer)
+                    cardView.addGestureRecognizer(tapRecognizer)
                 } else {
-                    tileImageView.alpha = alpha
+                    cardView.alpha = alpha
                 }
             case .ZigZagRight:
-                tileImageView.image = player.number == 0 ? #imageLiteral(resourceName: "ZigZagRightPink") : #imageLiteral(resourceName: "ZigZagRightGreen")
+                costLabel.text = "Cost: 5"
+                cardView = CardView(frame: cardFrame, player: player, icon: #imageLiteral(resourceName: "ZigZagRight-Card"))
                 if totalGems >= 5 {
-                    tileImageView.addGestureRecognizer(tapRecognizer)
+                    cardView.addGestureRecognizer(tapRecognizer)
                 } else {
-                    tileImageView.alpha = alpha
+                    cardView.alpha = alpha
                 }
             case .KnightRight:
-                tileImageView.image = player.number == 0 ? #imageLiteral(resourceName: "KnightRightPink") : #imageLiteral(resourceName: "KnightRightGreen")
+                costLabel.text = "Cost: 5"
+                cardView = CardView(frame: cardFrame, player: player, icon: #imageLiteral(resourceName: "KnightRight-Card"))
                 if totalGems >= 5 {
-                    tileImageView.addGestureRecognizer(tapRecognizer)
+                    cardView.addGestureRecognizer(tapRecognizer)
                 } else {
-                    tileImageView.alpha = alpha
+                    cardView.alpha = alpha
                 }
             }
             
-            view.addSubview(tileImageView)
+            costLabels.append(costLabel)
+            cardView.tag = column + (row * 4)
+            cardView.isUserInteractionEnabled = true
+            
+            view.addSubview(cardView)
+            view.addSubview(costLabel)
         }
     }
     
-    private func addButtons() {
-        let width: CGFloat = view.bounds.width * (150/320)
-        let height: CGFloat = view.bounds.height * (48/568)
-        let xPos: CGFloat = view.bounds.midX - width / 2
-        let yPos: CGFloat = view.bounds.height * (443.5/568)
-        let frame = CGRect(x: xPos, y: yPos, width: width, height: height)
-        
-        buyButton = UIButton(frame: frame)
-        buyButton.setBackgroundImage(#imageLiteral(resourceName: "BuyButton"), for: .normal)
-        buyButton.setBackgroundImage(#imageLiteral(resourceName: "BuyButtonPressed"), for: .highlighted)
-        buyButton.addTarget(self, action: #selector(purchaseCardAndDismiss), for: .touchUpInside)
-        buyButton.isHidden = true
-        
-        cancelButton = UIButton(frame: frame)
-        cancelButton.setBackgroundImage(#imageLiteral(resourceName: "CancelButton"), for: .normal)
-        cancelButton.setBackgroundImage(#imageLiteral(resourceName: "CancelButtonPressed"), for: .highlighted)
-        cancelButton.addTarget(self, action: #selector(dismissAnimate), for: .touchUpInside)
-        
-        view.addSubview(buyButton)
-        view.addSubview(cancelButton)
-    }
-    
-    @objc private func showCancelButton() {
-        tileTag = -1
-        cancelButton.isHidden = false
-        buyButton.isHidden = true
-        animateButton()
-    }
-    
-    @objc private func showBuyButton() {
-        cancelButton.isHidden = true
-        buyButton.isHidden = false
-        animateButton()
-        view.setNeedsLayout()
-    }
-    
-    @objc private func tileTapped(_ sender: UITapGestureRecognizer) {
-        if let tileImageView = sender.view as? UIImageView {
-            if tileTag == tileImageView.tag {
-                showCancelButton()
+    @objc private func cardTapped(_ sender: UITapGestureRecognizer) {
+        if let cardView = sender.view as? CardView {
+            let playerNumber = dataSource.currentPlayer().number
+            let outlineColor: CGColor = playerNumber == 0 ? Colors.player1Light.cgColor : Colors.player2Light.cgColor
+            if cardTag == cardView.tag {
+                cardTag = -1
+                costLabels[cardView.tag].layer.borderColor = UIColor.clear.cgColor
+                buyButton.setTitle("Cancel", for: .normal)
             } else {
-                tileTag = tileImageView.tag
-                showBuyButton()
+                cardTag = cardView.tag
+                costLabels[cardView.tag].layer.borderColor = outlineColor
+                buyButton.setTitle("Buy", for: .normal)
             }
+            animateButton()
         }
-    }
-    
-    @objc private func purchaseCardAndDismiss() {
-        delegate.purchased(card: selectedCard())
-        dismissAnimate()
     }
     
     private func selectedCard() -> Card {
-        switch ShopCard(rawValue: tileTag)! {
+        switch ShopCard(rawValue: cardTag)! {
         case .SingleGem:
             return GemCard(gem: Gem.Single)
         case .DoubleGem:
@@ -335,21 +267,27 @@ class ShopVC: UIViewController {
         }
     }
     
+    @IBAction func buyPressed(_ sender: UIButton) {
+        if buyButton.titleLabel?.text == "Buy" {
+            delegate.purchased(card: selectedCard())
+        }
+        dismiss(animated: true, completion: nil)
+    }
+    
     private func animateButton() {
         let duration: TimeInterval = 0.1
         let scale: CGFloat = 1.1
         
         UIButton.animate(withDuration: duration, animations: { 
             self.buyButton.transform = CGAffineTransform(scaleX: scale, y: scale)
-            self.cancelButton.transform = CGAffineTransform(scaleX: scale, y: scale)
         }) { (finished) in
             self.buyButton.transform = CGAffineTransform.identity
-            self.cancelButton.transform = CGAffineTransform.identity
         }
     }
     
     private func showAnimate() {
         let destination = view.center
+        
         view.center = dataSource.shopAnimationPoint()
         view.transform = CGAffineTransform(scaleX: 0.3, y: 0.3)
         view.alpha = 0
@@ -361,17 +299,7 @@ class ShopVC: UIViewController {
     }
     
     @objc private func dismissAnimate() {
-        let destination = dataSource.shopAnimationPoint()
-        
-        UIView.animate(withDuration: 0.25, animations: { 
-            self.view.center = destination
-            self.view.transform = CGAffineTransform(scaleX: 0.3, y: 0.3)
-            self.view.alpha = 0
-        }) { (finished) in
-            if finished {
-                self.view.removeFromSuperview()
-            }
-        }
+        dismiss(animated: true, completion: nil)
     }
 
 }

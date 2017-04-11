@@ -8,10 +8,24 @@
 
 import UIKit
 
-class MenuVC: UIViewController {
+class MenuVC: UIViewController, UITextFieldDelegate {
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    @IBOutlet weak var firstPlayer: UITextField!
+    @IBOutlet weak var secondPlayer: UITextField!
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let destination = segue.destination as? GameVC {
+            destination.player1Name = firstPlayer.text ?? "Player 1"
+            destination.player2Name = secondPlayer.text ?? "Player 2"
+        }
     }
     
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField == firstPlayer {
+            secondPlayer.becomeFirstResponder()
+        } else {
+            secondPlayer.resignFirstResponder()
+        }
+        return true
+    }
 }
