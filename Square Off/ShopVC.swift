@@ -214,6 +214,11 @@ class ShopVC: UIViewController {
     }
     
     @objc private func cardTapped(_ sender: UITapGestureRecognizer) {
+        // Remove outlines from all labels
+        for costLabel in costLabels {
+            costLabel.layer.borderColor = UIColor.clear.cgColor
+        }
+        
         if let cardView = sender.view as? CardView {
             let playerNumber = dataSource.currentPlayer().number
             let outlineColor: CGColor = playerNumber == 0 ? Colors.player1Light.cgColor : Colors.player2Light.cgColor

@@ -271,11 +271,84 @@
                         <outlet property="shopButton" destination="LBs-0A-LU5" id="Asn-Gb-XR4"/>
                         <outlet property="shopImageView" destination="dX8-xa-d0D" id="qPG-4c-g6m"/>
                         <outlet property="shopLabel" destination="5CO-hs-zDR" id="Zkv-e6-zb7"/>
+                        <segue destination="eeY-w1-wWA" kind="presentation" identifier="WinnerVC" id="mEE-Yj-lea"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6L8-2F-pZv" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1545" y="139"/>
+        </scene>
+        <!--WinnerVC-->
+        <scene sceneID="aaU-JA-RDo">
+            <objects>
+                <viewController id="eeY-w1-wWA" customClass="WinnerVC" customModule="Square_Off" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="qNy-YY-54I"/>
+                        <viewControllerLayoutGuide type="bottom" id="dHn-6w-EJo"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="HJC-L4-e8S">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Player 1" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sfe-0Y-qeD">
+                                <rect key="frame" x="47.5" y="140" width="280" height="70"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="280" id="imz-Yf-hdc"/>
+                                    <constraint firstAttribute="height" constant="70" id="pHI-Nf-YMU"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Montserrat-SemiBold" family="Montserrat" pointSize="35"/>
+                                <color key="textColor" red="0.46565860510000001" green="0.49316233399999998" blue="0.55133682490000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ose-lN-EfO">
+                                <rect key="frame" x="47" y="357" width="280" height="60"/>
+                                <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="60" id="Y3p-6L-wgQ"/>
+                                    <constraint firstAttribute="width" constant="280" id="fte-Qs-Ok7"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Montserrat-SemiBold" family="Montserrat" pointSize="24"/>
+                                <state key="normal" title="Main Menu">
+                                    <color key="titleColor" red="0.97636479139999999" green="0.97653168440000004" blue="0.9763541818" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="8"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="layer.maskToBounds" value="YES"/>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="mainMenuPressed:" destination="eeY-w1-wWA" eventType="touchUpInside" id="LEw-7O-v5q"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Wins!" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QBH-wt-Hsf">
+                                <rect key="frame" x="48" y="210" width="280" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="280" id="Zje-g8-iCc"/>
+                                    <constraint firstAttribute="height" constant="50" id="v2w-67-2i6"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Montserrat-SemiBold" family="Montserrat" pointSize="35"/>
+                                <color key="textColor" red="0.46565860510000001" green="0.49316233399999998" blue="0.55133682490000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" red="0.97636479139999999" green="0.97653168440000004" blue="0.9763541818" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="sfe-0Y-qeD" firstAttribute="centerX" secondItem="HJC-L4-e8S" secondAttribute="centerX" id="SYB-uK-cyM"/>
+                            <constraint firstItem="dHn-6w-EJo" firstAttribute="top" secondItem="ose-lN-EfO" secondAttribute="bottom" constant="250" id="aHg-Lt-h0O"/>
+                            <constraint firstItem="ose-lN-EfO" firstAttribute="centerX" secondItem="HJC-L4-e8S" secondAttribute="centerX" id="jns-wP-4SD"/>
+                            <constraint firstItem="QBH-wt-Hsf" firstAttribute="centerX" secondItem="HJC-L4-e8S" secondAttribute="centerX" id="k0O-Zf-gAN"/>
+                            <constraint firstItem="QBH-wt-Hsf" firstAttribute="top" secondItem="sfe-0Y-qeD" secondAttribute="bottom" id="pgs-nT-Fzv"/>
+                            <constraint firstItem="sfe-0Y-qeD" firstAttribute="top" secondItem="qNy-YY-54I" secondAttribute="bottom" constant="120" id="wJB-bt-Y8a"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="winner" destination="sfe-0Y-qeD" id="8Wc-7O-ec5"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ohs-0b-TL9" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1544.8" y="894.60269865067471"/>
         </scene>
         <!--ShopVC-->
         <scene sceneID="rob-qW-Wa5">
@@ -336,7 +409,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NtL-GM-49w" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2464.8000000000002" y="138.98050974512745"/>
+            <point key="canvasLocation" x="2300" y="139"/>
         </scene>
         <!--MenuVC-->
         <scene sceneID="Ks5-aj-4Zc">
@@ -398,7 +471,7 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="70" id="2eJ-1R-kA6"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" name="Montserrat-Medium" family="Montserrat" pointSize="17"/>
+                                <fontDescription key="fontDescription" name="Montserrat-Medium" family="Montserrat" pointSize="24"/>
                                 <state key="normal" title="New Game">
                                     <color key="titleColor" red="0.97636479139999999" green="0.97653168440000004" blue="0.9763541818" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>

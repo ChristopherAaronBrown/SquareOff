@@ -166,6 +166,8 @@ class GameVC: UIViewController,
         if let desination = segue.destination as? ShopVC {
             desination.dataSource = self
             desination.delegate = self
+        } else if let destination = segue.destination as? WinnerVC {
+            destination.playerName = player.name
         }
     }
     
@@ -371,7 +373,7 @@ class GameVC: UIViewController,
             self.updateActionButtons()
             self.enableEndTurn()
             if self.playerHasWon() {
-                print("\(self.player.name) has won!!")
+                self.performSegue(withIdentifier: "WinnerVC", sender: self)
             }
         }
         let callback: (PlayOption) -> () = { chosenOption in
@@ -628,7 +630,7 @@ class GameVC: UIViewController,
                 }
             }
             if coordinate == path.end && space.isOccupied {
-                if space.pawn!.owner == player {
+                if space.pawn!.owner == player || space.pawn!.hasReachedGoal {
                     endOccupiedByAlly = true
                 } else {
                     endOccupiedByEnemy = true

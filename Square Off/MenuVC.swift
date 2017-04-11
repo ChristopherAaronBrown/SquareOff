@@ -13,10 +13,15 @@ class MenuVC: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var firstPlayer: UITextField!
     @IBOutlet weak var secondPlayer: UITextField!
     
+    override func viewDidLoad() {
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tapRecognizer)
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let destination = segue.destination as? GameVC {
-            destination.player1Name = firstPlayer.text ?? "Player 1"
-            destination.player2Name = secondPlayer.text ?? "Player 2"
+            destination.player1Name = firstPlayer.text!.isEmpty ? "Player 1" : firstPlayer.text
+            destination.player2Name = secondPlayer.text!.isEmpty ? "Player 2" : secondPlayer.text
         }
     }
     
@@ -27,5 +32,9 @@ class MenuVC: UIViewController, UITextFieldDelegate {
             secondPlayer.resignFirstResponder()
         }
         return true
+    }
+    
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
     }
 }

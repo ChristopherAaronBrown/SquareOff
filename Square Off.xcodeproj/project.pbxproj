@@ -47,6 +47,7 @@
 		833AFDDB1E4D7A1300C628F0 /* Space.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833AFDD91E4D7A1300C628F0 /* Space.swift */; };
 		833AFDDD1E4D7E8400C628F0 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833AFDDC1E4D7E8400C628F0 /* Session.swift */; };
 		83A736CD1E9AA89F00FDC9D8 /* PlayOptionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83A736CC1E9AA89F00FDC9D8 /* PlayOptionCell.xib */; };
+		83A736CF1E9C576800FDC9D8 /* WinnerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83A736CE1E9C576800FDC9D8 /* WinnerVC.swift */; };
 		83B4FA831E553B9900B92BA9 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B4FA821E553B9900B92BA9 /* Extensions.swift */; };
 		83B4FA871E5633EB00B92BA9 /* ShopVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B4FA861E5633EB00B92BA9 /* ShopVC.swift */; };
 		83C8FECC1E64A1FB0077A376 /* PlayOptionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83C8FECB1E64A1FB0077A376 /* PlayOptionVC.swift */; };
@@ -119,6 +120,7 @@
 		833AFDD91E4D7A1300C628F0 /* Space.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Space.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		833AFDDC1E4D7E8400C628F0 /* Session.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		83A736CC1E9AA89F00FDC9D8 /* PlayOptionCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlayOptionCell.xib; sourceTree = "<group>"; };
+		83A736CE1E9C576800FDC9D8 /* WinnerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WinnerVC.swift; sourceTree = "<group>"; };
 		83B4FA821E553B9900B92BA9 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Extensions.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		83B4FA861E5633EB00B92BA9 /* ShopVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = ShopVC.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		83C8FECB1E64A1FB0077A376 /* PlayOptionVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayOptionVC.swift; sourceTree = "<group>"; };
@@ -238,6 +240,7 @@
 				833AFD8B1E4D1ED700C628F0 /* GameVC.swift */,
 				83B4FA861E5633EB00B92BA9 /* ShopVC.swift */,
 				83C8FECB1E64A1FB0077A376 /* PlayOptionVC.swift */,
+				83A736CE1E9C576800FDC9D8 /* WinnerVC.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -549,6 +552,7 @@
 				8318D02A1E79FA12001B3FB1 /* PawnView.swift in Sources */,
 				833AFDA21E4D207F00C628F0 /* Constants.swift in Sources */,
 				83C8FED21E6DD72A0077A376 /* CardView.swift in Sources */,
+				83A736CF1E9C576800FDC9D8 /* WinnerVC.swift in Sources */,
 				833AFDDB1E4D7A1300C628F0 /* Space.swift in Sources */,
 				833AFDDD1E4D7E8400C628F0 /* Session.swift in Sources */,
 				833AFDBA1E4D46F800C628F0 /* DefendCard.swift in Sources */,
