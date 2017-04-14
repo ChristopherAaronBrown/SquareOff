@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		69E1F29CF7FAD0CF01D30355 /* Pods_Square_Off.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 009C228667B033375EF1CE6A /* Pods_Square_Off.framework */; };
+		830717D71E9E80F900454EFD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 830717D61E9E80F900454EFD /* GoogleService-Info.plist */; };
+		830717D91E9ECF8100454EFD /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 830717D81E9ECF8100454EFD /* StoreKit.framework */; };
+		830717DC1E9ED03700454EFD /* IAPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 830717DB1E9ED03700454EFD /* IAPManager.swift */; };
+		830717E01E9FEE6900454EFD /* TutorialVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 830717DF1E9FEE6900454EFD /* TutorialVC.swift */; };
+		830717E31EA0523800454EFD /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 830717E11EA0520E00454EFD /* AdSupport.framework */; };
 		8313380A1E524E2200054F56 /* HandView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831338091E524E2200054F56 /* HandView.swift */; };
 		8313380C1E52871F00054F56 /* Anita semi-square.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8313380B1E52871F00054F56 /* Anita semi-square.ttf */; };
 		8318D02A1E79FA12001B3FB1 /* PawnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8318D0291E79FA12001B3FB1 /* PawnView.swift */; };
@@ -79,6 +84,11 @@
 /* Begin PBXFileReference section */
 		009C228667B033375EF1CE6A /* Pods_Square_Off.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Square_Off.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		013F40AEB258B428D51B1E1F /* Pods-Square Off.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Square Off.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Square Off/Pods-Square Off.debug.xcconfig"; sourceTree = "<group>"; };
+		830717D61E9E80F900454EFD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		830717D81E9ECF8100454EFD /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		830717DB1E9ED03700454EFD /* IAPManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAPManager.swift; sourceTree = "<group>"; };
+		830717DF1E9FEE6900454EFD /* TutorialVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutorialVC.swift; sourceTree = "<group>"; };
+		830717E11EA0520E00454EFD /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		831338091E524E2200054F56 /* HandView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = HandView.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		8313380B1E52871F00054F56 /* Anita semi-square.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Anita semi-square.ttf"; sourceTree = "<group>"; };
 		8318D0291E79FA12001B3FB1 /* PawnView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PawnView.swift; sourceTree = "<group>"; };
@@ -156,7 +166,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				830717E31EA0523800454EFD /* AdSupport.framework in Frameworks */,
 				69E1F29CF7FAD0CF01D30355 /* Pods_Square_Off.framework in Frameworks */,
+				830717D91E9ECF8100454EFD /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -166,6 +178,8 @@
 		07BB2F401314ECCD30C4AF79 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				830717E11EA0520E00454EFD /* AdSupport.framework */,
+				830717D81E9ECF8100454EFD /* StoreKit.framework */,
 				009C228667B033375EF1CE6A /* Pods_Square_Off.framework */,
 			);
 			name = Frameworks;
@@ -178,6 +192,14 @@
 				8C984C0DD9A340D9717F45AA /* Pods-Square Off.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		830717DA1E9ED02A00454EFD /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				830717DB1E9ED03700454EFD /* IAPManager.swift */,
+			);
+			name = Managers;
 			sourceTree = "<group>";
 		};
 		833744F31E4E6E77005F185D /* Game */ = {
@@ -223,6 +245,7 @@
 		833AFD881E4D1ED700C628F0 /* Square Off */ = {
 			isa = PBXGroup;
 			children = (
+				830717DA1E9ED02A00454EFD /* Managers */,
 				833AFDD41E4D48EA00C628F0 /* Resources */,
 				833AFDA01E4D206400C628F0 /* Utilities */,
 				833AFD9D1E4D1F6000C628F0 /* Models */,
@@ -241,6 +264,7 @@
 				83B4FA861E5633EB00B92BA9 /* ShopVC.swift */,
 				83C8FECB1E64A1FB0077A376 /* PlayOptionVC.swift */,
 				83A736CE1E9C576800FDC9D8 /* WinnerVC.swift */,
+				830717DF1E9FEE6900454EFD /* TutorialVC.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -274,6 +298,7 @@
 			children = (
 				83DAB42E1E7742D000B7796B /* Square Off-Bridging-Header.h */,
 				833AFD951E4D1ED700C628F0 /* Info.plist */,
+				830717D61E9E80F900454EFD /* GoogleService-Info.plist */,
 				833AFD891E4D1ED700C628F0 /* AppDelegate.swift */,
 				833AFDA11E4D207F00C628F0 /* Constants.swift */,
 				83B4FA821E553B9900B92BA9 /* Extensions.swift */,
@@ -415,6 +440,11 @@
 						DevelopmentTeam = 4XT2VA5V66;
 						LastSwiftMigration = 0830;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.InAppPurchase = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -443,6 +473,7 @@
 			files = (
 				83C8FEF41E6DF8050077A376 /* Montserrat-Regular.ttf in Resources */,
 				83C8FEF01E6DF8050077A376 /* Montserrat-Light.ttf in Resources */,
+				830717D71E9E80F900454EFD /* GoogleService-Info.plist in Resources */,
 				83C8FEEA1E6DF8050077A376 /* Montserrat-BoldItalic.ttf in Resources */,
 				833AFD941E4D1ED700C628F0 /* LaunchScreen.storyboard in Resources */,
 				83C8FEE71E6DF8050077A376 /* Montserrat-Black.ttf in Resources */,
@@ -483,7 +514,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		A072DB7E7277C1C77572F72E /* [CP] Copy Pods Resources */ = {
@@ -555,6 +586,7 @@
 				83A736CF1E9C576800FDC9D8 /* WinnerVC.swift in Sources */,
 				833AFDDB1E4D7A1300C628F0 /* Space.swift in Sources */,
 				833AFDDD1E4D7E8400C628F0 /* Session.swift in Sources */,
+				830717E01E9FEE6900454EFD /* TutorialVC.swift in Sources */,
 				833AFDBA1E4D46F800C628F0 /* DefendCard.swift in Sources */,
 				83C8FECC1E64A1FB0077A376 /* PlayOptionVC.swift in Sources */,
 				833AFDC41E4D46F800C628F0 /* DoubleStraightCard.swift in Sources */,
@@ -562,6 +594,7 @@
 				833AFDDA1E4D7A1300C628F0 /* Board.swift in Sources */,
 				831EAC671E81B390007C1209 /* PlayOptionCell.swift in Sources */,
 				833AFDB91E4D46F800C628F0 /* BurnCard.swift in Sources */,
+				830717DC1E9ED03700454EFD /* IAPManager.swift in Sources */,
 				833AFDB81E4D46F800C628F0 /* AttackCard.swift in Sources */,
 				83B4FA831E553B9900B92BA9 /* Extensions.swift in Sources */,
 				833AFDC31E4D46F800C628F0 /* SingleStraightCard.swift in Sources */,
@@ -691,6 +724,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = 4XT2VA5V66;
 				INFOPLIST_FILE = "Square Off/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.christopheraaronbrown.squareoff;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -709,6 +743,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = 4XT2VA5V66;
 				INFOPLIST_FILE = "Square Off/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.christopheraaronbrown.squareoff;
 				PRODUCT_NAME = "$(TARGET_NAME)";

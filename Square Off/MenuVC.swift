@@ -12,8 +12,15 @@ class MenuVC: UIViewController, UITextFieldDelegate {
 
     @IBOutlet weak var firstPlayer: UITextField!
     @IBOutlet weak var secondPlayer: UITextField!
+    @IBOutlet weak var removeAdsButton: UIButton!
+    @IBOutlet weak var restorePurchaseButton: UIButton!
     
     override func viewDidLoad() {
+        
+        // TODO: Unhide buttons in Main.storyboard
+        removeAdsButton.isEnabled = false
+        restorePurchaseButton.isEnabled = false
+        
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tapRecognizer)
     }
@@ -23,6 +30,15 @@ class MenuVC: UIViewController, UITextFieldDelegate {
             destination.player1Name = firstPlayer.text!.isEmpty ? "Player 1" : firstPlayer.text
             destination.player2Name = secondPlayer.text!.isEmpty ? "Player 2" : secondPlayer.text
         }
+    }
+    
+    @IBAction func removeAdsPressed(_ sender: UIButton) {
+    }
+    
+    @IBAction func restorePurchasePressed(_ sender: UIButton) {
+    }
+    
+    private func removeAds() {
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -37,4 +53,6 @@ class MenuVC: UIViewController, UITextFieldDelegate {
     @objc private func dismissKeyboard() {
         view.endEditing(true)
     }
+    
+    
 }

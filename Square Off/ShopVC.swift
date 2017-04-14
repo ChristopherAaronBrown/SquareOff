@@ -53,9 +53,10 @@ class ShopVC: UIViewController {
         // Cards
         let topMargin: CGFloat = 8
         let sideMargin: CGFloat = 24
-        let cardWidth: CGFloat = view.bounds.width * (55/320)
-        let cardHeight: CGFloat = view.bounds.height * (77/568)
-        let topPadding: CGFloat = (buyButton.frame.minY - totalGemsLabel.frame.maxY - 2 * topMargin - 4 * cardHeight - 88) / 3
+        let cardWidth: CGFloat = view.bounds.width * (50/320)
+        let cardHeight: CGFloat = view.bounds.height * (70/568)
+//        let topPadding: CGFloat = (view.bounds.height - 60 - 2 * topMargin - 4 * (cardHeight + 20)) / 3
+        let topPadding: CGFloat = view.bounds.height * (16/568)
         let sidePadding: CGFloat = (view.bounds.width - 2 * sideMargin - 4 * cardWidth) / 3
         
         
@@ -72,6 +73,7 @@ class ShopVC: UIViewController {
             let labelFrame = CGRect(x: xPos, y: yPos + cardHeight + 8, width: cardWidth, height: 20)
             let costLabel = UILabel(frame: labelFrame)
             costLabel.font = UIFont(name: "Montserrat-Light", size: 16)
+            costLabel.adjustsFontSizeToFitWidth = true
             costLabel.textAlignment = .center
             costLabel.textColor = Colors.font
             costLabel.layer.borderWidth = 2

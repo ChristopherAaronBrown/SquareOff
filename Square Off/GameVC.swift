@@ -8,8 +8,9 @@
 
 import UIKit
 import Shimmer
+import Firebase
 
-class GameVC: UIViewController,
+class GameVC: UIViewController, GADInterstitialDelegate,
               BoardViewDelegate, BoardViewDataSource,
               HandViewDelegate, HandViewDataSource,
               ShopVCDelegate, ShopVCDataSource {
@@ -17,7 +18,6 @@ class GameVC: UIViewController,
     @IBOutlet weak var playerLabel: UILabel!
     @IBOutlet weak var headerView: UIView!
     @IBOutlet weak var footerView: UIView!
-    @IBOutlet weak var endTurnLabel: UILabel!
     @IBOutlet weak var endTurnButton: UIButton!
     @IBOutlet weak var burnButton: UIButton!
     @IBOutlet weak var burnImageView: UIImageView!
@@ -32,6 +32,9 @@ class GameVC: UIViewController,
     var player1Name: String!
     var player2Name: String!
     
+    private var interstitial: GADInterstitial!
+    private var roundCounter: Int = 0
+    private var tipLabel: UILabel!
     private var shimmerView: FBShimmeringView!
     private var endTurnTimer: Timer?
     private var session: Session!
@@ -98,6 +101,9 @@ class GameVC: UIViewController,
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        interstitial = createAndLoadInterstitial()
+        
         let player1 = Player(number: 0, name: player1Name)
         let player2 = Player(number: 1, name: player2Name)
         let board = Board(player1: player1, player2: player2)
@@ -108,13 +114,6 @@ class GameVC: UIViewController,
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(enableEndTurn))
         
         endTurnButton.layer.cornerRadius = 12
-        
-        shimmerView = FBShimmeringView(frame: endTurnLabel.frame)
-        shimmerView.contentView = endTurnLabel
-        shimmerView.isShimmering = true
-        shimmerView.addGestureRecognizer(tapRecognizer)
-        
-        view.addSubview(shimmerView)
         
         // Add board to view
         let boardWidth: CGFloat = view.bounds.width - 16
@@ -129,6 +128,24 @@ class GameVC: UIViewController,
         
         boardView.delegate = self
         boardView.dataSource = self
+        
+        let tipWidth: CGFloat = view.bounds.width
+        let tipHeight: CGFloat = 50
+        let tipXPos: CGFloat = 0
+        let tipYPos: CGFloat = view.bounds.height * (365/568)
+        let tipFrame: CGRect = CGRect(x: tipXPos, y: tipYPos, width: tipWidth, height: tipHeight)
+        tipLabel = UILabel(frame: tipFrame)
+        tipLabel.text = "Tap a Pawn or Action to start."
+        tipLabel.textAlignment = .center
+        tipLabel.textColor = Colors.font
+        tipLabel.font = UIFont(name: "Montserrat-Light", size: 20)
+        
+        shimmerView = FBShimmeringView(frame: tipFrame)
+        shimmerView.contentView = tipLabel
+        shimmerView.isShimmering = true
+        shimmerView.addGestureRecognizer(tapRecognizer)
+        
+        view.addSubview(shimmerView)
         
         // Add hand to view
         let handWidth: CGFloat = view.bounds.width
@@ -172,8 +189,9 @@ class GameVC: UIViewController,
     }
     
     private func startNewTurn() {
+        roundCounter += 1
         endTurnTimer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(enableEndTurn), userInfo: nil, repeats: false)
-        playerLabel.text = "\(player.name.uppercased())"
+        playerLabel.text = "\(player.name.uppercased())'S TURN"
         handView.animateDeal(from: view.frame.center) { (completed) in
             self.animateDealCallback(dealComplete: completed)
         }
@@ -182,6 +200,10 @@ class GameVC: UIViewController,
     }
     
     private func endTurn() {
+        if interstitial.isReady && roundCounter % Constants.interstitialTrigger == 0 {
+            interstitial.present(fromRootViewController: self)
+        }
+        
         hand.newHand(for: player)
         player = session.nextPlayerTurn()
         board.rotateBoard()
@@ -256,17 +278,7 @@ class GameVC: UIViewController,
     }
     
     @IBAction func shopPressed(_ sender: UIButton) {
-//        let shopVC = ShopVC()
-//        
         enableEndTurn()
-//        
-//        shopVC.dataSource = self
-//        shopVC.delegate = self
-//        
-//        addChildViewController(shopVC)
-//        view.addSubview(shopVC.view)
-//        
-//        shopVC.didMove(toParentViewController: self)
     }
     
     @IBAction func resurrectPressed(_ sender: UIButton) {
@@ -294,16 +306,31 @@ class GameVC: UIViewController,
             endTurnTimer?.invalidate()
             endTurnTimer = nil
             endTurnButton.isHidden = false
-            endTurnLabel.isHidden = true
+            tipLabel.isHidden = true
             shimmerView.isHidden = true
             endTurnButton.backgroundColor = player.number == 0 ? Colors.player1Light : Colors.player2Light
         }
     }
     
     private func toggleTurnLabel() {
-        endTurnLabel.isHidden = !endTurnLabel.isHidden
-        endTurnButton.isHidden = !endTurnLabel.isHidden
+        tipLabel.isHidden = !tipLabel.isHidden
+        endTurnButton.isHidden = !tipLabel.isHidden
         shimmerView.isHidden = !shimmerView.isHidden
+    }
+    
+    // MARK: - AdMob
+    private func createAndLoadInterstitial() -> GADInterstitial {
+        let interstitial = GADInterstitial(adUnitID: Constants.adMobAdUnitID)
+        interstitial.delegate = self
+        let request = GADRequest()
+//        request.testDevices = [kGADSimulatorID,"0808d270ebb9dc688c0f92ad42a36569"]
+        request.testDevices = [kGADSimulatorID]
+        interstitial.load(request)
+        return interstitial
+    }
+    
+    func interstitialDidDismissScreen(_ ad: GADInterstitial) {
+        interstitial = createAndLoadInterstitial()
     }
     
     // MARK: - BoardView delegate and data source functions
@@ -373,6 +400,10 @@ class GameVC: UIViewController,
             self.updateActionButtons()
             self.enableEndTurn()
             if self.playerHasWon() {
+                FIRAnalytics.logEvent(withName: kFIREventPostScore,
+                                      parameters: [kFIRParameterCharacter : "\(self.player.number)" as NSObject,
+                                                   kFIRParameterScore : "\(self.roundCounter)" as NSObject])
+                
                 self.performSegue(withIdentifier: "WinnerVC", sender: self)
             }
         }
@@ -765,20 +796,20 @@ class GameVC: UIViewController,
     
     func cardTapped(at index: Int) {
         enableEndTurn()
-        
-        if state == .Burn {
-            hand.burnCard(at: index)
-            hand.discardCard(of: BurnCard.self, for: player)
-            handView.refresh()
-            updateActionButtons()
-            burnView?.removeFromSuperview()
-            setNextState(.Normal)
-            if hand.isEmpty {
-                endTurn()
-            }
-        } else {
-            // TODO: Info card
-        }
+//        
+//        if state == .Burn {
+//            hand.burnCard(at: index)
+//            hand.discardCard(of: BurnCard.self, for: player)
+//            handView.refresh()
+//            updateActionButtons()
+//            burnView?.removeFromSuperview()
+//            setNextState(.Normal)
+//            if hand.isEmpty {
+//                endTurn()
+//            }
+//        } else {
+//            // TODO: Info card
+//        }
         
     }
     
@@ -828,6 +859,24 @@ class GameVC: UIViewController,
     }
     
     func purchased(card: Card) {
+        let itemName: String!
+        
+        if type(of: card) == GemCard.self {
+            switch card.cost {
+            case 6:
+                itemName = "TripleGem"
+            case 3:
+                itemName = "DoubleGem"
+            default:
+                itemName = "SingleGem"
+            }
+        } else {
+            itemName = "\(type(of: card))"
+        }
+        
+        FIRAnalytics.logEvent(withName: kFIREventSelectContent,
+                              parameters: [kFIRParameterItemName : itemName as NSObject,
+                                           kFIRParameterContentType: "Shop" as NSObject])
         canShop = false
         discard.add(card)
         removeGems()

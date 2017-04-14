@@ -14,6 +14,9 @@ typealias Random = (UInt32) -> UInt32
 
 struct Constants {
     
+    static let adMobAppID: String = "ca-app-pub-8264667801685156~3355202223"
+    static let adMobAdUnitID: String = "ca-app-pub-8264667801685156/6308668626"
+    static let interstitialTrigger: Int = 7
     static let numberOfSpaces: Int = 6
     static let handLimit: Int = 5
     
@@ -89,6 +92,10 @@ struct Colors {
             }
         }
     }
+}
+
+enum Product: String {
+    case RemoveAds = "com.christopheraaronbrown.squareoff.removeads"
 }
 
 enum ColorPairings: Int {
