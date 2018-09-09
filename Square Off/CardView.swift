@@ -15,13 +15,13 @@ class CardView: GradientView {
         
         isUserInteractionEnabled = true
         layer.cornerRadius = 4
-        layer.shadowColor = Colors.font.cgColor
+        layer.shadowColor = Color.font.cgColor
         layer.shadowOpacity = 0.7
         layer.shadowOffset = CGSize(width: 0, height: 5)
         layer.shadowRadius = 1.5
         
-        topColor = player.number == 0 ? Colors.player1Light : Colors.player2Light
-        bottomColor = player.number == 0 ? Colors.player1Dark : Colors.player2Dark
+        topColor = player.number == 0 ? Color.player1Light : Color.player2Light
+        bottomColor = player.number == 0 ? Color.player1Dark : Color.player2Dark
         
         let iconWidth: CGFloat = bounds.width * (38/50)
         let iconHeight: CGFloat = bounds.height * (28/70)

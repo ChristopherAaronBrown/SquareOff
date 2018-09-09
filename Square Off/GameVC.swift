@@ -171,7 +171,7 @@ class GameVC: UIViewController {
     }
     
     private func endTurn() {
-        if interstitial.isReady && roundCounter % Constants.interstitialTrigger == 0 {
+        if interstitial.isReady && roundCounter % Constant.interstitialTrigger == 0 {
             interstitial.present(fromRootViewController: self)
         }
         
@@ -218,7 +218,7 @@ class GameVC: UIViewController {
     @IBAction func burnPressed(_ sender: UIButton) {
         setNextState(.Burn)
         burnView = UIView(frame: view.frame)
-        burnView!.backgroundColor = Colors.offWhite
+        burnView!.backgroundColor = Color.offWhite
         burnView!.alpha = 0.95
         
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissBurnView))
@@ -231,7 +231,7 @@ class GameVC: UIViewController {
         let infoFrame = CGRect(x: xPos, y: yPos, width: width, height: height)
         let infoLabel = UILabel(frame: infoFrame)
         infoLabel.text = "Tap the card you wish to remove from your deck."
-        infoLabel.textColor = Colors.font
+        infoLabel.textColor = Color.font
         infoLabel.font = UIFont(name: "Montserrat-Regular", size: 20)
         infoLabel.numberOfLines = 2
         infoLabel.textAlignment = .center
@@ -259,7 +259,7 @@ class GameVC: UIViewController {
             let coordinate = try! Coordinate(column: column, row: board.count - 1)
             let space = board.getSpace(coordinate)
             if space.isHome && !space.isOccupied {
-                highlightDict[coordinate] = Colors.yellow
+                highlightDict[coordinate] = Color.yellow
             }
         }
         boardView.updateBoard()
@@ -279,7 +279,7 @@ class GameVC: UIViewController {
             endTurnButton.isHidden = false
             tipLabel.isHidden = true
             shimmerView.isHidden = true
-            endTurnButton.backgroundColor = player.number == 0 ? Colors.player1Light : Colors.player2Light
+            endTurnButton.backgroundColor = player.number == 0 ? Color.player1Light : Color.player2Light
         }
     }
     
@@ -298,7 +298,7 @@ class GameVC: UIViewController {
                 pawnsReachedGoal += pawn.hasReachedGoal ? 1 : 0
             }
         }
-        return pawnsReachedGoal == Constants.numberOfSpaces
+        return pawnsReachedGoal == Constant.numberOfSpaces
     }
     
     // MARK: Helper functions
@@ -594,11 +594,11 @@ class GameVC: UIViewController {
                 for coordinate in playOption.path {
                     let path = playOption.path
                     if coordinate == path.end {
-                        highlightDict[coordinate] = Colors.blueShadow
-                    } else if highlightDict[coordinate] != Colors.blueShadow && coordinate != path.beginning {
-                        highlightDict[coordinate] = Colors.blue
+                        highlightDict[coordinate] = Color.blueShadow
+                    } else if highlightDict[coordinate] != Color.blueShadow && coordinate != path.beginning {
+                        highlightDict[coordinate] = Color.blue
                     } else if coordinate == path.beginning {
-                        highlightDict[coordinate] = Colors.grey
+                        highlightDict[coordinate] = Color.grey
                     }
                 }
             }
@@ -612,33 +612,33 @@ class GameVC: UIViewController {
                 break
             case .Move:
                 for coordinate in path {
-                    if coordinate != path.beginning && (highlightDict[coordinate] != Colors.blueShadow || highlightDict[coordinate] != Colors.yellow) {
-                        highlightDict[coordinate] = coordinate == path.end ? Colors.blueShadow : Colors.blue
+                    if coordinate != path.beginning && (highlightDict[coordinate] != Color.blueShadow || highlightDict[coordinate] != Color.yellow) {
+                        highlightDict[coordinate] = coordinate == path.end ? Color.blueShadow : Color.blue
                     }
                 }
             case .Jump:
-                highlightDict[path.end] = Colors.blueShadow
+                highlightDict[path.end] = Color.blueShadow
             case .Attack:
                 if let attack = attackCoordinate(along: path) {
                     for coordinate in path {
                         if coordinate == attack {
-                            highlightDict[coordinate] = Colors.yellow
-                        } else if coordinate != path.beginning && (highlightDict[coordinate] != Colors.blueShadow || highlightDict[coordinate] != Colors.yellow) {
-                            highlightDict[coordinate] = coordinate == path.end ? Colors.blueShadow : Colors.blue
+                            highlightDict[coordinate] = Color.yellow
+                        } else if coordinate != path.beginning && (highlightDict[coordinate] != Color.blueShadow || highlightDict[coordinate] != Color.yellow) {
+                            highlightDict[coordinate] = coordinate == path.end ? Color.blueShadow : Color.blue
                         }
                     }
                 }
             case .JumpAndAttack:
-                highlightDict[path.end] = Colors.yellow
+                highlightDict[path.end] = Color.yellow
             case .JumpOrAttack:
                 if let attack = attackCoordinate(along: path) {
                     for coordinate in path {
                         if coordinate == attack && hand.containsType(AttackCard.self) {
-                            highlightDict[coordinate] = Colors.yellow
+                            highlightDict[coordinate] = Color.yellow
                         } else if coordinate == path.end {
-                            highlightDict[coordinate] = Colors.blueShadow
-                        } else if coordinate != path.beginning && (highlightDict[coordinate] != Colors.blueShadow || highlightDict[coordinate] != Colors.yellow) {
-                            highlightDict[coordinate] = Colors.blue
+                            highlightDict[coordinate] = Color.blueShadow
+                        } else if coordinate != path.beginning && (highlightDict[coordinate] != Color.blueShadow || highlightDict[coordinate] != Color.yellow) {
+                            highlightDict[coordinate] = Color.blue
                         }
                     }
                 }
@@ -669,16 +669,16 @@ class GameVC: UIViewController {
     
     private func highlightResurrectSpaces() {
         for homeSpaceCoordinate in homeSpacesAvailable() {
-            highlightDict[homeSpaceCoordinate] = Colors.yellow
+            highlightDict[homeSpaceCoordinate] = Color.yellow
         }
         boardView.updateBoard()
     }
     
     private func homeSpacesAvailable() -> [Coordinate] {
         var homeSpaceCoordinates: [Coordinate] = []
-        let row = player.number == 0 ? Constants.numberOfSpaces - 1 : 0
+        let row = player.number == 0 ? Constant.numberOfSpaces - 1 : 0
         
-        for col in 0..<Constants.numberOfSpaces {
+        for col in 0..<Constant.numberOfSpaces {
             let coordinate = try! Coordinate(column: col, row: row)
             let space = board.getSpace(coordinate)
             if space.isHome && !space.isOccupied {
@@ -716,7 +716,7 @@ extension GameVC: BoardViewDelegate {
             longPressedPawn = PawnView(frame: longPressedPawnFrame, owner: player)
             
             // Add shadow
-            longPressedPawn!.layer.shadowColor = Colors.font.cgColor
+            longPressedPawn!.layer.shadowColor = Color.font.cgColor
             longPressedPawn!.layer.shadowOpacity = 0.7
             longPressedPawn!.layer.shadowOffset = CGSize(width: 0, height: imageHeight)
             longPressedPawn!.layer.shadowRadius = 1.5
@@ -788,7 +788,7 @@ extension GameVC: BoardViewDataSource {
     }
     
     func highlightForSpace(at coordinate: Coordinate) -> UIColor {
-        return highlightDict[coordinate] ?? Colors.grey
+        return highlightDict[coordinate] ?? Color.grey
     }
     
     func currentPlayer() -> Player {
@@ -856,7 +856,7 @@ extension GameVC: GADInterstitialDelegate {
     }
     
     private func createAndLoadInterstitial() -> GADInterstitial {
-        let interstitial = GADInterstitial(adUnitID: Constants.adMobAdUnitID)
+        let interstitial = GADInterstitial(adUnitID: Constant.adMobAdUnitID)
         interstitial.delegate = self
         let request = GADRequest()
 //        request.testDevices = [kGADSimulatorID,"0808d270ebb9dc688c0f92ad42a36569"]

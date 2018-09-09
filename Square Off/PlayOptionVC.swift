@@ -38,7 +38,7 @@ class PlayOptionVC: UIViewController, UITableViewDelegate, UITableViewDataSource
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = Colors.offWhite
+        view.backgroundColor = Color.offWhite
         showAnimate()
     }
     

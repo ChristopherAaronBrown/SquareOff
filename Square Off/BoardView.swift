@@ -28,7 +28,7 @@ class BoardView: UIView {
     
 //    private let board: Board
     private var spacesCount: Int {
-        return Constants.numberOfSpaces
+        return Constant.numberOfSpaces
     }
     private var pawnDict: [Coordinate:PawnView?] = [:]
     private var spaceDict: [Coordinate:UIImageView] = [:]
@@ -42,7 +42,7 @@ class BoardView: UIView {
     private var pawnWidth: CGFloat = 0
     
     override func layoutSubviews() {
-        let spaces: CGFloat = CGFloat(Constants.numberOfSpaces)
+        let spaces: CGFloat = CGFloat(Constant.numberOfSpaces)
         
         pawnDict = [:]
         spaceDict = [:]
@@ -59,8 +59,8 @@ class BoardView: UIView {
         pawnHeight = bounds.height * (48/299)
         pawnWidth = bounds.width * (44/296)
         
-        for column in 0..<Constants.numberOfSpaces {
-            for row in 0..<Constants.numberOfSpaces {
+        for column in 0..<Constant.numberOfSpaces {
+            for row in 0..<Constant.numberOfSpaces {
                 let coordinate = try! Coordinate(column: column, row: row)
                 drawSpace(at: coordinate)
                 drawPawn(at: coordinate)
@@ -82,8 +82,8 @@ class BoardView: UIView {
         
         pawnDict = [:]
         
-        for column in 0..<Constants.numberOfSpaces {
-            for row in 0..<Constants.numberOfSpaces {
+        for column in 0..<Constant.numberOfSpaces {
+            for row in 0..<Constant.numberOfSpaces {
                 let coordinate = try! Coordinate(column: column, row: row)
                 let space = board.getSpace(coordinate)
                 if space.hasPawn {
@@ -106,7 +106,7 @@ class BoardView: UIView {
         let spaceYPos = (spaceHeight + spaceMargin) * CGFloat(coordinate.row)
         let spaceImageView = UIImageView(frame: CGRect(x: spaceXPos, y: spaceYPos, width: spaceWidth, height: spaceHeight))
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(spaceTapped))
-        let tag: Int = coordinate.column + (coordinate.row * Constants.numberOfSpaces)
+        let tag: Int = coordinate.column + (coordinate.row * Constant.numberOfSpaces)
         
         spaceImageView.addGestureRecognizer(tapRecognizer)
         spaceImageView.isUserInteractionEnabled = true
@@ -132,7 +132,7 @@ class BoardView: UIView {
         let pawnFrame = CGRect(x: pawnXPos, y: pawnYPos, width: pawnWidth, height: pawnHeight)
         let pawnView = PawnView(frame: pawnFrame, owner: owner)
         let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(pawnLongPressed))
-        let tag: Int = coordinate.column + (coordinate.row * Constants.numberOfSpaces)
+        let tag: Int = coordinate.column + (coordinate.row * Constant.numberOfSpaces)
         
         longPressRecognizer.minimumPressDuration = 0
         pawnView.isUserInteractionEnabled = true
@@ -150,7 +150,7 @@ class BoardView: UIView {
     @objc private func spaceTapped(_ sender: UITapGestureRecognizer) {
         if let spaceImageView = sender.view {
             let tag = spaceImageView.tag
-            let coordinate = try! Coordinate(column: tag % Constants.numberOfSpaces, row: tag / Constants.numberOfSpaces)
+            let coordinate = try! Coordinate(column: tag % Constant.numberOfSpaces, row: tag / Constant.numberOfSpaces)
             delegate?.spaceTapped(at: coordinate)
         }
     }
@@ -158,7 +158,7 @@ class BoardView: UIView {
     @objc private func pawnLongPressed(_ sender: UILongPressGestureRecognizer) {
         if let pawnView = sender.view as? PawnView {
             let tag = pawnView.tag
-            let coordinate = try! Coordinate(column: tag % Constants.numberOfSpaces, row: tag / Constants.numberOfSpaces)
+            let coordinate = try! Coordinate(column: tag % Constant.numberOfSpaces, row: tag / Constant.numberOfSpaces)
             switch sender.state {
             case .began:
                 pawnView.alpha = 0.3

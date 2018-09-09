@@ -1,5 +1,5 @@
 //
-//  Constants.swift
+//  Constant.swift
 //  Square Off
 //
 //  Created by Chris Brown on 2/9/17.
@@ -12,17 +12,15 @@ import UIKit
 typealias AnimationCallback = (Bool) -> ()
 typealias Random = (UInt32) -> UInt32
 
-struct Constants {
-    
+struct Constant {
     static let adMobAppID: String = "ca-app-pub-8264667801685156~3355202223"
     static let adMobAdUnitID: String = "ca-app-pub-8264667801685156/6308668626"
     static let interstitialTrigger: Int = 7
     static let numberOfSpaces: Int = 6
     static let handLimit: Int = 5
-    
 }
 
-struct Colors {
+struct Color {
     static let green: UIColor = UIColor(red: 114/255, green: 237/255, blue: 149/255, alpha: 1)
     static let greenShadow: UIColor = UIColor(red: 106/255, green: 191/255, blue: 88/255, alpha: 1)
     static let pink: UIColor = UIColor(red: 255/255, green: 100/255, blue: 126/255, alpha: 1)
@@ -38,7 +36,7 @@ struct Colors {
     
     static var player1Light: UIColor {
         get {
-            switch ColorPairings(rawValue: UserDefaults.standard.integer(forKey: "ColorPairing"))! {
+            switch ColorPairing(rawValue: UserDefaults.standard.integer(forKey: "ColorPairing"))! {
             case .GreenVsPink:
                 return UIColor(red: 160/255, green: 214/255, blue: 116/255, alpha: 1)
             case .YellowVsBlue:
@@ -52,7 +50,7 @@ struct Colors {
     }
     static var player1Dark: UIColor {
         get {
-            switch ColorPairings(rawValue: UserDefaults.standard.integer(forKey: "ColorPairing"))! {
+            switch ColorPairing(rawValue: UserDefaults.standard.integer(forKey: "ColorPairing"))! {
             case .GreenVsPink:
                 return UIColor(red: 114/255, green: 162/255, blue: 75/255, alpha: 1)
             case .YellowVsBlue:
@@ -66,7 +64,7 @@ struct Colors {
     }
     static var player2Light: UIColor {
         get {
-            switch ColorPairings(rawValue: UserDefaults.standard.integer(forKey: "ColorPairing"))! {
+            switch ColorPairing(rawValue: UserDefaults.standard.integer(forKey: "ColorPairing"))! {
             case .GreenVsPink:
                 return UIColor(red: 240/255, green: 79/255, blue: 110/255, alpha: 1)
             case .YellowVsBlue:
@@ -80,7 +78,7 @@ struct Colors {
     }
     static var player2Dark: UIColor {
         get {
-            switch ColorPairings(rawValue: UserDefaults.standard.integer(forKey: "ColorPairing"))! {
+            switch ColorPairing(rawValue: UserDefaults.standard.integer(forKey: "ColorPairing"))! {
             case .GreenVsPink:
                 return UIColor(red: 187/255, green: 52/255, blue: 78/255, alpha: 1)
             case .YellowVsBlue:
@@ -98,7 +96,7 @@ enum Product: String {
     case RemoveAds = "com.christopheraaronbrown.squareoff.removeads"
 }
 
-enum ColorPairings: Int {
+enum ColorPairing: Int {
     case GreenVsPink = 0
     case YellowVsBlue = 1
     case OrangeVsTeal = 2

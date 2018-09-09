@@ -25,12 +25,12 @@ struct Coordinate: Hashable {
     }
     
     var inverse: Coordinate {
-        return try! Coordinate(column: (Constants.numberOfSpaces - 1) - column, row: (Constants.numberOfSpaces - 1) - row)
+        return try! Coordinate(column: (Constant.numberOfSpaces - 1) - column, row: (Constant.numberOfSpaces - 1) - row)
     }
     
     init(column: Int, row: Int) throws {
-        guard (column >= 0 && column < Constants.numberOfSpaces) else { throw CoordinateError.outOfBounds }
-        guard (row >= 0 && row < Constants.numberOfSpaces) else { throw CoordinateError.outOfBounds }
+        guard (column >= 0 && column < Constant.numberOfSpaces) else { throw CoordinateError.outOfBounds }
+        guard (row >= 0 && row < Constant.numberOfSpaces) else { throw CoordinateError.outOfBounds }
         self.column = column
         self.row = row
     }
