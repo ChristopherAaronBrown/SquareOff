@@ -750,9 +750,9 @@ extension GameVC: BoardViewDelegate {
             self.updateActionButtons()
             self.enableEndTurn()
             if self.playerHasWon() {
-                FIRAnalytics.logEvent(withName: kFIREventPostScore,
-                                      parameters: [kFIRParameterCharacter : "\(self.player.number)" as NSObject,
-                                                   kFIRParameterScore : "\(self.roundCounter)" as NSObject])
+                Analytics.logEvent(AnalyticsEventPostScore,
+                                   parameters: [AnalyticsParameterCharacter : "\(self.player.number)" as NSObject,
+                                                AnalyticsParameterScore : "\(self.roundCounter)" as NSObject])
                 
                 self.performSegue(withIdentifier: "WinnerVC", sender: self)
             }
@@ -848,9 +848,9 @@ extension GameVC: ShopVCDataSource {
             itemName = "\(type(of: card))"
         }
         
-        FIRAnalytics.logEvent(withName: kFIREventSelectContent,
-                              parameters: [kFIRParameterItemName : itemName as NSObject,
-                                           kFIRParameterContentType: "Shop" as NSObject])
+        Analytics.logEvent(AnalyticsEventSelectContent,
+                           parameters: [AnalyticsParameterItemName : itemName as NSObject,
+                                        AnalyticsParameterContentType: "Shop" as NSObject])
         canShop = false
         discard.add(card)
         removeGems()

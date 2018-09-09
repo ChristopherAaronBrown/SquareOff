@@ -19,7 +19,7 @@ class TutorialVC: UIViewController, UIScrollViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        FIRAnalytics.logEvent(withName: kFIREventTutorialBegin, parameters: nil)
+        Analytics.logEvent(AnalyticsEventTutorialBegin, parameters: nil)
         
         scrollView.delegate = self
         
@@ -58,7 +58,7 @@ class TutorialVC: UIViewController, UIScrollViewDelegate {
     
     @IBAction func closePressed(_ sender: UIButton) {
         if viewedEntireTutorial {
-            FIRAnalytics.logEvent(withName: kFIREventTutorialComplete, parameters: nil)
+            Analytics.logEvent(AnalyticsEventTutorialComplete, parameters: nil)
         }
         dismiss(animated: true, completion: nil)
     }
