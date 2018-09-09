@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AD_UNIT_ID_FOR_BANNER_TEST</key>
+	<string>ca-app-pub-3940256099942544/2934735716</string>
+	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
+	<string>ca-app-pub-3940256099942544/4411468910</string>
+	<key>CLIENT_ID</key>
+	<string>939653918095-klh6hbb9e5gphc3lra5knc0lr414tql4.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.939653918095-klh6hbb9e5gphc3lra5knc0lr414tql4</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAHaK19_h72kgqhMMSsNN-9UOUespMAD6E</string>
+	<key>GCM_SENDER_ID</key>
+	<string>939653918095</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.christopheraaronbrown.squareoff</string>
+	<key>PROJECT_ID</key>
+	<string>square-off-d5344</string>
+	<key>STORAGE_BUCKET</key>
+	<string>square-off-d5344.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<true/>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false/>
+	<key>IS_APPINVITE_ENABLED</key>
+	<false/>
+	<key>IS_GCM_ENABLED</key>
+	<true/>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true/>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:939653918095:ios:5b12068be12f6e7f</string>
+	<key>DATABASE_URL</key>
+	<string>https://square-off-d5344.firebaseio.com</string>
+</dict>
+</plist>
