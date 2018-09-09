@@ -40,7 +40,7 @@ class ShopVC: UIViewController {
         let totalGems = player.hand.totalGems()
         
         totalGemsLabel.text = "Total Gems: \(totalGems)"
-        buyButton.backgroundColor = player.number == 0 ? Colors.player1Light : Colors.player2Light
+        buyButton.backgroundColor = player.number == 0 ? Color.player1Light : Color.player2Light
         
         addCards()
     }
@@ -75,7 +75,7 @@ class ShopVC: UIViewController {
             costLabel.font = UIFont(name: "Montserrat-Light", size: 16)
             costLabel.adjustsFontSizeToFitWidth = true
             costLabel.textAlignment = .center
-            costLabel.textColor = Colors.font
+            costLabel.textColor = Color.font
             costLabel.layer.borderWidth = 2
             costLabel.layer.borderColor = UIColor.clear.cgColor
             
@@ -223,7 +223,7 @@ class ShopVC: UIViewController {
         
         if let cardView = sender.view as? CardView {
             let playerNumber = dataSource.currentPlayer().number
-            let outlineColor: CGColor = playerNumber == 0 ? Colors.player1Light.cgColor : Colors.player2Light.cgColor
+            let outlineColor: CGColor = playerNumber == 0 ? Color.player1Light.cgColor : Color.player2Light.cgColor
             if cardTag == cardView.tag {
                 cardTag = -1
                 costLabels[cardView.tag].layer.borderColor = UIColor.clear.cgColor

@@ -22,7 +22,7 @@
 		833AFD911E4D1ED700C628F0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 833AFD901E4D1ED700C628F0 /* Assets.xcassets */; };
 		833AFD941E4D1ED700C628F0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 833AFD921E4D1ED700C628F0 /* LaunchScreen.storyboard */; };
 		833AFD9F1E4D1F8000C628F0 /* BoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833AFD9E1E4D1F8000C628F0 /* BoardView.swift */; };
-		833AFDA21E4D207F00C628F0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833AFDA11E4D207F00C628F0 /* Constants.swift */; };
+		833AFDA21E4D207F00C628F0 /* Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833AFDA11E4D207F00C628F0 /* Constant.swift */; };
 		833AFDA71E4D46CB00C628F0 /* Path.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833AFDA51E4D46CB00C628F0 /* Path.swift */; };
 		833AFDA81E4D46CB00C628F0 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833AFDA61E4D46CB00C628F0 /* Card.swift */; };
 		833AFDB81E4D46F800C628F0 /* AttackCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833AFDA91E4D46F800C628F0 /* AttackCard.swift */; };
@@ -100,7 +100,7 @@
 		833AFD931E4D1ED700C628F0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		833AFD951E4D1ED700C628F0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		833AFD9E1E4D1F8000C628F0 /* BoardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = BoardView.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		833AFDA11E4D207F00C628F0 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Constants.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		833AFDA11E4D207F00C628F0 /* Constant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Constant.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		833AFDA51E4D46CB00C628F0 /* Path.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Path.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		833AFDA61E4D46CB00C628F0 /* Card.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
 		833AFDA91E4D46F800C628F0 /* AttackCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttackCard.swift; sourceTree = "<group>"; };
@@ -296,7 +296,7 @@
 				833AFD951E4D1ED700C628F0 /* Info.plist */,
 				830717D61E9E80F900454EFD /* GoogleService-Info.plist */,
 				833AFD891E4D1ED700C628F0 /* AppDelegate.swift */,
-				833AFDA11E4D207F00C628F0 /* Constants.swift */,
+				833AFDA11E4D207F00C628F0 /* Constant.swift */,
 				83B4FA821E553B9900B92BA9 /* Extensions.swift */,
 			);
 			name = Utilities;
@@ -571,7 +571,7 @@
 				833AFDC61E4D46F800C628F0 /* ZigZagRightCard.swift in Sources */,
 				83C8FED01E68CAE20077A376 /* ActionCard.swift in Sources */,
 				8318D02A1E79FA12001B3FB1 /* PawnView.swift in Sources */,
-				833AFDA21E4D207F00C628F0 /* Constants.swift in Sources */,
+				833AFDA21E4D207F00C628F0 /* Constant.swift in Sources */,
 				83C8FED21E6DD72A0077A376 /* CardView.swift in Sources */,
 				83A736CF1E9C576800FDC9D8 /* WinnerVC.swift in Sources */,
 				833AFDDB1E4D7A1300C628F0 /* Space.swift in Sources */,

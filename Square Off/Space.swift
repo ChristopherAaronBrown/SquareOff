@@ -18,7 +18,7 @@ class Space {
         return "[\(coordinate.column),\(coordinate.row)]"
     }
     var isHome: Bool {
-        return coordinate.row == (Constants.numberOfSpaces - 1)
+        return coordinate.row == (Constant.numberOfSpaces - 1)
     }
     var isGoal: Bool {
         return coordinate.row == 0
@@ -27,10 +27,10 @@ class Space {
         return pawn != nil
     }
     var isHorizontalEdge: Bool {
-        return coordinate.row == 0 || coordinate.row == (Constants.numberOfSpaces - 1)
+        return coordinate.row == 0 || coordinate.row == (Constant.numberOfSpaces - 1)
     }
     var isVerticalEdge: Bool {
-        return coordinate.column == 0 || coordinate.column == (Constants.numberOfSpaces - 1)
+        return coordinate.column == 0 || coordinate.column == (Constant.numberOfSpaces - 1)
     }
     var isEdge: Bool {
         return isHorizontalEdge || isVerticalEdge

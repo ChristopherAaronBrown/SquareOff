@@ -37,7 +37,7 @@ class HandView: UIView {
         
         let cardHeight: CGFloat = bounds.height * (70/110)
         let cardWidth: CGFloat = bounds.width * (50/320)
-        let padding: CGFloat = (bounds.width - (CGFloat(Constants.handLimit) * cardWidth)) / CGFloat(Constants.handLimit + 1)
+        let padding: CGFloat = (bounds.width - (CGFloat(Constant.handLimit) * cardWidth)) / CGFloat(Constant.handLimit + 1)
         let yPos: CGFloat = (bounds.height - cardHeight) / 3
         
         for index in 0..<numCards {
@@ -93,7 +93,7 @@ class HandView: UIView {
         
         let cardHeight: CGFloat = bounds.height * (70/110)
         let cardWidth: CGFloat = bounds.width * (50/320)
-        let padding: CGFloat = (bounds.width - (CGFloat(Constants.handLimit) * cardWidth)) / CGFloat(Constants.handLimit + 1)
+        let padding: CGFloat = (bounds.width - (CGFloat(Constant.handLimit) * cardWidth)) / CGFloat(Constant.handLimit + 1)
         let yPos: CGFloat = (bounds.height - cardHeight) / 3
         
         for index in 0..<numCards {

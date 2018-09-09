@@ -12,10 +12,10 @@ class PawnView: UIView {
     
     private let owner: Player
     private var lightColor: UIColor {
-        return owner.number == 0 ? Colors.player1Light : Colors.player2Light
+        return owner.number == 0 ? Color.player1Light : Color.player2Light
     }
     private var darkColor: UIColor {
-        return owner.number == 0 ? Colors.player1Dark : Colors.player2Dark
+        return owner.number == 0 ? Color.player1Dark : Color.player2Dark
     }
     
     init(frame: CGRect, owner: Player) {

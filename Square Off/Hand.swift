@@ -20,7 +20,7 @@ class Hand {
     }
     
     init() {
-        self.limit = Constants.handLimit
+        self.limit = Constant.handLimit
         self.cards = [Card]()
     }
     

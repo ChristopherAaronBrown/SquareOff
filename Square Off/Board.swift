@@ -61,16 +61,16 @@ class Board {
         
         board = [[Space]]()
         
-        for columnNum in 0..<Constants.numberOfSpaces {
+        for columnNum in 0..<Constant.numberOfSpaces {
             var column = [Space]()
-            for rowNum in 0..<Constants.numberOfSpaces {
+            for rowNum in 0..<Constant.numberOfSpaces {
                 let coordinate = try! Coordinate(column: columnNum, row: rowNum)
                 let space = Space(coordinate: coordinate)
                 
                 switch rowNum {
                     case 0:
                         space.pawn = Pawn(owner: player2)
-                    case Constants.numberOfSpaces - 1:
+                    case Constant.numberOfSpaces - 1:
                         space.pawn = Pawn(owner: player1)
                     default:
                         break
