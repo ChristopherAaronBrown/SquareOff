@@ -287,7 +287,7 @@ class ShopVC: UIViewController {
         
         UIButton.animate(withDuration: duration, animations: { 
             self.buyButton.transform = CGAffineTransform(scaleX: scale, y: scale)
-        }) { (finished) in
+        }) { _ in
             self.buyButton.transform = CGAffineTransform.identity
         }
     }

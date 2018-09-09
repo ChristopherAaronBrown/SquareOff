@@ -137,24 +137,15 @@ class GameVC: UIViewController {
         handView.delegate = self
         handView.dataSource = self
         
+        player.hand.newHand(for: player)
+        
         refresh()
         updateActionButtons()
         handView.refresh()
-        
-//        // TODO: From viewDidAppear. Delete later?
-//        player.hand.newHand(for: player)
-//        opponent.hand.newHand(for: opponent)
-//        startNewTurn()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-//        boardView.setNeedsLayout()
-//        tipLabel.setNeedsLayout()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        player.hand.newHand(for: player)
         opponent.hand.newHand(for: opponent)
         startNewTurn()
     }
@@ -194,7 +185,6 @@ class GameVC: UIViewController {
     
     private func refresh() {
         setNextState(.Normal)
-//        boardView.updateBoard()
         boardView.updateBoard()
         handView.refresh()
     }
@@ -714,7 +704,6 @@ extension GameVC: BoardViewDelegate {
             print(printPlayOptions)
             
             highlightOptions(playOptionDict)
-            //            boardView.updateHighlights()
             boardView.updateHighlights()
             
             space.pawn = nil
@@ -823,15 +812,6 @@ extension GameVC: HandViewDataSource {
 
 // MARK: ShopVCDelegate
 extension GameVC: ShopVCDelegate {
-    
-}
-
-// MARK: ShopVCDataSource
-extension GameVC: ShopVCDataSource {
-    func shopAnimationPoint() -> CGPoint {
-        return handView.center
-    }
-    
     func purchased(card: Card) {
         let itemName: String!
         
@@ -859,6 +839,13 @@ extension GameVC: ShopVCDataSource {
         //refresh()
         updateActionButtons()
         
+    }
+}
+
+// MARK: ShopVCDataSource
+extension GameVC: ShopVCDataSource {
+    func shopAnimationPoint() -> CGPoint {
+        return handView.center
     }
 }
 
