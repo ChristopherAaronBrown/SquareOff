@@ -56,7 +56,7 @@ class HandView: UIView {
         }
     }
     
-    func slotImageTapped(_ sender: UITapGestureRecognizer) {
+    @objc func slotImageTapped(_ sender: UITapGestureRecognizer) {
         if let handSlotView = sender.view {
             delegate.cardTapped(at: handSlotView.tag)
         }
@@ -159,7 +159,7 @@ class HandView: UIView {
     
     func cardIcon(at index: Int) -> UIImage? {
         let hand = dataSource.currentPlayer().hand
-        let type = type(of: hand.cards[index])
+        let type = Swift.type(of: hand.cards[index])
         
         if type == GemCard.self {
             switch hand.cards[index].cost {

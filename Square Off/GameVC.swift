@@ -10,10 +10,7 @@ import UIKit
 import Shimmer
 import Firebase
 
-class GameVC: UIViewController, GADInterstitialDelegate,
-              BoardViewDelegate, BoardViewDataSource,
-              HandViewDelegate, HandViewDataSource,
-              ShopVCDelegate, ShopVCDataSource {
+class GameVC: UIViewController {
     
     @IBOutlet weak var playerLabel: UILabel!
     @IBOutlet weak var headerView: UIView!
@@ -28,17 +25,17 @@ class GameVC: UIViewController, GADInterstitialDelegate,
     @IBOutlet weak var resurrectButton: UIButton!
     @IBOutlet weak var resurrectImageView: UIImageView!
     @IBOutlet weak var resurrectLabel: UILabel!
+    @IBOutlet weak var boardView: BoardView!
+    @IBOutlet weak var tipLabel: UILabel!
     
     var player1Name: String!
     var player2Name: String!
     
     private var interstitial: GADInterstitial!
     private var roundCounter: Int = 0
-    private var tipLabel: UILabel!
     private var shimmerView: FBShimmeringView!
     private var endTurnTimer: Timer?
     private var session: Session!
-    private var boardView: BoardView!
     private var handView: HandView!
     private var burnView: UIView?
     private var longPressedPawn: PawnView?
@@ -104,6 +101,9 @@ class GameVC: UIViewController, GADInterstitialDelegate,
         
         interstitial = createAndLoadInterstitial()
         
+        boardView.dataSource = self
+        boardView.delegate = self
+        
         let player1 = Player(number: 0, name: player1Name)
         let player2 = Player(number: 1, name: player2Name)
         let board = Board(player1: player1, player2: player2)
@@ -115,32 +115,7 @@ class GameVC: UIViewController, GADInterstitialDelegate,
         
         endTurnButton.layer.cornerRadius = 12
         
-        // Add board to view
-        let boardWidth: CGFloat = view.bounds.width - 16
-        let boardHeight: CGFloat = boardWidth
-        let boardXPos: CGFloat = 8
-        let boardYPos: CGFloat = headerView.frame.maxY
-        let boardFrame = CGRect(x: boardXPos, y: boardYPos, width: boardWidth, height: boardHeight)
-        
-        boardView = BoardView(frame: boardFrame, board: board)
-        
-        view.addSubview(boardView)
-        
-        boardView.delegate = self
-        boardView.dataSource = self
-        
-        let tipWidth: CGFloat = view.bounds.width
-        let tipHeight: CGFloat = 50
-        let tipXPos: CGFloat = 0
-        let tipYPos: CGFloat = view.bounds.height * (365/568)
-        let tipFrame: CGRect = CGRect(x: tipXPos, y: tipYPos, width: tipWidth, height: tipHeight)
-        tipLabel = UILabel(frame: tipFrame)
-        tipLabel.text = "Tap a Pawn or Action to start."
-        tipLabel.textAlignment = .center
-        tipLabel.textColor = Colors.font
-        tipLabel.font = UIFont(name: "Montserrat-Light", size: 20)
-        
-        shimmerView = FBShimmeringView(frame: tipFrame)
+        shimmerView = FBShimmeringView(frame: tipLabel.frame)
         shimmerView.contentView = tipLabel
         shimmerView.isShimmering = true
         shimmerView.addGestureRecognizer(tapRecognizer)
@@ -166,17 +141,22 @@ class GameVC: UIViewController, GADInterstitialDelegate,
         updateActionButtons()
         handView.refresh()
         
-        // TODO: From viewDidAppear. Delete later?
-        player.hand.newHand(for: player)
-        opponent.hand.newHand(for: opponent)
-        startNewTurn()
+//        // TODO: From viewDidAppear. Delete later?
+//        player.hand.newHand(for: player)
+//        opponent.hand.newHand(for: opponent)
+//        startNewTurn()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+//        boardView.setNeedsLayout()
+//        tipLabel.setNeedsLayout()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-//        player.hand.newHand(for: player)
-//        opponent.hand.newHand(for: opponent)
-//        startNewTurn()
+        player.hand.newHand(for: player)
+        opponent.hand.newHand(for: opponent)
+        startNewTurn()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -214,6 +194,7 @@ class GameVC: UIViewController, GADInterstitialDelegate,
     
     private func refresh() {
         setNextState(.Normal)
+//        boardView.updateBoard()
         boardView.updateBoard()
         handView.refresh()
     }
@@ -316,113 +297,6 @@ class GameVC: UIViewController, GADInterstitialDelegate,
         tipLabel.isHidden = !tipLabel.isHidden
         endTurnButton.isHidden = !tipLabel.isHidden
         shimmerView.isHidden = !shimmerView.isHidden
-    }
-    
-    // MARK: - AdMob
-    private func createAndLoadInterstitial() -> GADInterstitial {
-        let interstitial = GADInterstitial(adUnitID: Constants.adMobAdUnitID)
-        interstitial.delegate = self
-        let request = GADRequest()
-//        request.testDevices = [kGADSimulatorID,"0808d270ebb9dc688c0f92ad42a36569"]
-        request.testDevices = [kGADSimulatorID]
-        interstitial.load(request)
-        return interstitial
-    }
-    
-    func interstitialDidDismissScreen(_ ad: GADInterstitial) {
-        interstitial = createAndLoadInterstitial()
-    }
-    
-    // MARK: - BoardView delegate and data source functions
-    func highlightForSpace(at coordinate: Coordinate) -> UIColor {
-        return highlightDict[coordinate] ?? Colors.grey
-    }
-    
-    func spaceTapped(at coordinate: Coordinate) {
-        let space = board.getSpace(coordinate)
-        
-        if state == .Resurrect && space.isHome && !space.isOccupied {
-            space.pawn = Pawn(owner: player)
-            player.deadPawns -= 1
-            hand.discardCard(of: ResurrectCard.self, for: player)
-            highlightDict = [:]
-            handView.refresh()
-            refresh()
-            updateActionButtons()
-        }
-        
-        setNextState(.Normal)
-    }
-    
-    func pawnLongPressBegan(at coordinate: Coordinate, at location: CGPoint) {
-        let space = board.getSpace(coordinate)
-        
-        // If user long presses one of their pawns
-        if space.isOccupied && space.pawn!.owner == player && !space.pawn!.hasReachedGoal {
-            setNextState(.Normal)
-            
-            generatePlayOptions(at: coordinate)
-            print(printPlayOptions)
-            
-            highlightOptions(playOptionDict)
-            boardView.updateHighlights()
-            
-            space.pawn = nil
-            
-            let imageWidth = view.bounds.size.width * (44/320) * 1.25
-            let imageHeight = view.bounds.size.height * (48/568) * 1.25
-            let xPos = location.x - imageWidth / 2
-            let yPos = location.y - imageHeight * 1.5
-            let longPressedPawnFrame = CGRect(x: xPos, y: yPos, width: imageWidth, height: imageHeight)
-            longPressedPawn = PawnView(frame: longPressedPawnFrame, owner: player)
-            
-            // Add shadow
-            longPressedPawn!.layer.shadowColor = Colors.font.cgColor
-            longPressedPawn!.layer.shadowOpacity = 0.7
-            longPressedPawn!.layer.shadowOffset = CGSize(width: 0, height: imageHeight)
-            longPressedPawn!.layer.shadowRadius = 1.5
-            
-            view.addSubview(longPressedPawn!)
-        }
-    }
-    
-    func pawnLongPressChanged(at location: CGPoint) {
-        let imageHeight = view.bounds.size.height * (48/568) * 1.25
-        let xPos = location.x
-        let yPos = location.y - imageHeight
-        longPressedPawn?.center = CGPoint(x: xPos, y: yPos)
-    }
-    
-    func pawnLongPressEnded(at target: Coordinate, from source: Coordinate) {
-        let playOptions = playOptionDict[target] ?? []
-        let finishingTouches: () -> () = {
-            self.playOptionDict = [:]
-            self.updateActionButtons()
-            self.enableEndTurn()
-            if self.playerHasWon() {
-                FIRAnalytics.logEvent(withName: kFIREventPostScore,
-                                      parameters: [kFIRParameterCharacter : "\(self.player.number)" as NSObject,
-                                                   kFIRParameterScore : "\(self.roundCounter)" as NSObject])
-                
-                self.performSegue(withIdentifier: "WinnerVC", sender: self)
-            }
-        }
-        let callback: (PlayOption) -> () = { chosenOption in
-            self.attemptPawnPlacement(using: chosenOption, from: source, to: target)
-            finishingTouches()
-        }
-        
-        if playOptions.isEmpty {
-            placePawn(at: source)
-            finishingTouches()
-        } else if playOptions.count == 1 {
-            callback(playOptions[0])
-        } else {
-            // Prompt user for which path to use
-            print("Prompting user...")
-            promptUser(for: playOptions, callback: callback)
-        }
-        
     }
     
     private func playerHasWon() -> Bool {
@@ -789,30 +663,6 @@ class GameVC: UIViewController, GADInterstitialDelegate,
         }
     }
 
-    // MARK: - HandView delegate and data source functions
-    func numberOfCards() -> Int {
-        return hand.count
-    }
-    
-    func cardTapped(at index: Int) {
-        enableEndTurn()
-//        
-//        if state == .Burn {
-//            hand.burnCard(at: index)
-//            hand.discardCard(of: BurnCard.self, for: player)
-//            handView.refresh()
-//            updateActionButtons()
-//            burnView?.removeFromSuperview()
-//            setNextState(.Normal)
-//            if hand.isEmpty {
-//                endTurn()
-//            }
-//        } else {
-//            // TODO: Info card
-//        }
-        
-    }
-    
     private func setNextState(_ nextState: State) {
         state = nextState
         switch state {
@@ -848,12 +698,136 @@ class GameVC: UIViewController, GADInterstitialDelegate,
         
         return homeSpaceCoordinates
     }
+
+}
+
+// MARK: - BoardViewDelegate
+extension GameVC: BoardViewDelegate {
+    func pawnLongPressBegan(at coordinate: Coordinate, at location: CGPoint) {
+        let space = board.getSpace(coordinate)
+        
+        // If user long presses one of their pawns
+        if space.isOccupied && space.pawn!.owner == player && !space.pawn!.hasReachedGoal {
+            setNextState(.Normal)
+            
+            generatePlayOptions(at: coordinate)
+            print(printPlayOptions)
+            
+            highlightOptions(playOptionDict)
+            //            boardView.updateHighlights()
+            boardView.updateHighlights()
+            
+            space.pawn = nil
+            
+            let imageWidth = view.bounds.size.width * (44/320) * 1.25
+            let imageHeight = view.bounds.size.height * (48/568) * 1.25
+            let xPos = location.x - imageWidth / 2
+            let yPos = location.y - imageHeight * 1.5
+            let longPressedPawnFrame = CGRect(x: xPos, y: yPos, width: imageWidth, height: imageHeight)
+            longPressedPawn = PawnView(frame: longPressedPawnFrame, owner: player)
+            
+            // Add shadow
+            longPressedPawn!.layer.shadowColor = Colors.font.cgColor
+            longPressedPawn!.layer.shadowOpacity = 0.7
+            longPressedPawn!.layer.shadowOffset = CGSize(width: 0, height: imageHeight)
+            longPressedPawn!.layer.shadowRadius = 1.5
+            
+            view.addSubview(longPressedPawn!)
+        }
+    }
     
-    // MARK: - ShopVC delegate and data source functions
+    func pawnLongPressChanged(at location: CGPoint) {
+        let imageHeight = view.bounds.size.height * (48/568) * 1.25
+        let xPos = location.x
+        let yPos = location.y - imageHeight
+        longPressedPawn?.center = CGPoint(x: xPos, y: yPos)
+    }
+    
+    func pawnLongPressEnded(at target: Coordinate, from source: Coordinate) {
+        let playOptions = playOptionDict[target] ?? []
+        let finishingTouches: () -> () = {
+            self.playOptionDict = [:]
+            self.updateActionButtons()
+            self.enableEndTurn()
+            if self.playerHasWon() {
+                FIRAnalytics.logEvent(withName: kFIREventPostScore,
+                                      parameters: [kFIRParameterCharacter : "\(self.player.number)" as NSObject,
+                                                   kFIRParameterScore : "\(self.roundCounter)" as NSObject])
+                
+                self.performSegue(withIdentifier: "WinnerVC", sender: self)
+            }
+        }
+        let callback: (PlayOption) -> () = { chosenOption in
+            self.attemptPawnPlacement(using: chosenOption, from: source, to: target)
+            finishingTouches()
+        }
+        
+        if playOptions.isEmpty {
+            placePawn(at: source)
+            finishingTouches()
+        } else if playOptions.count == 1 {
+            callback(playOptions[0])
+        } else {
+            // Prompt user for which path to use
+            print("Prompting user...")
+            promptUser(for: playOptions, callback: callback)
+        }
+        
+    }
+    
+    func spaceTapped(at coordinate: Coordinate) {
+        let space = board.getSpace(coordinate)
+        
+        if state == .Resurrect && space.isHome && !space.isOccupied {
+            space.pawn = Pawn(owner: player)
+            player.deadPawns -= 1
+            hand.discardCard(of: ResurrectCard.self, for: player)
+            highlightDict = [:]
+            handView.refresh()
+            refresh()
+            updateActionButtons()
+        }
+        
+        setNextState(.Normal)
+    }
+}
+
+// MARK: BoardViewDataSource
+extension GameVC: BoardViewDataSource {
+    func currentBoard() -> Board {
+        return board
+    }
+    
+    func highlightForSpace(at coordinate: Coordinate) -> UIColor {
+        return highlightDict[coordinate] ?? Colors.grey
+    }
+    
     func currentPlayer() -> Player {
         return player
     }
+}
+
+// MARK: HandViewDelegate
+extension GameVC: HandViewDelegate {
+    func cardTapped(at index: Int) {
+        enableEndTurn()
+    }
+}
+
+// MARK: HandViewDataSource
+extension GameVC: HandViewDataSource {
+    func numberOfCards() -> Int {
+        return hand.count
+    }
+}
+
+// MARK: ShopVCDelegate
+extension GameVC: ShopVCDelegate {
     
+}
+
+// MARK: ShopVCDataSource
+extension GameVC: ShopVCDataSource {
     func shopAnimationPoint() -> CGPoint {
         return handView.center
     }
@@ -882,9 +856,25 @@ class GameVC: UIViewController, GADInterstitialDelegate,
         removeGems()
         
         handView.refresh()
-        refresh()
+        //refresh()
         updateActionButtons()
         
     }
 }
 
+// MARK: GADInterstitialDelegate
+extension GameVC: GADInterstitialDelegate {
+    func interstitialDidDismissScreen(_ ad: GADInterstitial) {
+        interstitial = createAndLoadInterstitial()
+    }
+    
+    private func createAndLoadInterstitial() -> GADInterstitial {
+        let interstitial = GADInterstitial(adUnitID: Constants.adMobAdUnitID)
+        interstitial.delegate = self
+        let request = GADRequest()
+//        request.testDevices = [kGADSimulatorID,"0808d270ebb9dc688c0f92ad42a36569"]
+        request.testDevices = [kGADSimulatorID]
+        interstitial.load(request)
+        return interstitial
+    }
+}

@@ -77,6 +77,4 @@ class PlayOptionVC: UIViewController, UITableViewDelegate, UITableViewDataSource
             return PlayOptionCell()
         }
     }
-    
-    
 }

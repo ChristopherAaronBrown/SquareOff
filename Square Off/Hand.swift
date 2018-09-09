@@ -46,7 +46,7 @@ class Hand {
     
     func containsType(_ type: Card.Type) -> Bool {
         for card in cards {
-            if type(of: card) == type {
+            if Swift.type(of: card) == type {
                 return true
             }
         }
@@ -56,7 +56,7 @@ class Hand {
     func discardCard(of type: Card.Type, for player: Player) {
         for index in 0..<cards.count {
             let card = cards[index]
-            if type(of: card) == type {
+            if Swift.type(of: card) == type {
                 player.discard.add(cards[index])
                 cards.remove(at: index)
                 return
@@ -74,7 +74,7 @@ class Hand {
     func discardAllCards(type: Card.Type, for player: Player) {
         for index in stride(from: cards.count - 1, through: 0, by: -1) {
             let card = cards[index]
-            if type(of: card) == type {
+            if Swift.type(of: card) == type {
                 player.discard.add(cards[index])
                 cards.remove(at: index)
             }

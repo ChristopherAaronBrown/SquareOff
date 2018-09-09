@@ -101,7 +101,7 @@ enum PathAction {
     }
     
     private static func contains(type: Card.Type, in hand: Hand, with tileTypes: inout [Card.Type]) -> Bool {
-        if hand.cards.contains(where: { (card) -> Bool in type(of: card) == type }) {
+        if hand.cards.contains(where: { (card) -> Bool in Swift.type(of: card) == type }) {
             tileTypes.append(type)
             return true
         } else {

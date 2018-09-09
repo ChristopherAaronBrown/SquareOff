@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MenuVC: UIViewController, UITextFieldDelegate {
+class MenuVC: UIViewController {
 
     @IBOutlet weak var firstPlayer: UITextField!
     @IBOutlet weak var secondPlayer: UITextField!
@@ -41,6 +41,12 @@ class MenuVC: UIViewController, UITextFieldDelegate {
     private func removeAds() {
     }
     
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
+    }
+}
+
+extension MenuVC: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField == firstPlayer {
             secondPlayer.becomeFirstResponder()
@@ -49,10 +55,4 @@ class MenuVC: UIViewController, UITextFieldDelegate {
         }
         return true
     }
-    
-    @objc private func dismissKeyboard() {
-        view.endEditing(true)
-    }
-    
-    
 }

@@ -11,6 +11,7 @@ import UIKit
 protocol BoardViewDataSource {
     func highlightForSpace(at coordinate: Coordinate) -> UIColor
     func currentPlayer() -> Player
+    func currentBoard() -> Board
 }
 
 protocol BoardViewDelegate {
@@ -25,46 +26,53 @@ class BoardView: UIView {
     var dataSource: BoardViewDataSource?
     var delegate: BoardViewDelegate?
     
-    private let board: Board
-    private var pawnDict: [Coordinate:PawnView?]
-    private var spaceDict: [Coordinate:UIImageView]
+//    private let board: Board
+    private var spacesCount: Int {
+        return Constants.numberOfSpaces
+    }
+    private var pawnDict: [Coordinate:PawnView?] = [:]
+    private var spaceDict: [Coordinate:UIImageView] = [:]
     
-    private let spaceWidth: CGFloat
-    private let spaceHeight: CGFloat
-    private let spaceMargin: CGFloat
-    private let pawnTop: CGFloat
-    private let pawnMargin: CGFloat
-    private let pawnHeight: CGFloat
-    private let pawnWidth: CGFloat
+    private var spaceWidth: CGFloat = 0
+    private var spaceHeight: CGFloat = 0
+    private var spaceMargin: CGFloat = 0
+    private var pawnTop: CGFloat = 0
+    private var pawnMargin: CGFloat = 0
+    private var pawnHeight: CGFloat = 0
+    private var pawnWidth: CGFloat = 0
     
-    init(frame: CGRect, board: Board) {
-        spaceWidth = frame.width * (46/304)
-        spaceHeight = spaceWidth
-        spaceMargin = (frame.width - CGFloat(board.count) * spaceWidth) / CGFloat(board.count - 1)
-        pawnTop = frame.height * (-3/304)
-        pawnMargin = frame.width * (1/304)
-        pawnHeight = frame.height * (48/304)
-        pawnWidth = frame.width * (44/304)
+    override func layoutSubviews() {
+        let spaces: CGFloat = CGFloat(Constants.numberOfSpaces)
         
         pawnDict = [:]
         spaceDict = [:]
-        self.board = board
         
-        super.init(frame: frame)
+        for view in subviews {
+            view.removeFromSuperview()
+        }
         
-        for column in 0..<board.count {
-            for row in 0..<board.count {
+        spaceMargin = bounds.width * (4/296)
+        spaceWidth = (bounds.width - (spaces - 1) * spaceMargin) / spaces
+        spaceHeight = spaceWidth
+        pawnTop = bounds.height * (-3/299)
+        pawnMargin = bounds.width * (1/296)
+        pawnHeight = bounds.height * (48/299)
+        pawnWidth = bounds.width * (44/296)
+        
+        for column in 0..<Constants.numberOfSpaces {
+            for row in 0..<Constants.numberOfSpaces {
                 let coordinate = try! Coordinate(column: column, row: row)
                 drawSpace(at: coordinate)
+                drawPawn(at: coordinate)
             }
         }
     }
     
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented. Do not create BoardView in Interface Builder.")
-    }
-    
     func updateBoard() {
+        
+        guard let board = dataSource?.currentBoard() else {
+            return
+        }
         
         for subview in subviews {
             if let pawnView = subview as? PawnView {
@@ -74,8 +82,8 @@ class BoardView: UIView {
         
         pawnDict = [:]
         
-        for column in 0..<board.count {
-            for row in 0..<board.count {
+        for column in 0..<Constants.numberOfSpaces {
+            for row in 0..<Constants.numberOfSpaces {
                 let coordinate = try! Coordinate(column: column, row: row)
                 let space = board.getSpace(coordinate)
                 if space.hasPawn {
@@ -98,7 +106,7 @@ class BoardView: UIView {
         let spaceYPos = (spaceHeight + spaceMargin) * CGFloat(coordinate.row)
         let spaceImageView = UIImageView(frame: CGRect(x: spaceXPos, y: spaceYPos, width: spaceWidth, height: spaceHeight))
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(spaceTapped))
-        let tag: Int = coordinate.column + (coordinate.row * board.count)
+        let tag: Int = coordinate.column + (coordinate.row * Constants.numberOfSpaces)
         
         spaceImageView.addGestureRecognizer(tapRecognizer)
         spaceImageView.isUserInteractionEnabled = true
@@ -112,7 +120,8 @@ class BoardView: UIView {
     }
     
     private func drawPawn(at coordinate: Coordinate) {
-        guard let owner = board.getSpace(coordinate).pawn?.owner else {
+        
+        guard let board = dataSource?.currentBoard(), let owner = board.getSpace(coordinate).pawn?.owner else {
             return
         }
         
@@ -123,7 +132,7 @@ class BoardView: UIView {
         let pawnFrame = CGRect(x: pawnXPos, y: pawnYPos, width: pawnWidth, height: pawnHeight)
         let pawnView = PawnView(frame: pawnFrame, owner: owner)
         let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(pawnLongPressed))
-        let tag: Int = coordinate.column + (coordinate.row * board.count)
+        let tag: Int = coordinate.column + (coordinate.row * Constants.numberOfSpaces)
         
         longPressRecognizer.minimumPressDuration = 0
         pawnView.isUserInteractionEnabled = true
@@ -141,7 +150,7 @@ class BoardView: UIView {
     @objc private func spaceTapped(_ sender: UITapGestureRecognizer) {
         if let spaceImageView = sender.view {
             let tag = spaceImageView.tag
-            let coordinate = try! Coordinate(column: tag % board.count, row: tag / board.count)
+            let coordinate = try! Coordinate(column: tag % Constants.numberOfSpaces, row: tag / Constants.numberOfSpaces)
             delegate?.spaceTapped(at: coordinate)
         }
     }
@@ -149,7 +158,7 @@ class BoardView: UIView {
     @objc private func pawnLongPressed(_ sender: UILongPressGestureRecognizer) {
         if let pawnView = sender.view as? PawnView {
             let tag = pawnView.tag
-            let coordinate = try! Coordinate(column: tag % board.count, row: tag / board.count)
+            let coordinate = try! Coordinate(column: tag % Constants.numberOfSpaces, row: tag / Constants.numberOfSpaces)
             switch sender.state {
             case .began:
                 pawnView.alpha = 0.3

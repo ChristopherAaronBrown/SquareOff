@@ -9,10 +9,8 @@
 /* Begin PBXBuildFile section */
 		69E1F29CF7FAD0CF01D30355 /* Pods_Square_Off.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 009C228667B033375EF1CE6A /* Pods_Square_Off.framework */; };
 		830717D71E9E80F900454EFD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 830717D61E9E80F900454EFD /* GoogleService-Info.plist */; };
-		830717D91E9ECF8100454EFD /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 830717D81E9ECF8100454EFD /* StoreKit.framework */; };
 		830717DC1E9ED03700454EFD /* IAPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 830717DB1E9ED03700454EFD /* IAPManager.swift */; };
 		830717E01E9FEE6900454EFD /* TutorialVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 830717DF1E9FEE6900454EFD /* TutorialVC.swift */; };
-		830717E31EA0523800454EFD /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 830717E11EA0520E00454EFD /* AdSupport.framework */; };
 		8313380A1E524E2200054F56 /* HandView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831338091E524E2200054F56 /* HandView.swift */; };
 		8313380C1E52871F00054F56 /* Anita semi-square.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8313380B1E52871F00054F56 /* Anita semi-square.ttf */; };
 		8318D02A1E79FA12001B3FB1 /* PawnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8318D0291E79FA12001B3FB1 /* PawnView.swift */; };
@@ -166,9 +164,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				830717E31EA0523800454EFD /* AdSupport.framework in Frameworks */,
 				69E1F29CF7FAD0CF01D30355 /* Pods_Square_Off.framework in Frameworks */,
-				830717D91E9ECF8100454EFD /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -431,14 +427,14 @@
 		833AFD7E1E4D1ED700C628F0 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0820;
-				LastUpgradeCheck = 0820;
+				LastSwiftUpdateCheck = 0940;
+				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = "Chris Brown";
 				TargetAttributes = {
 					833AFD851E4D1ED700C628F0 = {
 						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = 4XT2VA5V66;
-						LastSwiftMigration = 0830;
+						DevelopmentTeam = V7QG22YHNG;
+						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.InAppPurchase = {
@@ -632,15 +628,23 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -682,15 +686,23 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -722,15 +734,20 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				DEVELOPMENT_TEAM = 4XT2VA5V66;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = V7QG22YHNG;
 				INFOPLIST_FILE = "Square Off/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.christopheraaronbrown.squareoff;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chrisbrown.squareoff;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Square Off/Square Off-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -741,14 +758,18 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				DEVELOPMENT_TEAM = 4XT2VA5V66;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = V7QG22YHNG;
 				INFOPLIST_FILE = "Square Off/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.christopheraaronbrown.squareoff;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chrisbrown.squareoff;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Square Off/Square Off-Bridging-Header.h";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
